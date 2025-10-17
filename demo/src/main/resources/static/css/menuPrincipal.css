@@ -1,0 +1,223 @@
+/* ===== Reset ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", Arial, sans-serif;
+}
+
+/* ===== Layout principal ===== */
+body {
+    background-color: #121212;
+    color: #fff;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    width: 100%;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+    background-color: #1e1e1e;
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px;
+    border-right: 2px solid #000;
+}
+
+.app-title {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 5px 0 15px 5px;
+    border-bottom: 1px solid #333;
+}
+
+/* ===== Perfil ===== */
+.perfil {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.avatar {
+    background-color: #333;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info {
+    margin-left: 10px;
+}
+
+.nome {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.email {
+    font-size: 12px;
+    color: #bbb;
+}
+
+/* ===== Menu ===== */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.menu-item {
+    background: none;
+    border: none;
+    color: #ccc;
+    text-align: left;
+    padding: 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.menu-item:hover,
+.menu-item.active {
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
+/* ===== Busca ===== */
+.busca {
+    margin-top: 20px;
+}
+
+.busca input {
+    width: 100%;
+    background-color: #2a2a2a;
+    border: none;
+    border-radius: 10px;
+    padding: 6px 10px;
+    color: #fff;
+    outline: none;
+}
+
+/* ===== Listas ===== */
+.listas {
+    margin-top: 15px;
+    flex-grow: 1;
+}
+
+.lista {
+    display: block;
+    background: none;
+    border: none;
+    color: #ccc;
+    padding: 6px 0;
+    text-align: left;
+    cursor: pointer;
+}
+
+.lista:hover {
+    color: #fff;
+}
+
+/* ===== Nova Lista ===== */
+.nova-lista {
+    background-color: #111;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.nova-lista:hover {
+    background-color: #222;
+}
+
+/* ===== Conteúdo principal ===== */
+.conteudo {
+    flex-grow: 1;
+    background-color: #121212;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.titulo {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.titulo h2 {
+    font-size: 22px;
+}
+
+.titulo span {
+    color: #bbb;
+}
+
+/* ===== Adicionar tarefa ===== */
+.add-tarefa {
+    background-color: #2a2a2a;
+    border-radius: 25px;
+    margin-top: 30px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 70%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-tarefa:hover {
+    background-color: #383838;
+}
+
+/* ===== Botões flutuantes ===== */
+.botoes-flutuantes {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.botoes-flutuantes button {
+    background-color: #2a2a2a;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.botoes-flutuantes button:hover {
+    background-color: #3a3a3a;
+}
+
+/* ===== Ícones ===== */
+i {
+    width: 18px;
+    height: 18px;
+}

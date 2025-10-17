@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDaily</title>
+    <link rel="stylesheet" href="/css/menuPrincipal.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h1 class="app-title">ToDaily</h1>
+
+        <!-- Perfil -->
+        <div class="perfil">
+            <div class="avatar">
+                <i data-lucide="user"></i>
+            </div>
+            <div class="info">
+                <!-- Substitui por dados reais -->
+                <p class="nome" th:text="${nome}">Generic User</p>
+                <p class="email" th:text="${email}">genericemail@gmail.com</p>
+            </div>
+        </div>
+
+        <!-- Menu -->
+        <nav class="menu">
+            <button class="menu-item active">
+                <i data-lucide="sun"></i> Para Hoje
+            </button>
+            <button class="menu-item">
+                <i data-lucide="calendar"></i> Agendadas
+            </button>
+            <button class="menu-item">
+                <i data-lucide="briefcase"></i> Áreas de Trabalho
+            </button>
+        </nav>
+
+        <!-- Busca -->
+        <div class="busca">
+            <input type="text" placeholder="Buscar" />
+        </div>
+
+        <!-- Listas -->
+        <div class="listas">
+            <button class="lista">Faculdade</button>
+            <button class="lista">Casa</button>
+        </div>
+
+        <!-- Nova lista -->
+        <button class="nova-lista">
+            <i data-lucide="plus"></i> Nova Lista
+        </button>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <main class="conteudo">
+        <div class="titulo">
+            <h2>Para Hoje</h2>
+            <span>- 21/11/24</span>
+        </div>
+
+        <!-- Adicionar tarefa -->
+        <div class="add-tarefa">
+            <i data-lucide="plus"></i>
+            <span>Adicionar Tarefa</span>
+        </div>
+
+        <!-- Botões flutuantes -->
+        <div class="botoes-flutuantes">
+            <button><i data-lucide="plus-circle"></i></button>
+            <button><i data-lucide="calendar-days"></i></button>
+        </div>
+    </main>
+</div>
+
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>
+
