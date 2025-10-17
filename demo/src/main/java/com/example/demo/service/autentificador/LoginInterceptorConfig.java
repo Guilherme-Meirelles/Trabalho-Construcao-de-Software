@@ -17,8 +17,6 @@ public class LoginInterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/login",
                         "/cadastro",
-                        "/logout",
-                        "/error",
                         "/css/**",
                         "/js/**",
                         "/img/**",

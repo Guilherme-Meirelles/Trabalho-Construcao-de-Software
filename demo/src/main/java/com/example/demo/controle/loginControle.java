@@ -30,11 +30,20 @@ public class loginControle {
     }
 
     @GetMapping("/menuPrincipal")
-    public String menuPrincipal(Model model, HttpServletRequest request) throws UnsupportedEncodingException {
-        model.addAttribute("nome", CookieService.getCookie(request, "nomeUsuario"));
-        model.addAttribute("email", CookieService.getCookie(request, "emailUsuario"));
-        return "redirect:/menuPrincipal";
+    public String menuPrincipal(Model model, HttpServletRequest request) {
+        String nome = CookieService.getCookie(request, "nomeUsuario");
+        String email = CookieService.getCookie(request, "emailUsuario");
+
+        // Segurança: se não houver cookies, redireciona
+        if (nome == null || email == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("nome", nome);
+        model.addAttribute("email", email);
+        return "menuPrincipal"; // Retorna a view, não redirect
     }
+
 
     @PostMapping("/cadastro")
     public String cadastroUsuario(@ModelAttribute Usuario usuario, BindingResult result, Model model) {
@@ -60,20 +69,20 @@ public class loginControle {
     }
 
     @PostMapping("/login")
-    public String loginUsuario(Usuario usuario, Model model, HttpServletResponse response) throws UnsupportedEncodingException {
-
+    public String loginUsuario(Usuario usuario, Model model, HttpServletResponse response) {
         Usuario usuarioLogado = this.ur.login(usuario.getEmail(), usuario.getSenha());
+
         if (usuarioLogado != null) {
             CookieService.setCookie(response, "usuarioId", String.valueOf(usuarioLogado.getId()), 10000);
             CookieService.setCookie(response, "nomeUsuario", usuarioLogado.getNome(), 10000);
             CookieService.setCookie(response, "emailUsuario", usuarioLogado.getEmail(), 10000);
-            return "menuPrincipal";
-
+            return "redirect:/menuPrincipal"; // ✅ Agora redireciona corretamente
         }
 
-
-        model.addAttribute("erro", "Usario Invalido");
+        model.addAttribute("erro", "Usuário Inválido");
         return "login";
+
     }
 }
+
 

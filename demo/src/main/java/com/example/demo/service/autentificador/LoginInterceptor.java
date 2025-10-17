@@ -12,23 +12,16 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        // rota atual
-        String uri = request.getRequestURI();
+        // Verifica se há cookie de usuário
+        String usuarioId = CookieService.getCookie(request, "usuarioId");
 
-        // se for login, cadastro, logout ou estático → libera
-        if (uri.equals("/login") || uri.equals("/cadastro") || uri.equals("/logout") ||
-                uri.startsWith("/css") || uri.startsWith("/js") || uri.startsWith("/img")) {
-            return true;
+
+        if (usuarioId != null) {
+            return true; // ✅ Usuário autenticado, pode prosseguir
         }
 
-        // se o usuário tiver cookie, deixa passar
-        if (CookieService.getCookie(request, "usuarioId") != null) {
-            return true;
-        }
-
-        // senão, redireciona
+        // ❌ Não autenticado, redireciona para login
         response.sendRedirect("/login");
         return false;
     }
-
 }
