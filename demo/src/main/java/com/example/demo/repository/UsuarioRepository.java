@@ -7,6 +7,6 @@ public interface UsuarioRepository extends CrudRepository<Usuario, String> {
 
     Usuario findById(Long id);
 
-    @Query(value = "select * from ToDaily_db.usuario where email = :email and senha = :senha", nativeQuery = true)
+    @Query(value = "select * from todaily_db.usuario where email = :email and senha = :senha", nativeQuery = true)
     public Usuario login(String email, String senha);
 }
