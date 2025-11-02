@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDaily - Áreas de Trabalho</title>
+    <link rel="stylesheet" href="/css/sidebar.css" />
+    <link rel="stylesheet" href="/css/areasTrabalho.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar (importada) -->
+    <div th:replace="~{sidebar :: sidebar}"></div>
+
+    <!-- Conteúdo principal - Áreas de Trabalho -->
+    <main class="conteudo-areas">
+        <div class="titulo">
+            <h2>Áreas de Trabalho</h2>
+        </div>
+
+        <!-- Grid de áreas -->
+        <div class="areas-grid" id="areasGrid">
+            <!-- Cards de áreas existentes -->
+            <div class="area-card" data-area-id="pessoal" onclick="abrirArea('pessoal')" oncontextmenu="abrirMenuContexto(event, 'pessoal', 'Pessoal')">
+                <h3>Pessoal</h3>
+            </div>
+
+            <div class="area-card" data-area-id="projeto-pesquisa" onclick="abrirArea('projeto-pesquisa')" oncontextmenu="abrirMenuContexto(event, 'projeto-pesquisa', 'Projeto de Pesquisa')">
+                <h3>Projeto de Pesquisa</h3>
+            </div>
+
+            <div class="area-card" data-area-id="hobbies" onclick="abrirArea('hobbies')" oncontextmenu="abrirMenuContexto(event, 'hobbies', 'Hobbies')">
+                <h3>Hobbies</h3>
+            </div>
+
+            <div class="area-card" data-area-id="trabalho" onclick="abrirArea('trabalho')" oncontextmenu="abrirMenuContexto(event, 'trabalho', 'Trabalho')">
+                <h3>Trabalho</h3>
+            </div>
+
+            <!-- Card para adicionar nova área -->
+            <div class="area-card area-add" onclick="abrirModalNovaArea()">
+                <i data-lucide="plus-circle" data-size="52"></i>
+            </div>
+        </div>
+
+        <!-- Botões de ação flutuantes -->
+        <div class="acoes-flutuantes">
+            <button class="btn-acao" title="Compartilhar" onclick="abrirModalCompartilhar()">
+                <i data-lucide="share-2"></i>
+            </button>
+            <button class="btn-acao" title="Excluir" onclick="abrirModalExcluir()">
+                <i data-lucide="trash-2"></i>
+            </button>
+            <button class="btn-acao" title="Configurações" onclick="abrirModalGerenciamento()">
+                <i data-lucide="settings"></i>
+            </button>
+        </div>
+
+        <!-- Botão adicionar (canto inferior direito) - ACESSIBILIDADE -->
+        <button class="btn-adicionar-fixo" title="Acessibilidade">
+            <i data-lucide="hand"></i>
+        </button>
+    </main>
+
+    <!-- Modal de Perfil (importado) -->
+    <div th:replace="~{sidebar :: modalPerfil}"></div>
+
+    <!-- Modal para criar/renomear área -->
+    <div id="modalArea" class="overlay-modal" style="display: none;" onclick="fecharModalArea()">
+        <div class="modal-nova-area" onclick="event.stopPropagation()">
+            <h2 class="titulo-modal" id="tituloModalArea">Nova Área de Trabalho</h2>
+
+            <form class="formulario-nova-area" onsubmit="salvarArea(event)">
+                <div class="campo-modal">
+                    <label>Nome da área:*</label>
+                    <input type="text" id="inputNomeArea" placeholder="Ex: Projetos Pessoais" autofocus required />
+                </div>
+
+                <div class="botoes-modal">
+                    <button type="submit" class="btn-criar">Criar</button>
+                    <button type="button" class="btn-cancelar-modal" onclick="fecharModalArea()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Compartilhamento -->
+    <div id="modalCompartilhar" class="overlay-modal" style="display: none;" onclick="fecharModalCompartilhar()">
+        <div class="modal-compartilhar" onclick="event.stopPropagation()">
+            <h2 class="titulo-modal">Compartilhar Área de Trabalho</h2>
+
+            <!-- Lista de áreas para selecionar -->
+            <div class="lista-areas-compartilhar">
+                <div class="area-item-compartilhar" onclick="selecionarAreaCompartilhar('pessoal')">
+                    <input type="radio" name="areaCompartilhar" id="area-pessoal" value="pessoal" onchange="atualizarSelecaoArea()">
+                    <label for="area-pessoal">Pessoal</label>
+                </div>
+
+                <div class="area-item-compartilhar" onclick="selecionarAreaCompartilhar('projeto-pesquisa')">
+                    <input type="radio" name="areaCompartilhar" id="area-projeto-pesquisa" value="projeto-pesquisa" onchange="atualizarSelecaoArea()">
+                    <label for="area-projeto-pesquisa">Projeto de Pesquisa</label>
+                </div>
+
+                <div class="area-item-compartilhar" onclick="selecionarAreaCompartilhar('hobbies')">
+                    <input type="radio" name="areaCompartilhar" id="area-hobbies" value="hobbies" onchange="atualizarSelecaoArea()">
+                    <label for="area-hobbies">Hobbies</label>
+                </div>
+
+                <div class="area-item-compartilhar" onclick="selecionarAreaCompartilhar('trabalho')">
+                    <input type="radio" name="areaCompartilhar" id="area-trabalho" value="trabalho" onchange="atualizarSelecaoArea()">
+                    <label for="area-trabalho">Trabalho</label>
+                </div>
+            </div>
+
+            <!-- Métodos de compartilhamento -->
+            <div class="secao-metodos-compartilhamento">
+                <h3>Compartilhar via:</h3>
+
+                <div class="metodos-compartilhamento">
+                    <button class="btn-metodo-compartilhar" id="btnGoogle" onclick="compartilharVia('google')" disabled>
+                        <i data-lucide="mail"></i>
+                        Google
+                    </button>
+
+                    <button class="btn-metodo-compartilhar" id="btnMicrosoft" onclick="compartilharVia('microsoft')" disabled>
+                        <i data-lucide="briefcase"></i>
+                        Microsoft
+                    </button>
+
+                    <button class="btn-metodo-compartilhar" id="btnGithub" onclick="compartilharVia('github')" disabled>
+                        <i data-lucide="github"></i>
+                        GitHub
+                    </button>
+
+                    <button class="btn-link-compartilhar" id="btnLink" onclick="gerarLinkCompartilhamento()" disabled>
+                        <i data-lucide="link"></i>
+                        Copiar Link
+                    </button>
+                </div>
+
+                <div class="botoes-modal">
+                    <button type="button" class="btn-cancelar-modal" onclick="fecharModalCompartilhar()">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Exclusão -->
+    <div id="modalExcluir" class="overlay-modal" style="display: none;" onclick="fecharModalExcluir()">
+        <div class="modal-excluir" onclick="event.stopPropagation()">
+            <h2 class="titulo-modal">Excluir Áreas de Trabalho</h2>
+
+            <!-- Lista de áreas para excluir -->
+            <div class="lista-areas-excluir" id="listaAreasExcluir">
+                <div class="area-item-excluir" onclick="toggleAreaExcluir('pessoal')">
+                    <input type="checkbox" name="areaExcluir" id="excluir-pessoal" value="pessoal" onchange="atualizarSelecaoExclusao()">
+                    <label for="excluir-pessoal">Pessoal</label>
+                </div>
+
+                <div class="area-item-excluir" onclick="toggleAreaExcluir('projeto-pesquisa')">
+                    <input type="checkbox" name="areaExcluir" id="excluir-projeto-pesquisa" value="projeto-pesquisa" onchange="atualizarSelecaoExclusao()">
+                    <label for="excluir-projeto-pesquisa">Projeto de Pesquisa</label>
+                </div>
+
+                <div class="area-item-excluir" onclick="toggleAreaExcluir('hobbies')">
+                    <input type="checkbox" name="areaExcluir" id="excluir-hobbies" value="hobbies" onchange="atualizarSelecaoExclusao()">
+                    <label for="excluir-hobbies">Hobbies</label>
+                </div>
+
+                <div class="area-item-excluir" onclick="toggleAreaExcluir('trabalho')">
+                    <input type="checkbox" name="areaExcluir" id="excluir-trabalho" value="trabalho" onchange="atualizarSelecaoExclusao()">
+                    <label for="excluir-trabalho">Trabalho</label>
+                </div>
+            </div>
+
+            <div class="botoes-modal">
+                <button type="button" class="btn-excluir-areas" id="btnConfirmarExclusao" onclick="confirmarExclusao()" disabled>
+                    <i data-lucide="trash-2"></i>
+                    Excluir Selecionadas
+                </button>
+                <button type="button" class="btn-cancelar-modal" onclick="fecharModalExcluir()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu de contexto (botão direito) -->
+    <div id="menuContexto" class="menu-contexto" style="display: none;">
+        <button class="item-menu-contexto" onclick="renomearAreaContexto()">
+            <i data-lucide="edit-3"></i>
+            Renomear
+        </button>
+    </div>
+
+    <!-- Modal de Gerenciamento -->
+    <div id="modalGerenciamento" class="overlay-modal" style="display: none;" onclick="fecharModalGerenciamento()">
+        <div class="modal-gerenciamento" onclick="event.stopPropagation()">
+            <!-- Etapa 1: Seleção de área -->
+            <div id="etapaSelecaoArea" style="display: block;">
+                <h2 class="titulo-modal">Gerenciar Áreas de Trabalho</h2>
+
+                <div class="lista-areas-gerenciar">
+                    <div class="area-item-gerenciar" onclick="selecionarAreaGerenciar('pessoal')">
+                        <div class="info-area">
+                            <input type="radio" name="areaGerenciar" id="gerenciar-pessoal" value="pessoal" onchange="atualizarSelecaoGerenciar()">
+                            <label for="gerenciar-pessoal">Pessoal</label>
+                        </div>
+                    </div>
+
+                    <div class="area-item-gerenciar" onclick="selecionarAreaGerenciar('projeto-pesquisa')">
+                        <div class="info-area">
+                            <input type="radio" name="areaGerenciar" id="gerenciar-projeto-pesquisa" value="projeto-pesquisa" onchange="atualizarSelecaoGerenciar()">
+                            <label for="gerenciar-projeto-pesquisa">Projeto de Pesquisa</label>
+                            <div class="badge-compartilhado-mini">
+                                <i data-lucide="share-2"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="area-item-gerenciar" onclick="selecionarAreaGerenciar('hobbies')">
+                        <div class="info-area">
+                            <input type="radio" name="areaGerenciar" id="gerenciar-hobbies" value="hobbies" onchange="atualizarSelecaoGerenciar()">
+                            <label for="gerenciar-hobbies">Hobbies</label>
+                        </div>
+                    </div>
+
+                    <div class="area-item-gerenciar" onclick="selecionarAreaGerenciar('trabalho')">
+                        <div class="info-area">
+                            <input type="radio" name="areaGerenciar" id="gerenciar-trabalho" value="trabalho" onchange="atualizarSelecaoGerenciar()">
+                            <label for="gerenciar-trabalho">Trabalho</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="botoes-modal">
+                    <button type="button" class="btn-avancar-gerenciar" id="btnAvancarGerenciar" onclick="avancarParaDetalhes()" disabled>
+                        Avançar
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+                    <button type="button" class="btn-cancelar-modal" onclick="fecharModalGerenciamento()">Cancelar</button>
+                </div>
+            </div>
+
+            <!-- Etapa 2: Detalhes da área -->
+            <div id="etapaDetalhesArea" style="display: none;">
+                <div class="detalhes-area-header">
+                    <button class="btn-voltar-gerenciar" onclick="voltarParaSelecao()">
+                        <i data-lucide="arrow-left"></i>
+                    </button>
+                    <h3 id="tituloAreaDetalhes">Área de Trabalho</h3>
+                </div>
+
+                <div class="menu-detalhes-area">
+                    <button class="item-menu-detalhes" onclick="abrirMembros()">
+                        <div class="info-item">
+                            <i data-lucide="users"></i>
+                            <div class="texto-item">
+                                <span class="titulo-item">Membros</span>
+                                <span class="subtitulo-item">Gerencie quem tem acesso</span>
+                            </div>
+                        </div>
+                        <span class="badge-contador" id="contadorMembros">3</span>
+                    </button>
+
+                    <button class="item-menu-detalhes" onclick="abrirSolicitacoes()">
+                        <div class="info-item">
+                            <i data-lucide="mail"></i>
+                            <div class="texto-item">
+                                <span class="titulo-item">Solicitações</span>
+                                <span class="subtitulo-item">Pedidos de acesso pendentes</span>
+                            </div>
+                        </div>
+                        <span class="badge-contador" id="contadorSolicitacoes">2</span>
+                    </button>
+                </div>
+
+                <div class="botoes-modal">
+                    <button type="button" class="btn-cancelar-modal" onclick="fecharModalGerenciamento()">Fechar</button>
+                </div>
+            </div>
+
+            <!-- Etapa 3: Lista de membros -->
+            <div id="etapaMembros" style="display: none;">
+                <div class="detalhes-area-header">
+                    <button class="btn-voltar-gerenciar" onclick="voltarParaDetalhes()">
+                        <i data-lucide="arrow-left"></i>
+                    </button>
+                    <h3>Membros</h3>
+                </div>
+
+                <div class="lista-membros">
+                    <div class="membro-item" data-membro-id="matheus">
+                        <div class="membro-header">
+                            <div class="membro-info">
+                                <div class="membro-nome">Matheus Campanher</div>
+                                <div class="membro-email">matheus.campanher@gmail.com</div>
+                            </div>
+                            <div class="membro-badges">
+                                <span class="badge-funcao admin">Administrador</span>
+                                <span class="badge-permissao criador">Criador</span>
+                            </div>
+                        </div>
+                        <div class="membro-acoes">
+                            <button class="btn-acao-membro" disabled title="Você não pode alterar suas próprias permissões">
+                                <i data-lucide="shield"></i>
+                                Alterar Permissão
+                            </button>
+                            <button class="btn-acao-membro remover" disabled title="O criador não pode ser removido">
+                                <i data-lucide="user-minus"></i>
+                                Remover
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="membro-item" data-membro-id="ana">
+                        <div class="membro-header">
+                            <div class="membro-info">
+                                <div class="membro-nome">Ana Silva</div>
+                                <div class="membro-email">ana.silva@example.com</div>
+                            </div>
+                            <div class="membro-badges">
+                                <span class="badge-funcao">Convidado</span>
+                                <span class="badge-permissao editar" data-permissao="editar">Pode editar</span>
+                            </div>
+                        </div>
+                        <div class="membro-acoes">
+                            <button class="btn-acao-membro" onclick="abrirModalPermissao('ana', 'Ana Silva', 'editar')">
+                                <i data-lucide="shield"></i>
+                                Alterar Permissão
+                            </button>
+                            <button class="btn-acao-membro remover" onclick="removerMembro('ana', 'Ana Silva')">
+                                <i data-lucide="user-minus"></i>
+                                Remover
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="membro-item" data-membro-id="carlos">
+                        <div class="membro-header">
+                            <div class="membro-info">
+                                <div class="membro-nome">Carlos Santos</div>
+                                <div class="membro-email">carlos.santos@example.com</div>
+                            </div>
+                            <div class="membro-badges">
+                                <span class="badge-funcao">Convidado</span>
+                                <span class="badge-permissao" data-permissao="visualizar">Pode visualizar</span>
+                            </div>
+                        </div>
+                        <div class="membro-acoes">
+                            <button class="btn-acao-membro" onclick="abrirModalPermissao('carlos', 'Carlos Santos', 'visualizar')">
+                                <i data-lucide="shield"></i>
+                                Alterar Permissão
+                            </button>
+                            <button class="btn-acao-membro remover" onclick="removerMembro('carlos', 'Carlos Santos')">
+                                <i data-lucide="user-minus"></i>
+                                Remover
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="botoes-modal">
+                    <button type="button" class="btn-cancelar-modal" onclick="fecharModalGerenciamento()">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Alteração de Permissão -->
+    <div id="modalPermissao" class="overlay-modal" style="display: none;" onclick="fecharModalPermissao()">
+        <div class="modal-permissao" onclick="event.stopPropagation()">
+            <h2 class="titulo-modal" id="tituloModalPermissao">Alterar Permissão</h2>
+            <p style="color: #b0b0b0; font-size: 14px; margin-bottom: 25px;" id="descModalPermissao">
+                Selecione o nível de permissão para este membro
+            </p>
+
+            <div class="opcoes-permissao">
+                <div class="opcao-permissao" onclick="selecionarPermissao('editar')">
+                    <input type="radio" name="permissaoMembro" id="perm-editar" value="editar">
+                    <label for="perm-editar">
+                        <span class="titulo-permissao">Pode editar</span>
+                        <span class="desc-permissao">Pode visualizar, criar e editar tarefas</span>
+                    </label>
+                </div>
+
+                <div class="opcao-permissao" onclick="selecionarPermissao('visualizar')">
+                    <input type="radio" name="permissaoMembro" id="perm-visualizar" value="visualizar">
+                    <label for="perm-visualizar">
+                        <span class="titulo-permissao">Pode visualizar</span>
+                        <span class="desc-permissao">Apenas visualizar tarefas, sem editar</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="botoes-modal">
+                <button type="button" class="btn-criar" id="btnSalvarPermissao" onclick="salvarPermissao()">Salvar</button>
+                <button type="button" class="btn-cancelar-modal" onclick="fecharModalPermissao()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts (importados) -->
+<div th:replace="~{sidebar :: scripts}"></div>
+
+<script>
+    let areaAtualContexto = { id: null, nome: null };
+    let modoEdicao = false; // false = criar, true = renomear
+    let areaSelecionadaCompartilhar = null;
+    let areasSelecionadasExcluir = [];
+    let areaSelecionadaGerenciar = null;
+    let nomeAreaGerenciar = null;
+    let membroAtualPermissao = { id: null, nome: null, permissaoAtual: null };
+
+    function abrirModalNovaArea() {
+        modoEdicao = false;
+        document.getElementById('tituloModalArea').textContent = 'Nova Área de Trabalho';
+        document.getElementById('inputNomeArea').value = '';
+        document.getElementById('inputNomeArea').placeholder = 'Ex: Projetos Pessoais';
+        document.querySelector('.btn-criar').textContent = 'Criar';
+        document.getElementById('modalArea').style.display = 'flex';
+        document.getElementById('inputNomeArea').focus();
+        setTimeout(() => lucide.createIcons(), 10);
+    }
+
+    function fecharModalArea() {
+        document.getElementById('modalArea').style.display = 'none';
+        document.getElementById('inputNomeArea').value = '';
+    }
+
+    function salvarArea(event) {
+        event.preventDefault();
+        const nomeArea = document.getElementById('inputNomeArea').value;
+
+        if (modoEdicao) {
+            console.log('Renomeando área:', areaAtualContexto.id, 'para:', nomeArea);
+            // Aqui você implementa a chamada para o backend de renomear
+        } else {
+            console.log('Criando nova área:', nomeArea);
+            // Aqui você implementa a chamada para o backend de criar
+        }
+
+        fecharModalArea();
+    }
+
+    function abrirArea(areaId) {
+        console.log('Abrindo área:', areaId);
+        // window.location.href = '/area/' + areaId;
+    }
+
+    // Menu de contexto (botão direito)
+    function abrirMenuContexto(event, areaId, areaNome) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        areaAtualContexto = { id: areaId, nome: areaNome };
+
+        const menu = document.getElementById('menuContexto');
+        menu.style.display = 'block';
+        menu.style.left = event.pageX + 'px';
+        menu.style.top = event.pageY + 'px';
+
+        setTimeout(() => lucide.createIcons(), 10);
+    }
+
+    function fecharMenuContexto() {
+        document.getElementById('menuContexto').style.display = 'none';
+    }
+
+    function renomearAreaContexto() {
+        fecharMenuContexto();
+        modoEdicao = true;
+        document.getElementById('tituloModalArea').textContent = 'Renomear Área de Trabalho';
+        document.getElementById('inputNomeArea').value = areaAtualContexto.nome;
+        document.getElementById('inputNomeArea').placeholder = '';
+        document.querySelector('.btn-criar').textContent = 'Salvar';
+        document.getElementById('modalArea').style.display = 'flex';
+        setTimeout(() => {
+            document.getElementById('inputNomeArea').focus();
+            document.getElementById('inputNomeArea').select();
+            lucide.createIcons();
+        }, 10);
+    }
+
+    // Compartilhamento
+    function abrirModalCompartilhar() {
+        document.getElementById('modalCompartilhar').style.display = 'flex';
+        areaSelecionadaCompartilhar = null;
+
+        // Desmarca todos os radios
+        document.querySelectorAll('input[name="areaCompartilhar"]').forEach(radio => {
+            radio.checked = false;
+        });
+
+        // Remove seleção visual de todos
+        document.querySelectorAll('.area-item-compartilhar').forEach(item => {
+            item.classList.remove('selecionada');
+        });
+
+        // Desabilita todos os botões de compartilhamento
+        document.getElementById('btnGoogle').disabled = true;
+        document.getElementById('btnMicrosoft').disabled = true;
+        document.getElementById('btnGithub').disabled = true;
+        document.getElementById('btnLink').disabled = true;
+
+        setTimeout(() => lucide.createIcons(), 10);
+    }
+
+    function fecharModalCompartilhar() {
+        document.getElementById('modalCompartilhar').style.display = 'none';
+        areaSelecionadaCompartilhar = null;
+    }
+
+    function selecionarAreaCompartilhar(areaId) {
+        areaSelecionadaCompartilhar = areaId;
+
+        // Marca o radio correspondente
+        const radio = document.getElementById('area-' + areaId);
+        if (radio) {
+            radio.checked = true;
+        }
+
+        // Atualiza visual
+        atualizarSelecaoArea();
+    }
+
+    function atualizarSelecaoArea() {
+        const radioSelecionado = document.querySelector('input[name="areaCompartilhar"]:checked');
+
+        // Remove seleção visual de todos
+        document.querySelectorAll('.area-item-compartilhar').forEach(item => {
+            item.classList.remove('selecionada');
+        });
+
+        if (radioSelecionado) {
+            areaSelecionadaCompartilhar = radioSelecionado.value;
+
+            // Adiciona classe selecionada ao item clicado
+            radioSelecionado.closest('.area-item-compartilhar').classList.add('selecionada');
+
+            // Habilita os botões de compartilhamento
+            document.getElementById('btnGoogle').disabled = false;
+            document.getElementById('btnMicrosoft').disabled = false;
+            document.getElementById('btnGithub').disabled = false;
+            document.getElementById('btnLink').disabled = false;
+        } else {
+            areaSelecionadaCompartilhar = null;
+
+            // Desabilita os botões de compartilhamento
+            document.getElementById('btnGoogle').disabled = true;
+            document.getElementById('btnMicrosoft').disabled = true;
+            document.getElementById('btnGithub').disabled = true;
+            document.getElementById('btnLink').disabled = true;
+        }
+    }
+
+    function compartilharVia(metodo) {
+        if (!areaSelecionadaCompartilhar) {
+            alert('Selecione uma área para compartilhar');
+            return;
+        }
+
+        console.log('Compartilhando área', areaSelecionadaCompartilhar, 'via', metodo);
+        // Aqui você implementa a lógica de compartilhamento com o backend
+
+        // Adiciona o badge de compartilhado no card
+        marcarAreaComoCompartilhada(areaSelecionadaCompartilhar);
+
+        alert(`Área compartilhada via ${metodo.toUpperCase()}!`);
+        fecharModalCompartilhar();
+    }
+
+    function gerarLinkCompartilhamento() {
+        if (!areaSelecionadaCompartilhar) {
+            alert('Selecione uma área para compartilhar');
+            return;
+        }
+
+        console.log('Gerando link para área:', areaSelecionadaCompartilhar);
+        // Aqui você implementa a geração do link com o backend
+
+        // Simulação de link gerado
+        const linkSimulado = `https://todaily.app/shared/${areaSelecionadaCompartilhar}`;
+
+        // Adiciona o badge de compartilhado no card
+        marcarAreaComoCompartilhada(areaSelecionadaCompartilhar);
+
+        // Copia para área de transferência
+        navigator.clipboard.writeText(linkSimulado).then(() => {
+            alert('Link copiado para a área de transferência!');
+            fecharModalCompartilhar();
+        }).catch(() => {
+            alert('Link gerado: ' + linkSimulado);
+            fecharModalCompartilhar();
+        });
+    }
+
+    function marcarAreaComoCompartilhada(areaId) {
+        const card = document.querySelector(`.area-card[data-area-id="${areaId}"]`);
+
+        if (card && !card.querySelector('.badge-compartilhado')) {
+            const badge = document.createElement('div');
+            badge.className = 'badge-compartilhado';
+            badge.innerHTML = '<i data-lucide="share-2"></i>';
+            card.appendChild(badge);
+
+            // Reinicializa os ícones do Lucide
+            setTimeout(() => lucide.createIcons(), 10);
+        }
+    }
+
+    // Exclusão de áreas
+    function abrirModalExcluir() {
+        document.getElementById('modalExcluir').style.display = 'flex';
+        areasSelecionadasExcluir = [];
+
+        // Desmarca todos os checkboxes
+        document.querySelectorAll('input[name="areaExcluir"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
+        // Remove seleção visual de todos
+        document.querySelectorAll('.area-item-excluir').forEach(item => {
+            item.classList.remove('selecionada');
+        });
+
+        // Desabilita o botão de excluir
+        document.getElementById('btnConfirmarExclusao').disabled = true;
+
+        setTimeout(() => lucide.createIcons(), 10);
+    }
+
+    function fecharModalExcluir() {
+        document.getElementById('modalExcluir').style.display = 'none';
+        areasSelecionadasExcluir = [];
+    }
+
+    function toggleAreaExcluir(areaId) {
+        const checkbox = document.getElementById('excluir-' + areaId);
+        if (checkbox) {
+            checkbox.checked = !checkbox.checked;
+            atualizarSelecaoExclusao();
+        }
+    }
+
+    function atualizarSelecaoExclusao() {
+        const checkboxesSelecionados = document.querySelectorAll('input[name="areaExcluir"]:checked');
+        areasSelecionadasExcluir = Array.from(checkboxesSelecionados).map(cb => cb.value);
+
+        // Remove seleção visual de todos
+        document.querySelectorAll('.area-item-excluir').forEach(item => {
+            item.classList.remove('selecionada');
+        });
+
+        // Adiciona seleção visual aos marcados
+        checkboxesSelecionados.forEach(checkbox => {
+            checkbox.closest('.area-item-excluir').classList.add('selecionada');
+        });
+
+        // Habilita/desabilita botão de excluir
+        const btnExcluir = document.getElementById('btnConfirmarExclusao');
+        btnExcluir.disabled = areasSelecionadasExcluir.length === 0;
+
+        // Atualiza texto do botão
+        if (areasSelecionadasExcluir.length > 0) {
+            btnExcluir.innerHTML = `<i data-lucide="trash-2"></i> Excluir ${areasSelecionadasExcluir.length} ${areasSelecionadasExcluir.length === 1 ? 'Área' : 'Áreas'}`;
+        } else {
+            btnExcluir.innerHTML = '<i data-lucide="trash-2"></i> Excluir Selecionadas';
+        }
+
+        setTimeout(() => lucide.createIcons(), 10);
+    }
+
+    function confirmarExclusao() {
+        if (areasSelecionadasExcluir.length === 0) {
+            alert('Selecione pelo menos uma área para excluir');
+            return;
+        }
+
+        const confirmacao = confirm(`Tem certeza que deseja excluir ${areasSelecionadasExcluir.length} ${areasSelecionadasExcluir.length === 1 ? 'área' : 'áreas'}?\n\nEsta ação não pode ser desfeita.`);
+
+        if (confirmacao) {
+            console.log('Excluindo áreas:', areasSelecionadasExcluir);
+            // Aqui você implementa a chamada para o backend de exclusão
+
+            // Remove os cards da tela
+            areasSelecionadasExcluir.forEach(areaId => {
+                const card = document.querySelector(`.area-card[data-area-id="${areaId}"]`);
+                if (card) {
+                    card.remove();
+                }
+            });
+
+            alert(`${areasSelecionadasExcluir.length} ${areasSelecionadasExcluir.length === 1 ? 'área excluída' : 'áreas excluídas'} com sucesso!`);
+            fecharModalExcluir();
+        }
+    }
+
+    // Gerenciamento de áreas
+    function abrirModalGerenciamento() {
+        document.getElementById('modalGerenciamento').style.display = 'flex';
+        areaSelecionadaGerenciar = null;
+        nomeAreaGerenciar = null;
+
+        // Mostra etapa de seleção
+        document.getElementById('etapaSelecaoArea').style.display = 'block';
+        document.getElementById('etapaDetalhesArea').style.display = 'none';
+        document.getElementById('etapaMembros').style.display = 'none';
+
+        // Desmarca todos os radios
+        document.querySelectorAll('input[name="areaGerenciar"]').forEach(radio => {
+            radio.checked = false;
+        });
+
+        // Remove seleção visual de todos
+        document.querySelectorAll('.area-item-gerenciar').forEach(item => {
+            item.classList.remove('selecionada');
+        });
+
+        // Desabilita botão de avançar
+        document.getElementById('btnAvancarGerenciar').disabled = true;
+
+        setTimeout(() => lucide.createIcons(), 10);
+    }
+
+    function fecharModalGerenciamento() {
+        document.getElementById('modalGerenciamento').style.display = 'none';
+        areaSelecionadaGerenciar = null;
+        nomeAreaGerenciar = null;
+    }
+
+    function selecionarAreaGerenciar(areaId) {
+        const radio = document.getElementById('gerenciar-' + areaId);
+        if (radio) {
+            radio.checked = true;
+            atualizarSelecaoGerenciar();
+        }
+    }
+
+    function atualizarSelecaoGerenciar() {
+        const radioSelecionado = document.querySelector('input[name="areaGerenciar"]:checked');
+
+        // Remove seleção visual de todos
+        document.querySelectorAll('.area-item-gerenciar').forEach(item => {
+            item.classList.remove('selecionada');
+        });
+
+        if (radioSelecionado) {
+            areaSelecionadaGerenciar = radioSelecionado.value;
+            nomeAreaGerenciar = radioSelecionado.nextElementSibling.textContent;
+
+            // Adiciona classe selecionada ao item clicado
+            radioSelecionado.closest('.area-item-gerenciar').classList.add('selecionada');
+
+            // Habilita botão de avançar
+            document.getElementById('btnAvancarGerenciar').disabled = false;
+        } else {
+            areaSelecionadaGerenciar = null;
+            nomeAreaGerenciar = null;
+
+            // Desabilita botão de avançar
+            document.getElementById('btnAvancarGerenciar').disabled = true;
+        }
+    }
+
+    function avancarParaDetalhes() {
+        if (!areaSelecionadaGerenciar) {
+            alert('Selecione uma área para gerenciar');
+            return;
+        }
+
+        console.log('Carregando detalhes da área:', areaSelecionadaGerenciar);
+        // Aqui você faria a chamada ao backend para carregar os dados da área
+
+        // Atualiza título
+        document.getElementById('tituloAreaDetalhes').textContent = nomeAreaGerenciar;
+
+        // Troca de etapa
+        document.getElementById('etapaSelecaoArea').style.display = 'none';
+        document.getElementById('etapaDetalhesArea').style.display = 'block';
+
+        setTimeout(() => lucide.createIcons(), 10);
+    }
+
+    function voltarParaSelecao() {
+        document.getElementById('etapaDetalhesArea').style.display = 'none';
+        document.getElementById('etapaSelecaoArea').style.display = 'block';
+
+        setTimeout(() => lucide.createIcons(), 10);
+    }
+
+    function abrirMembros() {
+        console.log('Carregando membros da área:', areaSelecionadaGerenciar);
+        // Aqui você faria a chamada ao backend para carregar os membros
+
+        // Troca de etapa
+        document.getElementById('etapaDetalhesArea').style.display = 'none';
+        document.getElementById('etapaMembros').style.display = 'block';
+
+        setTimeout(() => lucide.createIcons(), 10);
+    }
+
+    function voltarParaDetalhes() {
+        document.getElementById('etapaMembros').style.display = 'none';
+        document.getElementById('etapaDetalhesArea').style.display = 'block';
+
+        setTimeout(() => lucide.createIcons(), 10);
+    }
+
+    function abrirSolicitacoes() {
+        console.log('Carregando solicitações da área:', areaSelecionadaGerenciar);
+        // Aqui você implementaria a tela de solicitações
+        alert('Funcionalidade de Solicitações em desenvolvimento');
+    }
+
+    // Gerenciamento de permissões de membros
+    function abrirModalPermissao(membroId, membroNome, permissaoAtual) {
+        membroAtualPermissao = { id: membroId, nome: membroNome, permissaoAtual: permissaoAtual };
+
+        document.getElementById('tituloModalPermissao').textContent = `Alterar Permissão`;
+        document.getElementById('descModalPermissao').textContent = `Selecione o nível de permissão para ${membroNome}`;
+
+        // Marca a permissão atual
+        document.querySelectorAll('input[name="permissaoMembro"]').forEach(radio => {
+            radio.checked = false;
+        });
+
+        const radioAtual = document.getElementById('perm-' + permissaoAtual);
+        if (radioAtual) {
+            radioAtual.checked = true;
+            radioAtual.closest('.opcao-permissao').classList.add('selecionada');
+        }
+
+        document.getElementById('modalPermissao').style.display = 'flex';
+        setTimeout(() => lucide.createIcons(), 10);
+    }
+
+    function fecharModalPermissao() {
+        document.getElementById('modalPermissao').style.display = 'none';
+        membroAtualPermissao = { id: null, nome: null, permissaoAtual: null };
+    }
+
+    function selecionarPermissao(permissao) {
+        const radio = document.getElementById('perm-' + permissao);
+        if (radio) {
+            radio.checked = true;
+
+            // Remove seleção visual de todos
+            document.querySelectorAll('.opcao-permissao').forEach(opcao => {
+                opcao.classList.remove('selecionada');
+            });
+
+            // Adiciona seleção visual ao clicado
+            radio.closest('.opcao-permissao').classList.add('selecionada');
+        }
+    }
+
+    function salvarPermissao() {
+        const permissaoSelecionada = document.querySelector('input[name="permissaoMembro"]:checked');
+
+        if (!permissaoSelecionada) {
+            alert('Selecione uma permissão');
+            return;
+        }
+
+        const novaPermissao = permissaoSelecionada.value;
+
+        console.log('Alterando permissão do membro:', membroAtualPermissao.id, 'para:', novaPermissao);
+        // Aqui você implementa a chamada ao backend
+
+        // Atualiza a UI
+        const membroCard = document.querySelector(`.membro-item[data-membro-id="${membroAtualPermissao.id}"]`);
+        if (membroCard) {
+            const badgePermissao = membroCard.querySelector('.badge-permissao');
+            if (badgePermissao) {
+                // Remove classes antigas
+                badgePermissao.classList.remove('criador', 'editar');
+                badgePermissao.setAttribute('data-permissao', novaPermissao);
+
+                // Atualiza texto e classe
+                if (novaPermissao === 'editar') {
+                    badgePermissao.textContent = 'Pode editar';
+                    badgePermissao.classList.add('editar');
+                } else if (novaPermissao === 'visualizar') {
+                    badgePermissao.textContent = 'Pode visualizar';
+                }
+            }
+
+            // Atualiza o botão de alterar permissão para refletir nova permissão
+            const btnAlterar = membroCard.querySelector('.btn-acao-membro:not(.remover)');
+            if (btnAlterar) {
+                btnAlterar.setAttribute('onclick', `abrirModalPermissao('${membroAtualPermissao.id}', '${membroAtualPermissao.nome}', '${novaPermissao}')`);
+            }
+        }
+
+        alert(`Permissão de ${membroAtualPermissao.nome} alterada para "${novaPermissao === 'editar' ? 'Pode editar' : 'Pode visualizar'}"`);
+        fecharModalPermissao();
+    }
+
+    function removerMembro(membroId, membroNome) {
+        const confirmacao = confirm(`Tem certeza que deseja remover ${membroNome} desta área?\n\nEle perderá acesso a todas as tarefas e informações.`);
+
+        if (confirmacao) {
+            console.log('Removendo membro:', membroId);
+            // Aqui você implementa a chamada ao backend
+
+            // Remove o card da tela
+            const membroCard = document.querySelector(`.membro-item[data-membro-id="${membroId}"]`);
+            if (membroCard) {
+                membroCard.style.opacity = '0';
+                membroCard.style.transform = 'translateX(-20px)';
+
+                setTimeout(() => {
+                    membroCard.remove();
+
+                    // Atualiza contador de membros
+                    const contador = document.getElementById('contadorMembros');
+                    if (contador) {
+                        const numeroAtual = parseInt(contador.textContent);
+                        contador.textContent = numeroAtual - 1;
+                    }
+                }, 200);
+            }
+
+            alert(`${membroNome} foi removido da área de trabalho.`);
+        }
+    }
+
+    // Fecha o menu de contexto ao clicar em qualquer lugar
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('menuContexto');
+        if (menu && !menu.contains(event.target)) {
+            fecharMenuContexto();
+        }
+    });
+
+    // Inicializa os ícones do Lucide ao carregar a página
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
+    });
+</script>
+</body>
+</html>
