@@ -1,0 +1,129 @@
+/* ===== Reset ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", Arial, sans-serif;
+}
+
+/* ===== Corpo ===== */
+body {
+    background-color: #121212;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* ===== Logo ===== */
+.logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.8;
+}
+
+.logo img {
+    width: 100px;
+    height: 100px;
+}
+
+
+
+/* ===== Caixa de cadastro ===== */
+.cadastro-container {
+    background-color: #2a2a2a;
+    padding: 40px 50px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    min-width: 360px;
+}
+
+.cadastro-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* ===== Formulário ===== */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+input {
+    background-color: #1e1e1e;
+    border: none;
+    border-radius: 4px;
+    height: 30px;
+    color: #fff;
+    padding: 0 10px;
+    outline: none;
+}
+
+input::placeholder {
+    color: #777;
+}
+
+input:focus {
+    border: 1px solid #3a3a3a;
+}
+
+/* ===== Informações ===== */
+.info {
+    font-size: 12px;
+    color: #999;
+    margin-top: 8px;
+    text-align: left;
+}
+
+/* ===== Botões ===== */
+.botoes {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn {
+    background-color: #111;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-weight: 500;
+}
+
+.btn:hover {
+    background-color: #1f1f1f;
+}
+
+/* ===== Botão voltar ===== */
+.voltar {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 20px;
+    background-color: transparent;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.voltar:hover {
+    background-color: #1e1e1e;
+}
