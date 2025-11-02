@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- Fragment da Sidebar -->
+<aside class="sidebar" th:fragment="sidebar">
+    <h1 class="app-title">ToDaily</h1>
+
+    <!-- Perfil -->
+    <div class="perfil" onclick="abrirModalPerfil()" style="cursor: pointer;">
+        <div class="avatar">
+            <i data-lucide="user"></i>
+        </div>
+        <div class="info">
+            <p class="nome" th:text="${nome}">Matheus</p>
+            <p class="email" th:text="${email}">matheus.campaner@gmail.com</p>
+        </div>
+    </div>
+
+    <!-- Menu -->
+    <nav class="menu">
+        <button class="menu-item" th:classappend="${page == 'paraHoje'} ? 'active' : ''">
+            <i data-lucide="sun"></i> Para Hoje
+        </button>
+        <button class="menu-item" th:classappend="${page == 'agendadas'} ? 'active' : ''">
+            <i data-lucide="calendar"></i> Agendadas
+        </button>
+        <button class="menu-item" th:classappend="${page == 'areasTrabalho'} ? 'active' : ''">
+            <i data-lucide="briefcase"></i> Áreas de Trabalho
+        </button>
+    </nav>
+
+    <!-- Busca -->
+    <div class="busca">
+        <input type="text" placeholder="Buscar" />
+    </div>
+
+    <!-- Listas -->
+    <div class="listas">
+        <button class="lista">Faculdade</button>
+        <button class="lista">Casa</button>
+    </div>
+
+    <!-- Nova lista -->
+    <button class="nova-lista">
+        <i data-lucide="plus"></i> Nova Lista
+    </button>
+</aside>
+
+<!-- Fragment do Modal de Perfil -->
+<div th:fragment="modalPerfil">
+    <div id="modalPerfil" class="overlay-perfil" style="display: none;" onclick="fecharModalPerfil()">
+        <div class="perfil-modal" onclick="event.stopPropagation()">
+            <h2 class="titulo-modal">Perfil</h2>
+
+            <div class="foto-perfil">
+                <div class="avatar-grande">
+                    <i data-lucide="user"></i>
+                </div>
+                <button class="btn-alterar-foto">Alterar ou remover foto</button>
+            </div>
+
+            <form class="formulario-perfil">
+                <div class="campo-perfil">
+                    <label>Alterar nome:</label>
+                    <input type="text" placeholder="Seu nome" th:value="${nome}" />
+                </div>
+
+                <div class="campos-inline">
+                    <button type="button" class="btn-link">Alterar e-mail</button>
+                    <button type="button" class="btn-link">Alterar senha</button>
+                </div>
+
+                <div class="botoes-acao">
+                    <button type="submit" class="btn-salvar">Salvar</button>
+                    <button type="button" class="btn-cancelar" onclick="fecharModalPerfil()">Cancelar</button>
+                </div>
+
+                <button type="button" class="btn-excluir">Excluir Conta</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Fragment dos Scripts -->
+<div th:fragment="scripts">
+    <script>
+        lucide.createIcons();
+
+        function abrirModalPerfil() {
+            document.getElementById('modalPerfil').style.display = 'flex';
+            setTimeout(() => lucide.createIcons(), 10);
+        }
+
+        function fecharModalPerfil() {
+            document.getElementById('modalPerfil').style.display = 'none';
+        }
+    </script>
+</div>
+</body>
+</html>
