@@ -1,6 +1,6 @@
-package com.example.demo.service.autentificador;
+package com.example.demo.Serviços.Autentificador;
 
-import com.example.demo.service.CookieService;
+import com.example.demo.Serviços.CookieService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;

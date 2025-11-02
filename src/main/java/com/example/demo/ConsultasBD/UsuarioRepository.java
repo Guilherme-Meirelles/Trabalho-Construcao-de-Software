@@ -1,8 +1,8 @@
-package com.example.demo.repository;
-import com.example.demo.Modelos.Usuario;
+package com.example.demo.ConsultasBD;
+import com.example.demo.Entidades.Usuario;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.web.bind.annotation.*;
+
 public interface UsuarioRepository extends CrudRepository<Usuario, String> {
 
     Usuario findById(Long id);

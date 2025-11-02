@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.Serviços;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
