@@ -41,12 +41,11 @@ public class Usuario {
     public String getSenha() {
         return senha;
     }
+
     public String getDataNascimento() {
         return dataNascimento;
     }
     public  Long getId() {
         return id;
     }
-
-
 }
