@@ -32,5 +32,12 @@ public class CookieService {
         }
         return null;
     }
+
+    public static void deleteCookie(HttpServletResponse response, String key) {
+        Cookie cookie = new Cookie(key, null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
 }
 
