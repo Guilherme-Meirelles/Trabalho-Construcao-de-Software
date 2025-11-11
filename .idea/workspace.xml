@@ -5,6 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="963ae2cd-f82b-476a-b1c0-108ba5d5c374" name="Changes" comment="1">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/menuPrincipal.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/menuPrincipal.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/menuPrincipal.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/menuPrincipal.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitattributes" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
@@ -73,7 +76,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "Spring Boot.DemoApplication.executor": "Run",
     "Spring Boot.ToDailyApplication.executor": "Run",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "guilhermej",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/guilherme/Desktop/Construção de Software/Trabalho-Construcao-de-Software/ToDaily",
     "node.js.detected.package.eslint": "true",

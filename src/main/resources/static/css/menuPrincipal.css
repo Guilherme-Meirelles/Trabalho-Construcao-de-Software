@@ -1,4 +1,4 @@
-/* ===== Reset ===== */
+/* ===== Reset & Base Styles ===== */
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +6,6 @@
     font-family: "Inter", Arial, sans-serif;
 }
 
-/* ===== Layout principal ===== */
 body {
     background-color: #121212;
     color: #fff;
@@ -15,18 +14,23 @@ body {
     overflow: hidden;
 }
 
+i {
+    width: 18px;
+    height: 18px;
+}
+
 .app-container {
     display: flex;
     width: 100%;
 }
 
-/* ===== Sidebar ===== */
+/* ===== Sidebar & Navegação Principal ===== */
 .sidebar {
     background-color: #1e1e1e;
     width: 240px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start; /* Alinhamento alterado para melhor organização */
     padding: 15px;
     border-right: 2px solid #000;
 }
@@ -38,7 +42,7 @@ body {
     border-bottom: 1px solid #333;
 }
 
-/* ===== Perfil ===== */
+/* --- Perfil (no Sidebar) --- */
 .perfil {
     display: flex;
     align-items: center;
@@ -70,7 +74,7 @@ body {
     color: #bbb;
 }
 
-/* ===== Menu ===== */
+/* --- Menu de Filtros --- */
 .menu {
     display: flex;
     flex-direction: column;
@@ -98,7 +102,7 @@ body {
     color: #fff;
 }
 
-/* ===== Busca ===== */
+/* --- Busca --- */
 .busca {
     margin-top: 20px;
 }
@@ -113,26 +117,38 @@ body {
     outline: none;
 }
 
-/* ===== Listas ===== */
+/* --- Listas do Usuário --- */
 .listas {
     margin-top: 15px;
-    flex-grow: 1;
+    flex-grow: 1; /* Permite que o bloco de listas ocupe o espaço restante */
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto; /* Adicionado para permitir scroll se houver muitas listas */
 }
 
 .lista {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     background: none;
     border: none;
     color: #ccc;
-    padding: 6px 0;
+    padding: 8px;
+    border-radius: 6px;
     text-align: left;
     cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
 }
 
-.lista:hover {
+.lista:hover,
+.lista.active {
     color: #fff;
+    background-color: #2a2a2a;
 }
 
-/* ===== Nova Lista ===== */
+/* --- Botão Nova Lista --- */
 .nova-lista {
     background-color: #111;
     color: #fff;
@@ -146,13 +162,15 @@ body {
     cursor: pointer;
     margin-top: 10px;
     transition: background 0.2s;
+    /* Alinhado ao final do sidebar */
+    margin-top: auto;
 }
 
 .nova-lista:hover {
     background-color: #222;
 }
 
-/* ===== Conteúdo principal ===== */
+/* ===== Conteúdo Principal (Main) ===== */
 .conteudo {
     flex-grow: 1;
     background-color: #121212;
@@ -160,6 +178,7 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow-y: auto;
 }
 
 .titulo {
@@ -170,13 +189,15 @@ body {
 
 .titulo h2 {
     font-size: 22px;
+    font-weight: 600;
 }
 
 .titulo span {
     color: #bbb;
+    font-size: 16px;
 }
 
-/* ===== Adicionar tarefa ===== */
+/* --- Adicionar Tarefa --- */
 .add-tarefa {
     background-color: #2a2a2a;
     border-radius: 25px;
@@ -186,6 +207,7 @@ body {
     align-items: center;
     gap: 10px;
     width: 70%;
+    max-width: 500px; /* Limite de largura para melhor estética */
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -194,7 +216,7 @@ body {
     background-color: #383838;
 }
 
-/* ===== Botões flutuantes ===== */
+/* --- Botões Flutuantes --- */
 .botoes-flutuantes {
     position: absolute;
     bottom: 15px;
@@ -211,19 +233,16 @@ body {
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s;
+    display: flex; /* Para centralizar ícones */
+    align-items: center;
+    justify-content: center;
 }
 
 .botoes-flutuantes button:hover {
     background-color: #3a3a3a;
 }
 
-/* ===== Ícones ===== */
-i {
-    width: 18px;
-    height: 18px;
-}
-
-/* ===== Modal de Perfil ===== */
+/* ===== Estilos de Overlay/Modal (Base) ===== */
 .overlay-perfil,
 .confirma-acao {
     position: fixed;
@@ -236,8 +255,10 @@ i {
     display: flex;
     align-items: center;
     justify-content: center;
+    /* display: none; */ /* O HTML controla a visibilidade com `style` */
 }
 
+/* ===== Modal de Perfil (modalPerfil) ===== */
 .perfil-modal {
     background-color: #3a3a3a;
     border-radius: 16px;
@@ -256,13 +277,13 @@ i {
     color: #ffffff;
 }
 
-/* Foto de perfil */
+/* --- Foto de perfil --- */
 .foto-perfil {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .avatar-grande {
@@ -296,7 +317,39 @@ i {
     background-color: #555;
 }
 
-/* Botões dentro do modal */
+/* --- Informações do Usuário --- */
+.info-usuario {
+    background-color: #2a2a2a;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.campo-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.campo-info label {
+    font-size: 14px;
+    color: #ccc;
+    font-weight: 400;
+}
+
+.campo-info p {
+    font-size: 15px;
+    color: #fff;
+    background-color: #3a3a3a;
+    padding: 8px 10px;
+    border-radius: 8px;
+    word-break: break-word;
+}
+
+/* --- Ações do Perfil --- */
 .formulario-perfil {
     display: flex;
     flex-direction: column;
@@ -326,42 +379,16 @@ i {
 .btn-excluir {
     background-color: #d32f2f;
     color: #ffffff;
+    font-weight: 600; /* Estilo mais forte para exclusão */
 }
 
 .btn-excluir:hover {
     background-color: #c62828;
 }
 
-/* ===== Responsividade ===== */
-@media (max-width: 600px) {
-    .perfil-modal {
-        padding: 28px;
-        width: 95%;
-    }
 
-    .titulo-modal {
-        font-size: 28px;
-    }
-
-    .formulario-perfil {
-        gap: 12px;
-    }
-}
-/* ===== Modal de Confirmação ===== */
-.confirma-acao {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.75);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.verificacao {
+/* ===== Modal de Verificação (modalVerificacao) ===== */
+.verificacao { /* Lowercase 'v' to match HTML */
     background-color: #3a3a3a;
     border-radius: 16px;
     padding: 30px;
@@ -381,7 +408,14 @@ i {
     margin-bottom: 10px;
 }
 
-/* Campo de senha */
+.mensagem-erro {
+    color: #ff5b5b;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* --- Campo de senha --- */
 .campo-senha {
     display: flex;
     flex-direction: column;
@@ -411,7 +445,7 @@ i {
     background-color: #555;
 }
 
-/* Botões */
+/* --- Botões de Verificação --- */
 .botoes-verificacao {
     display: flex;
     justify-content: center;
@@ -427,6 +461,8 @@ i {
     font-size: 16px;
     cursor: pointer;
     transition: background 0.2s;
+    flex: 1;
+    max-width: 150px;
 }
 
 .btn-confirmar-V {
@@ -447,8 +483,182 @@ i {
     background-color: #252525;
 }
 
-/* ===== Responsividade ===== */
+
+/* ===== Modal 'Adicionar/Editar Lista' (modalAddLista, modalEditLista) ===== */
+.modal-lista {
+    background-color: #3a3a3a;
+    border-radius: 16px;
+    padding: 25px 30px;
+    width: 90%;
+    max-width: 450px;
+    color: #ffffff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.titulo-modal-lista {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.form-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.campo-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.campo-lista label {
+    font-size: 14px;
+    color: #d0d0d0;
+    font-weight: 400;
+}
+
+.campo-lista input,
+.campo-lista textarea {
+    background-color: #4a4a4a;
+    border: 1px solid #555;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+    transition: background-color 0.2s;
+    resize: none;
+}
+
+.campo-lista input:focus,
+.campo-lista textarea:focus {
+    background-color: #555;
+    border-color: #777;
+}
+
+.campo-lista input::placeholder {
+    color: #888;
+}
+
+.aviso-obrigatorio {
+    font-size: 12px;
+    color: #bbb;
+    margin-top: -5px;
+}
+
+.botoes-acao-lista {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+    justify-content: flex-end;
+}
+
+.btn-ok,
+.btn-cancelar-lista {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #2e2e2e;
+    color: #ffffff;
+}
+
+.btn-ok:hover,
+.btn-cancelar-lista:hover {
+    background-color: #252525;
+}
+
+/* ===== Menu de Contexto (menuContextoLista) ===== */
+.context-menu {
+    position: absolute;
+    z-index: 10000;
+    background-color: #2a2a2a;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    display: none;
+    padding: 4px;
+    width: 160px;
+}
+
+.context-menu-item {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.context-menu-item:hover {
+    background-color: #3a3a3a;
+    color: #fff;
+}
+
+/* ===== Modal 'Remover Lista' (modalRemoveLista) ===== */
+.modal-remover {
+    background-color: #3a3a3a;
+    border-radius: 12px;
+    padding: 28px 35px;
+    width: 90%;
+    max-width: 400px;
+    color: #ffffff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.modal-remover-mensagem {
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 25px;
+}
+
+.modal-remover-botoes {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-remover-sim,
+.btn-remover-nao {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #2e2e2e;
+    color: #ffffff;
+}
+
+.btn-remover-sim:hover,
+.btn-remover-nao:hover {
+    background-color: #252525;
+}
+
+/* ===== Responsividade Geral ===== */
 @media (max-width: 600px) {
+    .perfil-modal {
+        padding: 28px;
+        width: 95%;
+    }
+
+    .titulo-modal {
+        font-size: 28px;
+    }
+
+    /* Modal de Verificação */
     .verificacao {
         width: 95%;
         padding: 24px;
@@ -457,49 +667,8 @@ i {
     .campo-senha input {
         width: 100%;
     }
-}
 
-.mensagem-erro {
-    color: #ff5b5b;
-    text-align: center;
-    margin-top: 10px;
-    font-size: 14px;
-}
-/* ===== Informações do Usuário no Modal ===== */
-.info-usuario {
-    background-color: #2a2a2a;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.info-usuario h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #fff;
-    text-align: center;
-}
-
-.campo-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.campo-info label {
-    font-size: 14px;
-    color: #ccc;
-}
-
-.campo-info p {
-    font-size: 15px;
-    color: #fff;
-    background-color: #3a3a3a;
-    padding: 8px 10px;
-    border-radius: 8px;
-    word-break: break-word;
+    .modal-remover {
+        padding: 20px 25px;
+    }
 }

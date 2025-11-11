@@ -9,66 +9,63 @@
 </head>
 <body>
 <div class="app-container">
-    <!-- Sidebar -->
     <aside class="sidebar">
         <h1 class="app-title">ToDaily</h1>
 
-        <!-- Perfil -->
         <div class="perfil" onclick="abrirModalPerfil('modalPerfil')" style="cursor: pointer;">
             <div class="avatar">
                 <i data-lucide="user"></i>
             </div>
             <div class="info">
-                <!-- Substitui por dados reais -->
                 <p class="nome" th:text="${nome}">Generic User</p>
                 <p class="email" th:text="${email}">genericemail@gmail.com</p>
             </div>
         </div>
 
-        <!-- Menu -->
         <nav class="menu">
-            <button class="menu-item active">
+            <button class="menu-item active" onclick="mudarTituloPrincipal(this)">
                 <i data-lucide="sun"></i> Para Hoje
             </button>
-            <button class="menu-item">
+            <button class="menu-item" onclick="mudarTituloPrincipal(this)">
                 <i data-lucide="calendar"></i> Agendadas
             </button>
-            <button class="menu-item">
+            <button class="menu-item" onclick="mudarTituloPrincipal(this)">
                 <i data-lucide="briefcase"></i> Áreas de Trabalho
             </button>
         </nav>
 
-        <!-- Busca -->
         <div class="busca">
             <input type="text" placeholder="Buscar" />
         </div>
 
-        <!-- Listas -->
         <div class="listas">
-            <button class="lista">Faculdade</button>
-            <button class="lista">Casa</button>
+            <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
+                <i data-lucide="list"></i> Faculdade
+            </button>
+            <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
+                <i data-lucide="list"></i> Casa
+            </button>
+            <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
+                <i data-lucide="list"></i> Renomeada
+            </button>
         </div>
 
-        <!-- Nova lista -->
-        <button class="nova-lista">
+        <button class="nova-lista" onclick="abrirModalPerfil('modalAddLista')">
             <i data-lucide="plus"></i> Nova Lista
         </button>
     </aside>
 
-    <!-- Conteúdo principal -->
     <main class="conteudo">
         <div class="titulo">
-            <h2>Para Hoje</h2>
-            <span>- 21/11/24</span>
+            <h2 id="titulo-principal">Para Hoje</h2>
+            <span id="subtitulo-principal">- 21/11/24</span>
         </div>
 
-        <!-- Adicionar tarefa -->
         <div class="add-tarefa">
             <i data-lucide="plus"></i>
             <span>Adicionar Tarefa</span>
         </div>
 
-        <!-- Botões flutuantes -->
         <div class="botoes-flutuantes">
             <button><i data-lucide="plus-circle"></i></button>
             <button><i data-lucide="calendar-days"></i></button>
@@ -115,7 +112,6 @@
         </div>
     </div>
 
-
     <!-- Modal de Confirmação -->
     <div id="modalVerificacao" class="confirma-acao" th:style="${abrirModal} == 'verificacao' ? 'display:flex;' : 'display:none;'" onclick="fecharModalPerfil('modalVerificacao')">
         <div class="verificacao" onclick="event.stopPropagation()">
@@ -140,63 +136,202 @@
         </div>
     </div>
 
-    <script>
-        let acaoAtual = null;
+    <div id="modalAddLista" class="overlay-perfil" style="display: none;" onclick="fecharModalPerfil('modalAddLista')">
+        <div class="modal-lista" onclick="event.stopPropagation()">
+            <h3 class="titulo-modal-lista">Adicionar Lista</h3>
+            <form class="form-lista">
+                <div class="campo-lista">
+                    <label for="nome-lista">Nome da Lista*</label>
+                    <input type="text" id="nome-lista" placeholder="Nova Lista" />
+                </div>
+                <div class="campo-lista">
+                    <label for="descricao-lista">Descrição:</label>
+                    <textarea id="descricao-lista" rows="4"></textarea>
+                </div>
+                <p class="aviso-obrigatorio">(*) Este campo é obrigatório</p>
+                <div class="botoes-acao-lista">
+                    <button type="button" class="btn-ok" onclick="fecharModalPerfil('modalAddLista')">OK</button>
+                    <button type="button" class="btn-cancelar-lista" onclick="fecharModalPerfil('modalAddLista')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        lucide.createIcons();
+    <div id="menuContextoLista" class="context-menu" style="display: none;">
+        <button class="context-menu-item" onclick="abrirModalPerfil('modalEditLista')">Editar Lista</button>
+        <button class="context-menu-item" onclick="abrirModalPerfil('modalRemoveLista')">Remover Lista</button>
+    </div>
 
-        function abrirModalPerfil(nomeModal) {
-            document.getElementById(nomeModal).style.display = 'flex';
-            setTimeout(() => lucide.createIcons(), 10);
-        }
-        /**
-         * Abre o modal de confirmação e define qual ação o backend vai executar.
-         * @param {string} tipo - 'editar' ou 'remover'
-         */
-        function abrirModalAcao(tipo) {
-            const modal = document.getElementById('modalVerificacao');
-            const mensagem = document.getElementById('mensagemVerificacao');
-            const form = document.getElementById('formConfirmacao');
+    <div id="modalEditLista" class="overlay-perfil" style="display: none;" onclick="fecharModalPerfil('modalEditLista')">
+        <div class="modal-lista" onclick="event.stopPropagation()">
+            <h3 class="titulo-modal-lista">Editar Lista</h3>
+            <form class="form-lista">
+                <div class="campo-lista">
+                    <label for="nome-lista-edit">Nome da Lista*</label>
+                    <input type="text" id="nome-lista-edit" value="RENOMEADA" />
+                </div>
+                <div class="campo-lista">
+                    <label for="descricao-lista-edit">Descrição:</label>
+                    <textarea id="descricao-lista-edit" rows="4"></textarea>
+                </div>
+                <p class="aviso-obrigatorio">(*) Este campo é obrigatório</p>
+                <div class="botoes-acao-lista">
+                    <button type="button" class="btn-ok" onclick="fecharModalPerfil('modalEditLista')">OK</button>
+                    <button type="button" class="btn-cancelar-lista" onclick="fecharModalPerfil('modalEditLista')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-            if (tipo === 'editar') {
-                mensagem.textContent = 'Deseja realmente editar sua conta?';
-                form.action = '/editarConta'; // endpoint backend para edição
-                acaoAtual = 'editar';
-            } else if (tipo === 'remover') {
-                mensagem.textContent = 'Deseja realmente remover sua conta?';
-                form.action = '/removerConta'; // endpoint backend para exclusão
-                acaoAtual = 'remover';
-            }
+    <div id="modalRemoveLista" class="confirma-acao" style="display: none;" onclick="fecharModalPerfil('modalRemoveLista')">
+        <div class="modal-remover" onclick="event.stopPropagation()">
+            <h3 class="modal-remover-mensagem">Deseja realmente remover esta lista?</h3>
+            <div class="modal-remover-botoes">
+                <button class="btn-remover-sim" onclick="executarRemocaoLista()">Sim</button>
+                <button class="btn-remover-nao" onclick="fecharModalPerfil('modalRemoveLista')">Não</button>
+            </div>
+        </div>
+    </div>
 
-            // limpa o campo de senha e mostra o modal
-            document.getElementById('senhaConfirmacao').value = '';
-            modal.style.display = 'flex';
-        }
+</div> <script>
+    lucide.createIcons();
 
-        /**
-         * Fecha o modal (usado também por botões "Cancelar").
-         */
-        function fecharModalPerfil(nomeModal) {
-            document.getElementById(nomeModal).style.display = 'none';
+    // **** Variável para guardar qual lista será removida ****
+    let listaParaRemover = null;
+
+    // Funções Padrão dos Modais
+    function abrirModalPerfil(nomeModal) {
+        document.getElementById(nomeModal).style.display = 'flex';
+        setTimeout(() => {
             const modal = document.getElementById(nomeModal);
-            modal.style.display = 'none';
-
-            // 🔹 Remove mensagem de erro ao fechar o modal
-            const erroMsg = modal.querySelector('.mensagem-erro');
-            if (erroMsg) {
-                erroMsg.textContent = '';
+            if (modal.querySelectorAll('[data-lucide]').length > 0) {
+                lucide.createIcons();
             }
+        }, 10);
+    }
 
-            // 🔹 Limpa o campo de senha, se existir
-            const inputSenha = modal.querySelector('input[type="password"]');
-            if (inputSenha) {
-                inputSenha.value = '';
+
+
+    // **** MODIFICAÇÃO: Adicionado 'elemento' para saber qual lista foi clicada ****
+    function mostrarMenuContexto(event, menuId, elemento) {
+        event.preventDefault();
+
+        listaParaRemover = elemento; // Guarda o botão (ex: "Renomeada") na variável
+
+        document.querySelectorAll('.context-menu').forEach(menu => menu.style.display = 'none');
+        const menu = document.getElementById(menuId);
+        menu.style.display = 'block';
+        menu.style.left = (event.pageX + 5) + 'px';
+        menu.style.top = (event.pageY + 5) + 'px';
+    }
+
+    window.addEventListener('click', (e) => {
+        if (!e.target.closest('.context-menu-item')) {
+            document.querySelectorAll('.context-menu').forEach(menu => {
+                menu.style.display = 'none';
+            });
+        }
+    });
+
+    window.addEventListener('scroll', () => {
+        document.querySelectorAll('.context-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }, true);
+
+
+    // --- FUNÇÃO PARA MUDAR TÍTULO DA PÁGINA ---
+    function mudarTituloPrincipal(elementoClicado) {
+        const novoTitulo = elementoClicado.innerText.trim();
+        const tituloH2 = document.getElementById('titulo-principal');
+        const subtituloSpan = document.getElementById('subtitulo-principal');
+
+        if (tituloH2) {
+            tituloH2.innerText = novoTitulo;
+        }
+
+        if (subtituloSpan) {
+            if (novoTitulo === "Para Hoje") {
+                subtituloSpan.innerText = "- 21/11/24";
+            } else {
+                subtituloSpan.innerText = "";
             }
         }
 
+        document.querySelectorAll('.menu-item, .lista').forEach(btn => {
+            btn.classList.remove('active');
+        });
 
-    </script>
+        elementoClicado.classList.add('active');
+    }
 
-</div>
+    // --- **** FUNÇÃO PARA EXECUTAR A REMOÇÃO DA LISTA **** ---
+    function executarRemocaoLista() {
+        // 1. Remove o item da lista (se ele estiver guardado)
+        if (listaParaRemover) {
+            listaParaRemover.remove(); // Remove o botão da barra lateral
+            listaParaRemover = null; // Limpa a variável
+        }
+
+        // 2. Fecha o modal de confirmação
+        fecharModalPerfil('modalRemoveLista');
+
+        // 3. Simula um clique em "Para Hoje" para resetar a tela
+        const btnParaHoje = document.querySelector('.menu-item'); // Pega o primeiro .menu-item
+        if (btnParaHoje) {
+            btnParaHoje.click(); // Clica em "Para Hoje"
+        }
+    }
+
+    let acaoAtual = null;
+
+    lucide.createIcons();
+
+    /*
+     * Abre o modal de confirmação e define qual ação o backend vai executar.
+     * @param {string} tipo - 'editar' ou 'remover'
+     */
+    function abrirModalAcao(tipo) {
+        const modal = document.getElementById('modalVerificacao');
+        const mensagem = document.getElementById('mensagemVerificacao');
+        const form = document.getElementById('formConfirmacao');
+
+        if (tipo === 'editar') {
+            mensagem.textContent = 'Deseja realmente editar sua conta?';
+            form.action = '/editarConta'; // endpoint backend para edição
+            acaoAtual = 'editar';
+        } else if (tipo === 'remover') {
+            mensagem.textContent = 'Deseja realmente remover sua conta?';
+            form.action = '/removerConta'; // endpoint backend para exclusão
+            acaoAtual = 'remover';
+        }
+
+        // limpa o campo de senha e mostra o modal
+        document.getElementById('senhaConfirmacao').value = '';
+        modal.style.display = 'flex';
+    }
+
+    /**
+     * Fecha o modal (usado também por botões "Cancelar").
+     */
+    function fecharModalPerfil(nomeModal) {
+        document.getElementById(nomeModal).style.display = 'none';
+        const modal = document.getElementById(nomeModal);
+        modal.style.display = 'none';
+
+        // 🔹 Remove mensagem de erro ao fechar o modal
+        const erroMsg = modal.querySelector('.mensagem-erro');
+        if (erroMsg) {
+            erroMsg.textContent = '';
+        }
+
+        // 🔹 Limpa o campo de senha, se existir
+        const inputSenha = modal.querySelector('input[type="password"]');
+        if (inputSenha) {
+            inputSenha.value = '';
+        }
+    }
+
+</script>
 </body>
 </html>
