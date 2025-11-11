@@ -1,7 +1,7 @@
 package com.example.demo.Controles;
 
 import com.example.demo.ConsultasBD.UsuarioRepository;
-import com.example.demo.Serviços.CookieService;
+import com.example.demo.Servicos.CookieService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

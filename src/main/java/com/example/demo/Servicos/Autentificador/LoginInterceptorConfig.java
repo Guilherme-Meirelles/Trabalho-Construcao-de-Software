@@ -1,4 +1,4 @@
-package com.example.demo.Serviços.Autentificador;
+package com.example.demo.Servicos.Autentificador;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
