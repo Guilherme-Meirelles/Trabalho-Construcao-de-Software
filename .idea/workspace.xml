@@ -5,13 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="963ae2cd-f82b-476a-b1c0-108ba5d5c374" name="Changes" comment="1">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/edicaoUsuario.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/LoginCadastroControle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/LoginCadastroControle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/MenuPrincipalControle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/MenuPrincipalControle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/menuPrincipal.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/menuPrincipal.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/menuPrincipal.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/menuPrincipal.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitattributes" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
@@ -143,7 +136,7 @@
       <workItem from="1762539153064" duration="7066000" />
       <workItem from="1762711349765" duration="12000" />
       <workItem from="1762803667736" duration="2836000" />
-      <workItem from="1762870122655" duration="14331000" />
+      <workItem from="1762870122655" duration="14740000" />
     </task>
     <task id="LOCAL-00001" summary="1">
       <option name="closed" value="true" />
