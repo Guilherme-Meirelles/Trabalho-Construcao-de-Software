@@ -88,52 +88,115 @@
                 <button class="btn-alterar-foto">Alterar ou remover foto</button>
             </div>
 
-            <!-- Formulário -->
-            <form class="formulario-perfil">
-                <div class="campo-perfil">
-                    <label>Alterar nome:</label>
-                    <input type="text" placeholder="Seu nome" />
+            <!-- Informações do usuário -->
+            <div class="info-usuario">
+
+                <div class="campo-info">
+                    <label>Nome:</label>
+                    <p th:text="${nome}">Generic User</p>
                 </div>
 
-                <div class="campos-inline">
-                    <button type="button" class="btn-link">Alterar e-mail</button>
-                    <button type="button" class="btn-link">Alterar senha:</button>
+                <div class="campo-info">
+                    <label>E-mail:</label>
+                    <p th:text="${email}">genericemail@gmail.com</p>
                 </div>
 
-                <div class="botoes-acao">
-                    <button type="submit" class="btn-salvar">Salvar</button>
-                    <button type="button" class="btn-cancelar" onclick="fecharModalPerfil('modalPerfil')">Cancelar</button>
+                <div class="campo-info">
+                    <label>Data de Nascimento:</label>
+                    <p th:text="${dataNascimento}">01/01/2000</p>
+                </div>
+            </div>
+
+            <!-- Ações do perfil -->
+            <div class="formulario-perfil">
+                <button type="button" class="btn-salvar" onclick="abrirModalAcao('editar')">Editar Conta</button>
+                <button type="button" class="btn-excluir" onclick="abrirModalAcao('remover')">Excluir Conta</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal de Confirmação -->
+    <div id="modalVerificacao" class="confirma-acao" th:style="${abrirModal} == 'verificacao' ? 'display:flex;' : 'display:none;'" onclick="fecharModalPerfil('modalVerificacao')">
+        <div class="verificacao" onclick="event.stopPropagation()">
+            <h3 class="mensagem-verificacao" id="mensagemVerificacao">
+                Deseja realmente executar esta ação?
+            </h3>
+
+            <!-- Formulário enviado ao backend -->
+            <form id="formConfirmacao" method="post">
+                <p th:if="${erro}" class="mensagem-erro" th:text="${erro}"></p>
+                <div class="campo-senha">
+
+                    <label for="senhaConfirmacao">Digite sua senha para confirmar:</label>
+                    <input type="password" id="senhaConfirmacao" name="senha" placeholder="Sua senha" required />
                 </div>
 
-                <button type="button" class="btn-excluir" onclick="abrirModalPerfil('modalVerificacao')">Excluir Conta</button>
+                <div class="botoes-verificacao">
+                    <button type="submit" class="btn-confirmar-V">Confirmar</button>
+                    <button type="button" class="btn-cancelar-V" onclick="fecharModalPerfil('modalVerificacao')">Cancelar</button>
+                </div>
             </form>
         </div>
     </div>
-    <!-- Tela de Confirmação -->
-    <div id="modalVerificacao" class="confirma-acao" style="display:none;">
-        <form action="/logout" method="post">
-        <div class ="Verificacao" onClick = "event.stopPropagation()">
-            <h3 class="mensagem-verificacao"> Deseja Realmente remover sua conta?</h3>
-        <div class="Botoes-de-Verificacao">
-            <button type="submit" class="btn-confirmar-V" onclick="fecharModalPerfil('modalVerificacao')">Sim </button>
-            <button type="button" class="btn-cancelar-V" onclick="fecharModalPerfil('modalVerificacao')">Não </button>
-        </div>
-        </div>
-        </form>
-        </div>
+
+    <script>
+        let acaoAtual = null;
+
+        lucide.createIcons();
+
+        function abrirModalPerfil(nomeModal) {
+            document.getElementById(nomeModal).style.display = 'flex';
+            setTimeout(() => lucide.createIcons(), 10);
+        }
+        /**
+         * Abre o modal de confirmação e define qual ação o backend vai executar.
+         * @param {string} tipo - 'editar' ou 'remover'
+         */
+        function abrirModalAcao(tipo) {
+            const modal = document.getElementById('modalVerificacao');
+            const mensagem = document.getElementById('mensagemVerificacao');
+            const form = document.getElementById('formConfirmacao');
+
+            if (tipo === 'editar') {
+                mensagem.textContent = 'Deseja realmente editar sua conta?';
+                form.action = '/editarConta'; // endpoint backend para edição
+                acaoAtual = 'editar';
+            } else if (tipo === 'remover') {
+                mensagem.textContent = 'Deseja realmente remover sua conta?';
+                form.action = '/removerConta'; // endpoint backend para exclusão
+                acaoAtual = 'remover';
+            }
+
+            // limpa o campo de senha e mostra o modal
+            document.getElementById('senhaConfirmacao').value = '';
+            modal.style.display = 'flex';
+        }
+
+        /**
+         * Fecha o modal (usado também por botões "Cancelar").
+         */
+        function fecharModalPerfil(nomeModal) {
+            document.getElementById(nomeModal).style.display = 'none';
+            const modal = document.getElementById(nomeModal);
+            modal.style.display = 'none';
+
+            // 🔹 Remove mensagem de erro ao fechar o modal
+            const erroMsg = modal.querySelector('.mensagem-erro');
+            if (erroMsg) {
+                erroMsg.textContent = '';
+            }
+
+            // 🔹 Limpa o campo de senha, se existir
+            const inputSenha = modal.querySelector('input[type="password"]');
+            if (inputSenha) {
+                inputSenha.value = '';
+            }
+        }
+
+
+    </script>
+
 </div>
-
-<script>
-    lucide.createIcons();
-
-    function abrirModalPerfil(nomeModal) {
-        document.getElementById(nomeModal).style.display = 'flex';
-        setTimeout(() => lucide.createIcons(), 10);
-    }
-
-    function fecharModalPerfil(nomeModal) {
-        document.getElementById(nomeModal).style.display = 'none';
-    }
-</script>
 </body>
 </html>

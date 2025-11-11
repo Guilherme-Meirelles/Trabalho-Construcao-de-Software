@@ -60,6 +60,7 @@ public class LoginCadastroControle {
             CookieService.setCookie(response, "usuarioId", String.valueOf(usuarioLogado.getId()), 10000);
             CookieService.setCookie(response, "nomeUsuario", usuarioLogado.getNome(), 10000);
             CookieService.setCookie(response, "emailUsuario", usuarioLogado.getEmail(), 10000);
+            CookieService.setCookie(response, "dataNascimento", usuarioLogado.getDataNascimento(), 10000);
             return "redirect:/menuPrincipal"; // ✅ Agora redireciona corretamente
         }
 

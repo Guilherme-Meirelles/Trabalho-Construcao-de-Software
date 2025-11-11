@@ -1,0 +1,87 @@
+package com.example.demo.Controles;
+
+
+import com.example.demo.ConsultasBD.UsuarioRepository;
+import com.example.demo.Entidades.Usuario;
+import com.example.demo.Serviços.CookieService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+@Controller
+public class edicaoUsuario {
+
+    @Autowired
+    private UsuarioRepository ur;
+
+    @GetMapping("/edicaoUsuario")
+    public String carregarEdicaoUsuario(HttpServletRequest request, Model model) {
+
+        String usuarioId = CookieService.getCookie(request, "usuarioId");
+
+        if (usuarioId != null) {
+            Usuario usuario = ur.findById(Long.parseLong(usuarioId));
+
+            if (usuario != null) {
+                model.addAttribute("usuario", usuario);
+                return "edicaoUsuario"; // nome do arquivo HTML (edicaoUsuario.html)
+            }
+        }
+
+        // Caso não esteja logado, redireciona para login
+        return "redirect:/login";
+    }
+
+    @PostMapping("/edicaoUsuario")
+    public String edicaoUsuario(@ModelAttribute Usuario usuarioEditado, HttpServletRequest request, BindingResult result, Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("mensagem", "Erro na edição de usuário!");
+            return "edicaoUsuario";
+        } else if (!usuarioEditado.getDataNascimento().matches("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$")) {
+            model.addAttribute("mensagem", "Data de nascimento inválida! Use DD/MM/AAAA.");
+            return "edicaoUsuario";
+        } else if (usuarioEditado.getSenha().length() < 8) {
+            model.addAttribute("mensagem", "A senha deve ter pelo menos 8 caracteres!");
+            return "edicaoUsuario";
+        } else {
+
+            String usuarioId = CookieService.getCookie(request, "usuarioId");
+
+            if (usuarioId != null) {
+                Long id = Long.parseLong(usuarioId);
+
+                // 2️⃣ Busca o usuário atual no banco
+                Usuario usuarioExistente = ur.findById(id);
+
+                if (usuarioExistente != null) {
+                    // 3️⃣ Atualiza apenas os campos permitidos
+                    usuarioExistente.setNome(usuarioEditado.getNome());
+                    usuarioExistente.setEmail(usuarioEditado.getEmail());
+                    usuarioExistente.setDataNascimento(usuarioEditado.getDataNascimento());
+
+                    // Atualiza senha somente se foi alterada
+                    if (usuarioEditado.getSenha() != null && !usuarioEditado.getSenha().isBlank()) {
+                        usuarioExistente.setSenha(usuarioEditado.getSenha());
+                    }
+
+                    // 4️⃣ Salva de volta no banco
+                    ur.save(usuarioExistente);
+
+                    model.addAttribute("mensagem", "Dados atualizados com sucesso!");
+                    model.addAttribute("usuario", usuarioExistente);
+                    return "login";
+                }
+            }
+
+            model.addAttribute("erro", "Usuário não encontrado ou não logado.");
+            return "redirect:/login";
+        }
+    }
+
+}

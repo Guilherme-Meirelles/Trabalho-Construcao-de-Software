@@ -24,6 +24,7 @@ public class MenuPrincipalControle {
     public String menuPrincipal(Model model, HttpServletRequest request) {
         String nome = CookieService.getCookie(request, "nomeUsuario");
         String email = CookieService.getCookie(request, "emailUsuario");
+        String dataNascimento = CookieService.getCookie(request, "dataNascimento");
 
         // Segurança: se não houver cookies, redireciona
         if (nome == null || email == null) {
@@ -32,39 +33,80 @@ public class MenuPrincipalControle {
 
         model.addAttribute("nome", nome);
         model.addAttribute("email", email);
+        model.addAttribute("dataNascimento", dataNascimento);
         return "menuPrincipal"; // Retorna a view, não redirect
     }
 
-    @PostMapping("/logout")
-    public String exclusaoDeConta(HttpServletRequest request, HttpServletResponse response, Model model) {
+    @PostMapping("/removerConta")
+    public String exclusaoDeConta(
+            @ModelAttribute Usuario usuarioSenha,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Model model) {
 
-        // 1️⃣  Recupera o ID do cookie
         String usuarioId = CookieService.getCookie(request, "usuarioId");
 
         if (usuarioId != null) {
-            // 2️⃣  Busca o usuário no banco
             Usuario usuario = this.ur.findById(Long.parseLong(usuarioId));
 
-            if (usuario != null) {
-                // 3️⃣  Deleta o usuário
+            if (usuario != null && usuarioSenha.getSenha().equals(usuario.getSenha())) {
+                // ✅ Senha correta
                 this.ur.delete(usuario);
 
-                // 4️⃣  Remove cookies
                 CookieService.deleteCookie(response, "usuarioId");
                 CookieService.deleteCookie(response, "nomeUsuario");
                 CookieService.deleteCookie(response, "emailUsuario");
+                CookieService.deleteCookie(response, "dataNascimento");
 
-                model.addAttribute("confirmacao", "Usuário removido com sucesso!");
+                model.addAttribute("remocao", "Usuário removido com sucesso!");
+                return "login";
             } else {
-                model.addAttribute("erro", "Usuário não encontrado.");
+                // ⚠️ Senha incorreta — reabre modal e mostra erro
+                model.addAttribute("erro", "Senha incorreta. Tente novamente.");
+                model.addAttribute("abrirModal", "verificacao");
+
+                // ✅ repopula dados do usuário logado
+                model.addAttribute("nome", usuario.getNome());
+                model.addAttribute("email", usuario.getEmail());
+                model.addAttribute("dataNascimento", usuario.getDataNascimento());
+                return "menuPrincipal"; // sem redirect
             }
         } else {
             model.addAttribute("erro", "Nenhum usuário logado.");
+            return "redirect:/login";
         }
-
-        // 5️⃣  Redireciona
-        return "redirect:/login";
     }
 
+    @PostMapping("/editarConta")
+    public String edicaodeConta(
+            @ModelAttribute Usuario usuarioSenha,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Model model) {
+
+        String usuarioId = CookieService.getCookie(request, "usuarioId");
+
+        if (usuarioId != null) {
+            Usuario usuario = this.ur.findById(Long.parseLong(usuarioId));
+
+            if (usuario != null && usuarioSenha.getSenha().equals(usuario.getSenha())) {
+                // ✅ Senha correta
+
+                return "redirect:/edicaoUsuario";
+            } else {
+                // ⚠️ Senha incorreta — reabre modal e mostra erro
+                model.addAttribute("erro", "Senha incorreta. Tente novamente.");
+                model.addAttribute("abrirModal", "verificacao");
+
+                // ✅ repopula dados do usuário logado
+                model.addAttribute("nome", usuario.getNome());
+                model.addAttribute("email", usuario.getEmail());
+                return "menuPrincipal"; // sem redirect
+            }
+        } else {
+            model.addAttribute("erro", "Nenhum usuário logado.");
+            return "redirect:/login";
+        }
+    }
 
 }
