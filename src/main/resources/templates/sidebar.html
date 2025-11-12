@@ -1,103 +1,352 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDaily</title>
+    <link rel="stylesheet" href="/css/sidebar.css" />
+    <link rel="stylesheet" href="/css/menuPrincipal.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-<!-- Fragment da Sidebar -->
+
+<!-- ========== FRAGMENT: SIDEBAR ========== -->
 <aside class="sidebar" th:fragment="sidebar">
     <h1 class="app-title">ToDaily</h1>
 
     <!-- Perfil -->
-    <div class="perfil" onclick="abrirModalPerfil()" style="cursor: pointer;">
+    <div class="perfil" onclick="abrirModalPerfil('modalPerfil')" style="cursor: pointer;">
         <div class="avatar">
             <i data-lucide="user"></i>
         </div>
         <div class="info">
-            <p class="nome" th:text="${nome}">Matheus</p>
-            <p class="email" th:text="${email}">matheus.campaner@gmail.com</p>
+            <p class="nome" th:text="${nome}">Generic User</p>
+            <p class="email" th:text="${email}">genericemail@gmail.com</p>
         </div>
     </div>
 
-    <!-- Menu -->
+    <!-- Menu de Navegação -->
     <nav class="menu">
-        <button class="menu-item" th:classappend="${page == 'paraHoje'} ? 'active' : ''">
+        <button class="menu-item active" onclick="mudarTituloPrincipal(this)">
             <i data-lucide="sun"></i> Para Hoje
         </button>
-        <button class="menu-item" th:classappend="${page == 'agendadas'} ? 'active' : ''">
+        <button class="menu-item" onclick="mudarTituloPrincipal(this)">
             <i data-lucide="calendar"></i> Agendadas
         </button>
-        <button class="menu-item" th:classappend="${page == 'areasTrabalho'} ? 'active' : ''">
+        <button class="menu-item" onclick="window.location.href='/areasTrabalho'">
             <i data-lucide="briefcase"></i> Áreas de Trabalho
         </button>
     </nav>
 
-    <!-- Busca -->
+    <!-- Campo de Busca -->
     <div class="busca">
         <input type="text" placeholder="Buscar" />
     </div>
 
-    <!-- Listas -->
+    <!-- Listas do Usuário -->
     <div class="listas">
-        <button class="lista">Faculdade</button>
-        <button class="lista">Casa</button>
+        <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
+            <i data-lucide="list"></i> Faculdade
+        </button>
+        <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
+            <i data-lucide="list"></i> Casa
+        </button>
+        <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
+            <i data-lucide="list"></i> Renomeada
+        </button>
     </div>
 
-    <!-- Nova lista -->
-    <button class="nova-lista">
+    <!-- Botão Nova Lista -->
+    <button class="nova-lista" onclick="abrirModalPerfil('modalAddLista')">
         <i data-lucide="plus"></i> Nova Lista
     </button>
 </aside>
 
-<!-- Fragment do Modal de Perfil -->
-<div th:fragment="modalPerfil">
-    <div id="modalPerfil" class="overlay-perfil" style="display: none;" onclick="fecharModalPerfil()">
-        <div class="perfil-modal" onclick="event.stopPropagation()">
-            <h2 class="titulo-modal">Perfil</h2>
 
-            <div class="foto-perfil">
-                <div class="avatar-grande">
-                    <i data-lucide="user"></i>
-                </div>
-                <button class="btn-alterar-foto">Alterar ou remover foto</button>
+<!-- ========== FRAGMENT: MODAIS ========== -->
+<div th:fragment="modais">
+
+    <!-- Modal: Perfil do Usuário -->
+
+
+
+
+    <div id="modalPerfil" class="overlay-perfil" th:fragment="modalPerfil" style="display: none;" onclick="fecharModalPerfil('modalPerfil')">
+    <div class="perfil-modal" onclick="event.stopPropagation()">
+        <h2 class="titulo-modal">Perfil</h2>
+
+        <!-- Foto de perfil -->
+        <div class="foto-perfil">
+            <div class="avatar-grande">
+                <i data-lucide="user"></i>
             </div>
+            <button class="btn-alterar-foto">Alterar ou remover foto</button>
+        </div>
 
-            <form class="formulario-perfil">
-                <div class="campo-perfil">
-                    <label>Alterar nome:</label>
-                    <input type="text" placeholder="Seu nome" th:value="${nome}" />
+        <!-- Informações do usuário -->
+        <div class="info-usuario">
+            <div class="campo-info">
+                <label>Nome:</label>
+                <p th:text="${nome}">Generic User</p>
+            </div>
+            <div class="campo-info">
+                <label>E-mail:</label>
+                <p th:text="${email}">genericemail@gmail.com</p>
+            </div>
+            <div class="campo-info">
+                <label>Data de Nascimento:</label>
+                <p th:text="${dataNascimento}">01/01/2000</p>
+            </div>
+        </div>
+
+        <!-- Ações do perfil -->
+        <div class="formulario-perfil">
+            <button type="button" class="btn-salvar" onclick="abrirModalAcao('editar')">Editar Conta</button>
+            <button type="button" class="btn-excluir" onclick="abrirModalAcao('remover')">Excluir Conta</button>
+        </div>
+    </div>
+
+
+</div>
+    <!-- Modal: Verificação (Confirmar Ação) -->
+    <div id="modalVerificacao" class="confirma-acao" th:style="${abrirModal} == 'verificacao' ? 'display:flex;' : 'display:none;'" onclick="fecharModalPerfil('modalVerificacao')">
+        <div class="verificacao" onclick="event.stopPropagation()">
+            <h3 class="mensagem-verificacao" id="mensagemVerificacao">
+                Deseja realmente executar esta ação?
+            </h3>
+
+            <!-- Formulário enviado ao backend -->
+            <form id="formConfirmacao" method="post">
+                <p th:if="${erro}" class="mensagem-erro" th:text="${erro}"></p>
+                <div class="campo-senha">
+                    <label for="senhaConfirmacao">Digite sua senha para confirmar:</label>
+                    <input type="password" id="senhaConfirmacao" name="senha" placeholder="Sua senha" required />
                 </div>
 
-                <div class="campos-inline">
-                    <button type="button" class="btn-link">Alterar e-mail</button>
-                    <button type="button" class="btn-link">Alterar senha</button>
+                <div class="botoes-verificacao">
+                    <button type="submit" class="btn-confirmar-V">Confirmar</button>
+                    <button type="button" class="btn-cancelar-V" onclick="fecharModalPerfil('modalVerificacao')">Cancelar</button>
                 </div>
-
-                <div class="botoes-acao">
-                    <button type="submit" class="btn-salvar">Salvar</button>
-                    <button type="button" class="btn-cancelar" onclick="fecharModalPerfil()">Cancelar</button>
-                </div>
-
-                <button type="button" class="btn-excluir">Excluir Conta</button>
             </form>
         </div>
     </div>
+    <!-- Modal: Adicionar Lista -->
+    <div id="modalAddLista" class="overlay-perfil" style="display: none;" onclick="fecharModalPerfil('modalAddLista')">
+        <div class="modal-lista" onclick="event.stopPropagation()">
+            <h3 class="titulo-modal-lista">Adicionar Lista</h3>
+            <form class="form-lista">
+                <div class="campo-lista">
+                    <label for="nome-lista">Nome da Lista*</label>
+                    <input type="text" id="nome-lista" placeholder="Nova Lista" />
+                </div>
+                <div class="campo-lista">
+                    <label for="descricao-lista">Descrição:</label>
+                    <textarea id="descricao-lista" rows="4"></textarea>
+                </div>
+                <p class="aviso-obrigatorio">(*) Este campo é obrigatório</p>
+                <div class="botoes-acao-lista">
+                    <button type="button" class="btn-ok" onclick="fecharModalPerfil('modalAddLista')">OK</button>
+                    <button type="button" class="btn-cancelar-lista" onclick="fecharModalPerfil('modalAddLista')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Editar Lista -->
+    <div id="modalEditLista" class="overlay-perfil" style="display: none;" onclick="fecharModalPerfil('modalEditLista')">
+        <div class="modal-lista" onclick="event.stopPropagation()">
+            <h3 class="titulo-modal-lista">Editar Lista</h3>
+            <form class="form-lista">
+                <div class="campo-lista">
+                    <label for="nome-lista-edit">Nome da Lista*</label>
+                    <input type="text" id="nome-lista-edit" value="RENOMEADA" />
+                </div>
+                <div class="campo-lista">
+                    <label for="descricao-lista-edit">Descrição:</label>
+                    <textarea id="descricao-lista-edit" rows="4"></textarea>
+                </div>
+                <p class="aviso-obrigatorio">(*) Este campo é obrigatório</p>
+                <div class="botoes-acao-lista">
+                    <button type="button" class="btn-ok" onclick="fecharModalPerfil('modalEditLista')">OK</button>
+                    <button type="button" class="btn-cancelar-lista" onclick="fecharModalPerfil('modalEditLista')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Remover Lista -->
+    <div id="modalRemoveLista" class="confirma-acao" style="display: none;" onclick="fecharModalPerfil('modalRemoveLista')">
+        <div class="modal-remover" onclick="event.stopPropagation()">
+            <h3 class="modal-remover-mensagem">Deseja realmente remover esta lista?</h3>
+            <div class="modal-remover-botoes">
+                <button class="btn-remover-sim" onclick="executarRemocaoLista()">Sim</button>
+                <button class="btn-remover-nao" onclick="fecharModalPerfil('modalRemoveLista')">Não</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu de Contexto (Clique direito nas listas) -->
+    <div id="menuContextoLista" class="context-menu" style="display: none;">
+        <button class="context-menu-item" onclick="abrirModalPerfil('modalEditLista')">Editar Lista</button>
+        <button class="context-menu-item" onclick="abrirModalPerfil('modalRemoveLista')">Remover Lista</button>
+    </div>
+
 </div>
 
-<!-- Fragment dos Scripts -->
+
+<!-- ========== FRAGMENT: SCRIPTS ========== -->
 <div th:fragment="scripts">
     <script>
+        // Inicializa ícones Lucide
         lucide.createIcons();
 
-        function abrirModalPerfil() {
-            document.getElementById('modalPerfil').style.display = 'flex';
-            setTimeout(() => lucide.createIcons(), 10);
+        // Variável para guardar qual lista será removida
+        let listaParaRemover = null;
+
+        /**
+         * Abre um modal pelo ID
+         */
+        function abrirModalPerfil(nomeModal) {
+            document.getElementById(nomeModal).style.display = 'flex';
+            setTimeout(() => {
+                const modal = document.getElementById(nomeModal);
+                if (modal.querySelectorAll('[data-lucide]').length > 0) {
+                    lucide.createIcons();
+                }
+            }, 10);
         }
 
-        function fecharModalPerfil() {
-            document.getElementById('modalPerfil').style.display = 'none';
+        /**
+         * Fecha um modal pelo ID
+         */
+        function fecharModalPerfil(nomeModal) {
+            const modal = document.getElementById(nomeModal);
+            modal.style.display = 'none';
+
+            // Remove mensagem de erro ao fechar o modal
+            const erroMsg = modal.querySelector('.mensagem-erro');
+            if (erroMsg) {
+                erroMsg.textContent = '';
+            }
+
+            // Limpa o campo de senha, se existir
+            const inputSenha = modal.querySelector('input[type="password"]');
+            if (inputSenha) {
+                inputSenha.value = '';
+            }
+        }
+
+        /**
+         * Mostra o menu de contexto (clique direito)
+         */
+        function mostrarMenuContexto(event, menuId, elemento) {
+            event.preventDefault();
+
+            // Guarda o botão da lista clicada
+            listaParaRemover = elemento;
+
+            // Esconde todos os menus de contexto
+            document.querySelectorAll('.context-menu').forEach(menu => menu.style.display = 'none');
+
+            // Mostra o menu específico na posição do mouse
+            const menu = document.getElementById(menuId);
+            menu.style.display = 'block';
+            menu.style.left = (event.pageX + 5) + 'px';
+            menu.style.top = (event.pageY + 5) + 'px';
+        }
+
+        /**
+         * Fecha menus de contexto ao clicar fora
+         */
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.context-menu-item')) {
+                document.querySelectorAll('.context-menu').forEach(menu => {
+                    menu.style.display = 'none';
+                });
+            }
+        });
+
+        /**
+         * Fecha menus de contexto ao rolar a página
+         */
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('.context-menu').forEach(menu => {
+                menu.style.display = 'none';
+            });
+        }, true);
+
+        /**
+         * Muda o título da página principal
+         */
+        function mudarTituloPrincipal(elementoClicado) {
+            const novoTitulo = elementoClicado.innerText.trim();
+            const tituloH2 = document.getElementById('titulo-principal');
+            const subtituloSpan = document.getElementById('subtitulo-principal');
+
+            // Atualiza o título
+            if (tituloH2) {
+                tituloH2.innerText = novoTitulo;
+            }
+
+            // Atualiza o subtítulo (só mostra data para "Para Hoje")
+            if (subtituloSpan) {
+                if (novoTitulo === "Para Hoje") {
+                    subtituloSpan.innerText = "- 21/11/24";
+                } else {
+                    subtituloSpan.innerText = "";
+                }
+            }
+
+            // Remove classe 'active' de todos os itens e adiciona no clicado
+            document.querySelectorAll('.menu-item, .lista').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            elementoClicado.classList.add('active');
+        }
+
+        /**
+         * Executa a remoção da lista
+         */
+        function executarRemocaoLista() {
+            // Remove o item da lista (se ele estiver guardado)
+            if (listaParaRemover) {
+                listaParaRemover.remove();
+                listaParaRemover = null;
+            }
+
+            // Fecha o modal de confirmação
+            fecharModalPerfil('modalRemoveLista');
+
+            // Simula um clique em "Para Hoje" para resetar a tela
+            const btnParaHoje = document.querySelector('.menu-item');
+            if (btnParaHoje) {
+                btnParaHoje.click();
+            }
+        }
+
+        /**
+         * Abre o modal de confirmação e define qual ação o backend vai executar
+         * @param {string} tipo - 'editar' ou 'remover'
+         */
+        function abrirModalAcao(tipo) {
+            const modal = document.getElementById('modalVerificacao');
+            const mensagem = document.getElementById('mensagemVerificacao');
+            const form = document.getElementById('formConfirmacao');
+
+            if (tipo === 'editar') {
+                mensagem.textContent = 'Deseja realmente editar sua conta?';
+                form.action = '/editarConta';
+            } else if (tipo === 'remover') {
+                mensagem.textContent = 'Deseja realmente remover sua conta?';
+                form.action = '/removerConta';
+            }
+
+            // Limpa o campo de senha e mostra o modal
+            document.getElementById('senhaConfirmacao').value = '';
+            modal.style.display = 'flex';
         }
     </script>
 </div>
+
 </body>
 </html>

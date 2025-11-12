@@ -34,7 +34,17 @@ public class MenuPrincipalControle {
         model.addAttribute("nome", nome);
         model.addAttribute("email", email);
         model.addAttribute("dataNascimento", dataNascimento);
+
         return "menuPrincipal"; // Retorna a view, não redirect
+    }
+
+
+
+
+    @GetMapping("/sidebar")
+    public String sidebar() {
+
+        return "sidebar";
     }
 
     @PostMapping("/removerConta")

@@ -6,6 +6,7 @@
     <title>ToDaily - Áreas de Trabalho</title>
     <link rel="stylesheet" href="/css/sidebar.css" />
     <link rel="stylesheet" href="/css/areasTrabalho.css" />
+    <link rel="stylesheet" href="/css/menuPrincipal.css" />
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -400,7 +401,10 @@
     </div>
 </div>
 
-<!-- Scripts (importados) -->
+<!-- Importa os Modais do fragment -->
+<div th:replace="~{sidebar :: modais}"></div>
+
+<!-- Importa os Scripts do fragment -->
 <div th:replace="~{sidebar :: scripts}"></div>
 
 <script>
