@@ -20,30 +20,24 @@
             <h2>Áreas de Trabalho</h2>
         </div>
 
-        <!-- Grid de áreas -->
-        <div class="areas-grid" id="areasGrid">
-            <!-- Cards de áreas existentes -->
-            <div class="area-card" data-area-id="pessoal" onclick="abrirArea('pessoal')" oncontextmenu="abrirMenuContexto(event, 'pessoal', 'Pessoal')">
-                <h3>Pessoal</h3>
-            </div>
+    <div class="areas-grid" id="areasGrid">
 
-            <div class="area-card" data-area-id="projeto-pesquisa" onclick="abrirArea('projeto-pesquisa')" oncontextmenu="abrirMenuContexto(event, 'projeto-pesquisa', 'Projeto de Pesquisa')">
-                <h3>Projeto de Pesquisa</h3>
-            </div>
-
-            <div class="area-card" data-area-id="hobbies" onclick="abrirArea('hobbies')" oncontextmenu="abrirMenuContexto(event, 'hobbies', 'Hobbies')">
-                <h3>Hobbies</h3>
-            </div>
-
-            <div class="area-card" data-area-id="trabalho" onclick="abrirArea('trabalho')" oncontextmenu="abrirMenuContexto(event, 'trabalho', 'Trabalho')">
-                <h3>Trabalho</h3>
-            </div>
-
-            <!-- Card para adicionar nova área -->
-            <div class="area-card area-add" onclick="abrirModalNovaArea()">
-                <i data-lucide="plus-circle" data-size="52"></i>
-            </div>
+        <!-- Renderiza cada área do usuário -->
+        <div class="area-card"
+            th:each="area : ${areas}"
+            th:data-id="${area.id}"
+            th:data-nome="${area.nome}"
+            onclick="abrirArea(this)"
+            oncontextmenu="abrirMenuContexto(event, this)">
+            <h3 th:text="${area.nome}"></h3>
         </div>
+
+        <!-- Card de adicionar área -->
+        <div class="area-card area-add" onclick="abrirModalNovaArea()">
+            <i data-lucide="plus-circle" data-size="52"></i>
+        </div>
+
+    </div>
 
         <!-- Botões de ação flutuantes -->
         <div class="acoes-flutuantes">
@@ -57,11 +51,6 @@
                 <i data-lucide="settings"></i>
             </button>
         </div>
-
-        <!-- Botão adicionar (canto inferior direito) - ACESSIBILIDADE -->
-        <button class="btn-adicionar-fixo" title="Acessibilidade">
-            <i data-lucide="hand"></i>
-        </button>
     </main>
 
     <!-- Modal de Perfil (importado) -->
@@ -73,6 +62,7 @@
             <h2 class="titulo-modal" id="tituloModalArea">Nova Área de Trabalho</h2>
 
             <form class="formulario-nova-area" onsubmit="salvarArea(event)">
+                <input type="hidden" id="areaIdEdicao">
                 <div class="campo-modal">
                     <label>Nome da área:*</label>
                     <input type="text" id="inputNomeArea" placeholder="Ex: Projetos Pessoais" autofocus required />
@@ -93,25 +83,7 @@
 
             <!-- Lista de áreas para selecionar -->
             <div class="lista-areas-compartilhar">
-                <div class="area-item-compartilhar" onclick="selecionarAreaCompartilhar('pessoal')">
-                    <input type="radio" name="areaCompartilhar" id="area-pessoal" value="pessoal" onchange="atualizarSelecaoArea()">
-                    <label for="area-pessoal">Pessoal</label>
-                </div>
-
-                <div class="area-item-compartilhar" onclick="selecionarAreaCompartilhar('projeto-pesquisa')">
-                    <input type="radio" name="areaCompartilhar" id="area-projeto-pesquisa" value="projeto-pesquisa" onchange="atualizarSelecaoArea()">
-                    <label for="area-projeto-pesquisa">Projeto de Pesquisa</label>
-                </div>
-
-                <div class="area-item-compartilhar" onclick="selecionarAreaCompartilhar('hobbies')">
-                    <input type="radio" name="areaCompartilhar" id="area-hobbies" value="hobbies" onchange="atualizarSelecaoArea()">
-                    <label for="area-hobbies">Hobbies</label>
-                </div>
-
-                <div class="area-item-compartilhar" onclick="selecionarAreaCompartilhar('trabalho')">
-                    <input type="radio" name="areaCompartilhar" id="area-trabalho" value="trabalho" onchange="atualizarSelecaoArea()">
-                    <label for="area-trabalho">Trabalho</label>
-                </div>
+                <!-- As áreas serão geradas pelo JS -->
             </div>
 
             <!-- Métodos de compartilhamento -->
@@ -154,25 +126,7 @@
 
             <!-- Lista de áreas para excluir -->
             <div class="lista-areas-excluir" id="listaAreasExcluir">
-                <div class="area-item-excluir" onclick="toggleAreaExcluir('pessoal')">
-                    <input type="checkbox" name="areaExcluir" id="excluir-pessoal" value="pessoal" onchange="atualizarSelecaoExclusao()">
-                    <label for="excluir-pessoal">Pessoal</label>
-                </div>
-
-                <div class="area-item-excluir" onclick="toggleAreaExcluir('projeto-pesquisa')">
-                    <input type="checkbox" name="areaExcluir" id="excluir-projeto-pesquisa" value="projeto-pesquisa" onchange="atualizarSelecaoExclusao()">
-                    <label for="excluir-projeto-pesquisa">Projeto de Pesquisa</label>
-                </div>
-
-                <div class="area-item-excluir" onclick="toggleAreaExcluir('hobbies')">
-                    <input type="checkbox" name="areaExcluir" id="excluir-hobbies" value="hobbies" onchange="atualizarSelecaoExclusao()">
-                    <label for="excluir-hobbies">Hobbies</label>
-                </div>
-
-                <div class="area-item-excluir" onclick="toggleAreaExcluir('trabalho')">
-                    <input type="checkbox" name="areaExcluir" id="excluir-trabalho" value="trabalho" onchange="atualizarSelecaoExclusao()">
-                    <label for="excluir-trabalho">Trabalho</label>
-                </div>
+                <!-- As áreas serão inseridas dinamicamente via JS -->
             </div>
 
             <div class="botoes-modal">
@@ -201,36 +155,7 @@
                 <h2 class="titulo-modal">Gerenciar Áreas de Trabalho</h2>
 
                 <div class="lista-areas-gerenciar">
-                    <div class="area-item-gerenciar" onclick="selecionarAreaGerenciar('pessoal')">
-                        <div class="info-area">
-                            <input type="radio" name="areaGerenciar" id="gerenciar-pessoal" value="pessoal" onchange="atualizarSelecaoGerenciar()">
-                            <label for="gerenciar-pessoal">Pessoal</label>
-                        </div>
-                    </div>
-
-                    <div class="area-item-gerenciar" onclick="selecionarAreaGerenciar('projeto-pesquisa')">
-                        <div class="info-area">
-                            <input type="radio" name="areaGerenciar" id="gerenciar-projeto-pesquisa" value="projeto-pesquisa" onchange="atualizarSelecaoGerenciar()">
-                            <label for="gerenciar-projeto-pesquisa">Projeto de Pesquisa</label>
-                            <div class="badge-compartilhado-mini">
-                                <i data-lucide="share-2"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="area-item-gerenciar" onclick="selecionarAreaGerenciar('hobbies')">
-                        <div class="info-area">
-                            <input type="radio" name="areaGerenciar" id="gerenciar-hobbies" value="hobbies" onchange="atualizarSelecaoGerenciar()">
-                            <label for="gerenciar-hobbies">Hobbies</label>
-                        </div>
-                    </div>
-
-                    <div class="area-item-gerenciar" onclick="selecionarAreaGerenciar('trabalho')">
-                        <div class="info-area">
-                            <input type="radio" name="areaGerenciar" id="gerenciar-trabalho" value="trabalho" onchange="atualizarSelecaoGerenciar()">
-                            <label for="gerenciar-trabalho">Trabalho</label>
-                        </div>
-                    </div>
+                    <!-- JS vai preencher as áreas aqui -->
                 </div>
 
                 <div class="botoes-modal">
@@ -260,7 +185,6 @@
                                 <span class="subtitulo-item">Gerencie quem tem acesso</span>
                             </div>
                         </div>
-                        <span class="badge-contador" id="contadorMembros">3</span>
                     </button>
 
                     <button class="item-menu-detalhes" onclick="abrirSolicitacoes()">
@@ -271,7 +195,6 @@
                                 <span class="subtitulo-item">Pedidos de acesso pendentes</span>
                             </div>
                         </div>
-                        <span class="badge-contador" id="contadorSolicitacoes">2</span>
                     </button>
                 </div>
 
@@ -289,75 +212,8 @@
                     <h3>Membros</h3>
                 </div>
 
-                <div class="lista-membros">
-                    <div class="membro-item" data-membro-id="matheus">
-                        <div class="membro-header">
-                            <div class="membro-info">
-                                <div class="membro-nome">Matheus Campanher</div>
-                                <div class="membro-email">matheus.campanher@gmail.com</div>
-                            </div>
-                            <div class="membro-badges">
-                                <span class="badge-funcao admin">Administrador</span>
-                                <span class="badge-permissao criador">Criador</span>
-                            </div>
-                        </div>
-                        <div class="membro-acoes">
-                            <button class="btn-acao-membro" disabled title="Você não pode alterar suas próprias permissões">
-                                <i data-lucide="shield"></i>
-                                Alterar Permissão
-                            </button>
-                            <button class="btn-acao-membro remover" disabled title="O criador não pode ser removido">
-                                <i data-lucide="user-minus"></i>
-                                Remover
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="membro-item" data-membro-id="ana">
-                        <div class="membro-header">
-                            <div class="membro-info">
-                                <div class="membro-nome">Ana Silva</div>
-                                <div class="membro-email">ana.silva@example.com</div>
-                            </div>
-                            <div class="membro-badges">
-                                <span class="badge-funcao">Convidado</span>
-                                <span class="badge-permissao editar" data-permissao="editar">Pode editar</span>
-                            </div>
-                        </div>
-                        <div class="membro-acoes">
-                            <button class="btn-acao-membro" onclick="abrirModalPermissao('ana', 'Ana Silva', 'editar')">
-                                <i data-lucide="shield"></i>
-                                Alterar Permissão
-                            </button>
-                            <button class="btn-acao-membro remover" onclick="removerMembro('ana', 'Ana Silva')">
-                                <i data-lucide="user-minus"></i>
-                                Remover
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="membro-item" data-membro-id="carlos">
-                        <div class="membro-header">
-                            <div class="membro-info">
-                                <div class="membro-nome">Carlos Santos</div>
-                                <div class="membro-email">carlos.santos@example.com</div>
-                            </div>
-                            <div class="membro-badges">
-                                <span class="badge-funcao">Convidado</span>
-                                <span class="badge-permissao" data-permissao="visualizar">Pode visualizar</span>
-                            </div>
-                        </div>
-                        <div class="membro-acoes">
-                            <button class="btn-acao-membro" onclick="abrirModalPermissao('carlos', 'Carlos Santos', 'visualizar')">
-                                <i data-lucide="shield"></i>
-                                Alterar Permissão
-                            </button>
-                            <button class="btn-acao-membro remover" onclick="removerMembro('carlos', 'Carlos Santos')">
-                                <i data-lucide="user-minus"></i>
-                                Remover
-                            </button>
-                        </div>
-                    </div>
+                <div class="lista-membros" id="listaMembros">
+                    <!-- JS vai preencher as áreas aqui -->
                 </div>
 
                 <div class="botoes-modal">
@@ -415,6 +271,8 @@
     let areaSelecionadaGerenciar = null;
     let nomeAreaGerenciar = null;
     let membroAtualPermissao = { id: null, nome: null, permissaoAtual: null };
+    let membroAtualId = null;    // ID do usuário logado
+    let membroCriadorId = null;  // ID do criador da área selecionada
 
     function abrirModalNovaArea() {
         modoEdicao = false;
@@ -432,32 +290,108 @@
         document.getElementById('inputNomeArea').value = '';
     }
 
-    function salvarArea(event) {
-        event.preventDefault();
-        const nomeArea = document.getElementById('inputNomeArea').value;
+    function adicionarCardArea(id, nome) {
+        const grid = document.getElementById("areasGrid");
 
-        if (modoEdicao) {
-            console.log('Renomeando área:', areaAtualContexto.id, 'para:', nomeArea);
-            // Aqui você implementa a chamada para o backend de renomear
-        } else {
-            console.log('Criando nova área:', nomeArea);
-            // Aqui você implementa a chamada para o backend de criar
-        }
+        const card = document.createElement("div");
+        card.className = "area-card";
+        card.setAttribute("data-nome", nome);
+        card.setAttribute("data-id", id);
+        card.onclick = () => abrirArea(id);
+        card.oncontextmenu = (e) => abrirMenuContexto(e, card);
 
-        fecharModalArea();
+        const h3 = document.createElement("h3");
+        h3.textContent = nome;
+
+        card.appendChild(h3);
+        grid.insertBefore(card, grid.lastElementChild); // insere antes do "+"
+
+        lucide.createIcons(); // atualiza ícones se necessário
     }
 
-    function abrirArea(areaId) {
-        console.log('Abrindo área:', areaId);
-        // window.location.href = '/area/' + areaId;
+    function atualizarNomeNoCard(id, novoNome) {
+        const card = document.querySelector(`.area-card[data-id="${id}"]`);
+        if (card) {
+            const h3 = card.querySelector("h3");
+            if (h3) h3.textContent = novoNome;
+            card.dataset.nome = novoNome;
+        }
+    }
+
+    function salvarArea(event) {
+        event.preventDefault();
+
+        const id = document.getElementById("areaIdEdicao").value;
+        const nome = document.getElementById("inputNomeArea").value.trim();
+        if (!nome) {
+            alert("Nome inválido");
+            return;
+        }
+
+        if (!id) {
+            fetch("/areasTrabalho/criar", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `nome=${encodeURIComponent(nome)}`
+            })
+            .then(res => res.text())
+            .then(newId => {
+                if (newId === "NOT_LOGGED") {
+                    alert("Você precisa estar logado.");
+                    window.location.href = "/login";
+                    return;
+                }
+                adicionarCardArea(newId, nome);
+                fecharModalArea();
+                document.getElementById("areaIdEdicao").value = "";
+            });
+            return;
+        }
+
+        console.log(id);
+        console.log(encodeURIComponent(id))
+
+        // RENOMEAR (com id)
+        fetch(`/areasTrabalho/${encodeURIComponent(id)}/renomear`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `nome=${encodeURIComponent(nome)}`
+        })
+        .then(res => {
+            if (res.status === 200) return res.text();
+            if (res.status === 404) throw new Error("NOT_FOUND");
+            if (res.status === 403) throw new Error("NOT_OWNER");
+            throw new Error("UNKNOWN");
+        })
+        .then(_ => {
+            atualizarNomeNoCard(id, nome);
+            fecharModalArea();
+            document.getElementById("areaIdEdicao").value = "";
+        })
+        .catch(err => {
+            if (err.message === "NOT_FOUND") alert("Área não encontrada.");
+            else if (err.message === "NOT_OWNER") alert("Você não tem permissão para renomear esta área.");
+            else alert("Erro ao renomear área.");
+            fecharModalArea();
+        });
+    }
+
+    function abrirArea(elemento) {
+        const id = elemento.dataset.id;
+        const name = elemento.dataset.nome
+        window.location.href = `/areasTrabalho/${name}`;
     }
 
     // Menu de contexto (botão direito)
-    function abrirMenuContexto(event, areaId, areaNome) {
+    function abrirMenuContexto(event, elemento) {
         event.preventDefault();
         event.stopPropagation();
 
-        areaAtualContexto = { id: areaId, nome: areaNome };
+        const id = elemento.dataset.id;
+        const nome = elemento.dataset.nome;
+
+        areaAtualContexto.id = id;
+        areaAtualContexto.nome = nome;
 
         const menu = document.getElementById('menuContexto');
         menu.style.display = 'block';
@@ -474,11 +408,14 @@
     function renomearAreaContexto() {
         fecharMenuContexto();
         modoEdicao = true;
+        
         document.getElementById('tituloModalArea').textContent = 'Renomear Área de Trabalho';
         document.getElementById('inputNomeArea').value = areaAtualContexto.nome;
-        document.getElementById('inputNomeArea').placeholder = '';
+        document.getElementById('inputNomeArea').placeholder = areaAtualContexto.nome;
         document.querySelector('.btn-criar').textContent = 'Salvar';
+        document.getElementById('areaIdEdicao').value = areaAtualContexto.id;
         document.getElementById('modalArea').style.display = 'flex';
+
         setTimeout(() => {
             document.getElementById('inputNomeArea').focus();
             document.getElementById('inputNomeArea').select();
@@ -487,9 +424,45 @@
     }
 
     // Compartilhamento
+
+    function carregarAreasCompartilhamento(areas) {
+        const container = document.querySelector('.lista-areas-compartilhar');
+        container.innerHTML = ''; // limpa antes de gerar
+
+        areas.forEach(area => {
+            const div = document.createElement('div');
+            div.classList.add('area-item-compartilhar');
+            div.onclick = () => selecionarAreaCompartilhar(area.id);
+
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = 'areaCompartilhar';
+            input.id = `area-${area.id}`;
+            input.value = area.id;
+            input.onchange = atualizarSelecaoArea;
+
+            const label = document.createElement('label');
+            label.htmlFor = input.id;
+            label.textContent = area.nome;
+
+            div.appendChild(input);
+            div.appendChild(label);
+            container.appendChild(div);
+        });
+    }
+
     function abrirModalCompartilhar() {
         document.getElementById('modalCompartilhar').style.display = 'flex';
         areaSelecionadaCompartilhar = null;
+
+        const areas = Array.from(document.querySelectorAll('.area-card'))
+            .filter(card => card.dataset.id && card.dataset.nome)
+            .map(card => ({
+                id: card.dataset.id,
+                nome: card.dataset.nome
+        }));
+
+        carregarAreasCompartilhamento(areas)
 
         // Desmarca todos os radios
         document.querySelectorAll('input[name="areaCompartilhar"]').forEach(radio => {
@@ -564,14 +537,28 @@
             return;
         }
 
-        console.log('Compartilhando área', areaSelecionadaCompartilhar, 'via', metodo);
-        // Aqui você implementa a lógica de compartilhamento com o backend
+        fetch('/areasTrabalho/compartilhar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                areaId: areaSelecionadaCompartilhar,
+                metodo: metodo
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Área compartilhada via ${metodo.toUpperCase()}!`);
+                fecharModalCompartilhar();
+            } else {
+                alert('Erro ao compartilhar a área: ' + data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Erro ao compartilhar a área. Tente novamente.');
+        });
 
-        // Adiciona o badge de compartilhado no card
-        marcarAreaComoCompartilhada(areaSelecionadaCompartilhar);
-
-        alert(`Área compartilhada via ${metodo.toUpperCase()}!`);
-        fecharModalCompartilhar();
     }
 
     function gerarLinkCompartilhamento() {
@@ -580,37 +567,22 @@
             return;
         }
 
-        console.log('Gerando link para área:', areaSelecionadaCompartilhar);
-        // Aqui você implementa a geração do link com o backend
-
-        // Simulação de link gerado
-        const linkSimulado = `https://todaily.app/shared/${areaSelecionadaCompartilhar}`;
-
-        // Adiciona o badge de compartilhado no card
-        marcarAreaComoCompartilhada(areaSelecionadaCompartilhar);
-
-        // Copia para área de transferência
-        navigator.clipboard.writeText(linkSimulado).then(() => {
-            alert('Link copiado para a área de transferência!');
-            fecharModalCompartilhar();
-        }).catch(() => {
-            alert('Link gerado: ' + linkSimulado);
-            fecharModalCompartilhar();
-        });
-    }
-
-    function marcarAreaComoCompartilhada(areaId) {
-        const card = document.querySelector(`.area-card[data-area-id="${areaId}"]`);
-
-        if (card && !card.querySelector('.badge-compartilhado')) {
-            const badge = document.createElement('div');
-            badge.className = 'badge-compartilhado';
-            badge.innerHTML = '<i data-lucide="share-2"></i>';
-            card.appendChild(badge);
-
-            // Reinicializa os ícones do Lucide
-            setTimeout(() => lucide.createIcons(), 10);
-        }
+        fetch(`/areasTrabalho/gerar-link/${areaSelecionadaCompartilhar}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.link) {
+                    navigator.clipboard.writeText(data.link)
+                        .then(() => alert('Link copiado para a área de transferência!'))
+                        .catch(() => alert('Link gerado: ' + data.link));
+                    fecharModalCompartilhar();
+                } else {
+                    alert('Erro ao gerar o link.');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Erro ao gerar o link. Tente novamente.');
+            });
     }
 
     // Exclusão de áreas
@@ -618,18 +590,19 @@
         document.getElementById('modalExcluir').style.display = 'flex';
         areasSelecionadasExcluir = [];
 
-        // Desmarca todos os checkboxes
-        document.querySelectorAll('input[name="areaExcluir"]').forEach(checkbox => {
-            checkbox.checked = false;
-        });
+        const areas = Array.from(document.querySelectorAll('.area-card'))
+            .filter(card => card.dataset.id && card.dataset.nome)
+            .map(card => ({
+                id: card.dataset.id,
+                nome: card.dataset.nome
+        }));
 
-        // Remove seleção visual de todos
-        document.querySelectorAll('.area-item-excluir').forEach(item => {
-            item.classList.remove('selecionada');
-        });
+        // Preenche dinamicamente
+        popularListaAreasExcluir(areas); // 'areas' deve ser a lista atual de áreas do usuário
 
-        // Desabilita o botão de excluir
-        document.getElementById('btnConfirmarExclusao').disabled = true;
+        // Desabilita botão de excluir
+        const btnExcluir = document.getElementById('btnConfirmarExclusao');
+        btnExcluir.disabled = true;
 
         setTimeout(() => lucide.createIcons(), 10);
     }
@@ -637,14 +610,6 @@
     function fecharModalExcluir() {
         document.getElementById('modalExcluir').style.display = 'none';
         areasSelecionadasExcluir = [];
-    }
-
-    function toggleAreaExcluir(areaId) {
-        const checkbox = document.getElementById('excluir-' + areaId);
-        if (checkbox) {
-            checkbox.checked = !checkbox.checked;
-            atualizarSelecaoExclusao();
-        }
     }
 
     function atualizarSelecaoExclusao() {
@@ -683,21 +648,63 @@
 
         const confirmacao = confirm(`Tem certeza que deseja excluir ${areasSelecionadasExcluir.length} ${areasSelecionadasExcluir.length === 1 ? 'área' : 'áreas'}?\n\nEsta ação não pode ser desfeita.`);
 
-        if (confirmacao) {
-            console.log('Excluindo áreas:', areasSelecionadasExcluir);
-            // Aqui você implementa a chamada para o backend de exclusão
+        if (!confirmacao) return;
 
+        fetch('/areasTrabalho/excluir', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: areasSelecionadasExcluir })
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Erro ao excluir áreas');
+            return res.json();
+        })
+        .then(resultado => {
             // Remove os cards da tela
             areasSelecionadasExcluir.forEach(areaId => {
-                const card = document.querySelector(`.area-card[data-area-id="${areaId}"]`);
-                if (card) {
-                    card.remove();
-                }
+                const card = document.querySelector(`.area-card[data-id="${areaId}"]`);
+                if (card) card.remove();
             });
-
             alert(`${areasSelecionadasExcluir.length} ${areasSelecionadasExcluir.length === 1 ? 'área excluída' : 'áreas excluídas'} com sucesso!`);
             fecharModalExcluir();
-        }
+        })
+        .catch(err => {
+            alert(err.message);
+        });
+    }
+
+    function popularListaAreasExcluir(areas) {
+        const lista = document.getElementById('listaAreasExcluir');
+        lista.innerHTML = ''; // limpa antes
+
+        areas.forEach(area => {
+            const item = document.createElement('div');
+            item.className = 'area-item-excluir';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.name = 'areaExcluir';
+            checkbox.id = 'excluir-' + area.id;
+            checkbox.value = area.id;
+            checkbox.onchange = atualizarSelecaoExclusao;
+            checkbox.onclick = (event) => event.stopPropagation(); // evita duplo clique
+
+            const label = document.createElement('label');
+            label.setAttribute('for', 'excluir-' + area.id);
+            label.textContent = area.nome;
+
+            // Clique no item ignora label e checkbox
+            item.onclick = (event) => {
+                if (event.target !== checkbox && event.target !== label) {
+                    checkbox.checked = !checkbox.checked;
+                    atualizarSelecaoExclusao();
+                }
+            };
+
+            item.appendChild(checkbox);
+            item.appendChild(label);
+            lista.appendChild(item);
+        });
     }
 
     // Gerenciamento de áreas
@@ -723,6 +730,32 @@
 
         // Desabilita botão de avançar
         document.getElementById('btnAvancarGerenciar').disabled = true;
+
+        const listaAreas = document.querySelector('.lista-areas-gerenciar');
+        listaAreas.innerHTML = ''; // limpa antes de preencher
+
+        const areas = Array.from(document.querySelectorAll('.area-card'))
+            .filter(card => card.dataset.id && card.dataset.nome)
+            .map(card => ({
+                id: card.dataset.id,
+                nome: card.dataset.nome
+        }));
+
+        areas.forEach(area => {
+            const div = document.createElement('div');
+            div.classList.add('area-item-gerenciar');
+            div.onclick = () => selecionarAreaGerenciar(area.id);
+
+            div.innerHTML = `
+                <div class="info-area">
+                    <input type="radio" name="areaGerenciar" id="gerenciar-${area.id}" value="${area.id}" onchange="atualizarSelecaoGerenciar()">
+                    <label for="gerenciar-${area.id}">${area.nome}</label>
+                    ${area.compartilhado ? `<div class="badge-compartilhado-mini"><i data-lucide="share-2"></i></div>` : ''}
+                </div>
+            `;
+            listaAreas.appendChild(div);
+        });
+
 
         setTimeout(() => lucide.createIcons(), 10);
     }
@@ -794,14 +827,75 @@
     }
 
     function abrirMembros() {
-        console.log('Carregando membros da área:', areaSelecionadaGerenciar);
-        // Aqui você faria a chamada ao backend para carregar os membros
+        if (!areaSelecionadaGerenciar) return;
+
+        const listaMembros = document.getElementById('listaMembros');
+        listaMembros.innerHTML = ''; // limpa lista
+        
+        fetch(`/areasTrabalho/${areaSelecionadaGerenciar}/membros`)
+            .then(res => res.json())
+            .then(membros => {
+
+                    if (!membros || membros.length === 0) return;
+
+                    // Define quem é o usuário logado e o criador da área
+                    
+                    membroAtualId = parseInt(/*[[${usuarioId}]]*/ '0');
+                    // Por agora
+                    membroCriadorId = membroAtualId;
+
+                    listaMembros.innerHTML = '';
+
+                membros.forEach(membro => {
+                    const div = document.createElement('div');
+                    div.classList.add('membro-item');
+                    div.setAttribute('data-membro-id', membro.id);
+
+                    const btnAlterar = membro.id !== membroAtualId ? 
+                        `<button class="btn-acao-membro" onclick="abrirModalPermissao('${membro.id}','${membro.nome}','${membro.permissao}')">
+                            <i data-lucide="shield"></i> Alterar Permissão
+                        </button>` :
+                        `<button class="btn-acao-membro" disabled title="Você não pode alterar suas próprias permissões">
+                            <i data-lucide="shield"></i> Alterar Permissão
+                        </button>`;
+
+                    const btnRemover = membro.id !== membroCriadorId ? 
+                        `<button class="btn-acao-membro remover" onclick="removerMembro('${membro.id}','${membro.nome}')">
+                            <i data-lucide="user-minus"></i> Remover
+                        </button>` :
+                        `<button class="btn-acao-membro remover" disabled title="O criador não pode ser removido">
+                            <i data-lucide="user-minus"></i> Remover
+                        </button>`;
+
+                    div.innerHTML = `
+                        <div class="membro-header">
+                            <div class="membro-info">
+                                <div class="membro-nome">${membro.nome}</div>
+                                <div class="membro-email">${membro.email}</div>
+                            </div>
+                            <div class="membro-badges">
+                                <span class="badge-permissao ${membro.permissao}" data-permissao="${membro.permissao}">
+                                    ${membro.permissao === 'editar' ? 'Pode editar' : 'Pode visualizar'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="membro-acoes">
+                            ${btnAlterar}
+                            ${btnRemover}
+                        </div>
+                    `;
+                    listaMembros.appendChild(div);
+                });
+
+                // Atualiza contador de membros
+                document.getElementById('contadorMembros').textContent = membros.length;
+                setTimeout(() => lucide.createIcons(), 10);
+            })
+            .catch(err => console.error(err));
 
         // Troca de etapa
         document.getElementById('etapaDetalhesArea').style.display = 'none';
         document.getElementById('etapaMembros').style.display = 'block';
-
-        setTimeout(() => lucide.createIcons(), 10);
     }
 
     function voltarParaDetalhes() {

@@ -27,8 +27,6 @@ public class LoginCadastroControle {
         return "cadastro";
     }
 
-
-
     @PostMapping("/cadastro")
     public String cadastroUsuario(@ModelAttribute Usuario usuario, BindingResult result, Model model) {
 
@@ -54,7 +52,7 @@ public class LoginCadastroControle {
 
     @PostMapping("/login")
     public String loginUsuario(Usuario usuario, Model model, HttpServletResponse response) {
-        Usuario usuarioLogado = this.ur.login(usuario.getEmail(), usuario.getSenha());
+        Usuario usuarioLogado = this.ur.findByEmailAndSenha(usuario.getEmail(), usuario.getSenha());
 
         if (usuarioLogado != null) {
             CookieService.setCookie(response, "usuarioId", String.valueOf(usuarioLogado.getId()), 10000);
