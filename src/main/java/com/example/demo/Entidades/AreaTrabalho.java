@@ -13,6 +13,8 @@ public class AreaTrabalho {
 
     private String nome;
 
+    // RELACIONAMENTOS DE AREA DE TRABALHO
+
     // Dono da área (criador)
     @ManyToOne
     @JoinColumn(name = "dono_id")
@@ -21,6 +23,13 @@ public class AreaTrabalho {
     // Participantes com permissões
     @OneToMany(mappedBy = "area", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ParticipacaoArea> participacoes = new HashSet<>();
+
+    // areaTrabalho(1)-(n)Lista
+    // Area de trabalho é dona da relação
+    @OneToMany(mappedBy = "areaMae")
+    private Set<Lista> listas = new HashSet<>();
+
+    // GETTERS E SETTERS
 
     public Long getId() { return id; }
     public String getNome() { return nome; }
