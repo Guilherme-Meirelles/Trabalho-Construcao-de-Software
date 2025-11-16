@@ -1,6 +1,5 @@
 package com.example.demo.Controles;
 
-
 import com.example.demo.ConsultasBD.UsuarioRepository;
 import com.example.demo.Entidades.Usuario;
 import com.example.demo.Serviços.CookieService;
@@ -25,7 +24,7 @@ public class edicaoUsuario {
         String usuarioId = CookieService.getCookie(request, "usuarioId");
 
         if (usuarioId != null) {
-            Usuario usuario = ur.findById(Long.parseLong(usuarioId));
+            Usuario usuario = ur.findUsuarioById(Long.parseLong(usuarioId));
 
             if (usuario != null) {
                 model.addAttribute("usuario", usuario);
@@ -57,7 +56,7 @@ public class edicaoUsuario {
                 Long id = Long.parseLong(usuarioId);
 
                 // 2️⃣ Busca o usuário atual no banco
-                Usuario usuarioExistente = ur.findById(id);
+                Usuario usuarioExistente = ur.findUsuarioById(id);
 
                 if (usuarioExistente != null) {
                     // 3️⃣ Atualiza apenas os campos permitidos

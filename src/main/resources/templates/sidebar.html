@@ -68,9 +68,6 @@
 
     <!-- Modal: Perfil do Usuário -->
 
-
-
-
     <div id="modalPerfil" class="overlay-perfil" th:fragment="modalPerfil" style="display: none;" onclick="fecharModalPerfil('modalPerfil')">
     <div class="perfil-modal" onclick="event.stopPropagation()">
         <h2 class="titulo-modal">Perfil</h2>
@@ -279,6 +276,10 @@
          * Muda o título da página principal
          */
         function mudarTituloPrincipal(elementoClicado) {
+            if (window.location.pathname !== "/menuPrincipal") {
+                window.location.href = "/menuPrincipal";
+            }
+
             const novoTitulo = elementoClicado.innerText.trim();
             const tituloH2 = document.getElementById('titulo-principal');
             const subtituloSpan = document.getElementById('subtitulo-principal');

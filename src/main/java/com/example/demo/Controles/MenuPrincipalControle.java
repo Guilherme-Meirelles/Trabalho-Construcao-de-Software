@@ -38,9 +38,6 @@ public class MenuPrincipalControle {
         return "menuPrincipal"; // Retorna a view, não redirect
     }
 
-
-
-
     @GetMapping("/sidebar")
     public String sidebar() {
 
@@ -57,7 +54,7 @@ public class MenuPrincipalControle {
         String usuarioId = CookieService.getCookie(request, "usuarioId");
 
         if (usuarioId != null) {
-            Usuario usuario = this.ur.findById(Long.parseLong(usuarioId));
+            Usuario usuario = this.ur.findUsuarioById(Long.parseLong(usuarioId));
 
             if (usuario != null && usuarioSenha.getSenha().equals(usuario.getSenha())) {
                 // ✅ Senha correta
@@ -97,7 +94,7 @@ public class MenuPrincipalControle {
         String usuarioId = CookieService.getCookie(request, "usuarioId");
 
         if (usuarioId != null) {
-            Usuario usuario = this.ur.findById(Long.parseLong(usuarioId));
+            Usuario usuario = this.ur.findUsuarioById(Long.parseLong(usuarioId));
 
             if (usuario != null && usuarioSenha.getSenha().equals(usuario.getSenha())) {
                 // ✅ Senha correta
