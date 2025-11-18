@@ -7,11 +7,22 @@ import java.util.Set;
 @Entity
 public class Lista {
 
+    /*
+     * id : Long
+     * titulo : String
+     * descricao : String
+     * REL: areaMae : AreaTrabalho
+     * REL: tarefas : Set<Tarefa>
+     */
+
+    // CAMPOS DE LISTA
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
+    private String titulo;
+    private String descricao;
 
     // RELACIONAMENTOS DE LISTA
 
@@ -26,4 +37,17 @@ public class Lista {
     @OneToMany(mappedBy="listaOrigem")
     private Set<Tarefa> tarefas = new HashSet<>();
     
+    // GETTERS E SETTERS
+    // id
+    public Long getId() { return id; }
+    // titulo
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+    // descricao
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
+    // areaMae
+    public AreaTrabalho getAreaMae() { return areaMae; }
+    // tarefas
+    public Set<Tarefa> getTarefas() { return tarefas; }
 }
