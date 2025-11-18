@@ -7,14 +7,16 @@ import java.util.Set;
 @Entity
 public class Tarefa {
     /*
-     * id
-     * titulo
-     * descricao
-     * cor
-     * status
-     * REL: listaOrigem
-     * REL: categorias
-     * REL: responsaveis
+     * id : Int
+     * titulo : String
+     * descricao : String
+     * cor : Int
+     * <Data e Hora> : String
+     * <Anexos> : String
+     * status : Boolean
+     * REL: listaOrigem : Set<Lista>
+     * REL: categorias : Set<Categoria>
+     * REL: responsaveis : Set<Usuario>
      */
 
     // CAMPOS DE TAREFA
@@ -57,5 +59,23 @@ public class Tarefa {
     private Set<Usuario> responsaveis = new HashSet<>();
 
     // GETTERS E SETTERS
-
+    public Long getId() { return id;}
+    // titulo
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; } 
+    // descricao
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
+    // cor
+    public Integer getCor() { return cor; }
+    public void setCor(Integer cor) { this.cor = cor; }
+    // status
+    public Boolean getStatus() { return status; }
+    public void setStatus(Boolean status) { this.status = status; }
+    // listaOrigem
+    public Lista getListaOrigem() { return listaOrigem; }
+    // categorias
+    public Set<Categoria> getCategorias() { return categorias; }
+    // responsaveis
+    public Set<Usuario> getResponsaveis() { return responsaveis; }
 }

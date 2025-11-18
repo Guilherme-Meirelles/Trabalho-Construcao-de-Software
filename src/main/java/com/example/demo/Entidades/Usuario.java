@@ -44,4 +44,7 @@ public class Usuario {
 
     public Set<AreaTrabalho> getAreasCriadas() { return areasCriadas; }
     public Set<ParticipacaoArea> getParticipacoes() { return participacoes; }
+
+    // tarefasAtribuidas
+    public Set<Tarefa> getTarefasAtribuidas() { return tarefasAtribuidas; }
 }
