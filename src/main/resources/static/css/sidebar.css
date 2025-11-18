@@ -31,11 +31,41 @@ body {
     border-right: 2px solid #000;
 }
 
+/* ===== Header da Sidebar ===== */
+.header-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0 15px 5px;
+    border-bottom: 1px solid #333;
+}
+
 .app-title {
     font-size: 18px;
     font-weight: bold;
-    padding: 5px 0 15px 5px;
-    border-bottom: 1px solid #333;
+}
+
+.btn-config {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.btn-config:hover {
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
+.btn-config i {
+    width: 20px;
+    height: 20px;
 }
 
 /* ===== Perfil ===== */

@@ -183,6 +183,13 @@ i {
 
 .titulo {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.titulo-info {
+    display: flex;
     align-items: baseline;
     gap: 6px;
 }
@@ -195,6 +202,95 @@ i {
 .titulo span {
     color: #bbb;
     font-size: 16px;
+}
+
+/* --- Ações do Título (Filtro e Ordenação) --- */
+.titulo-acoes {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-filtro,
+.btn-ordenar {
+    background-color: #2a2a2a;
+    border: none;
+    color: #ccc;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-filtro:hover,
+.btn-ordenar:hover {
+    background-color: #383838;
+    color: #fff;
+}
+
+.btn-filtro i,
+.btn-ordenar i {
+    width: 18px;
+    height: 18px;
+}
+
+/* --- Menu de Filtro e Ordenação --- */
+.menu-filtro {
+    position: fixed;
+    z-index: 10000;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    padding: 8px;
+    min-width: 220px;
+}
+
+.menu-filtro-titulo {
+    font-size: 13px;
+    color: #888;
+    padding: 8px 12px 4px 12px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.menu-filtro-item {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.menu-filtro-item:hover {
+    background-color: #3a3a3a;
+    color: #fff;
+}
+
+.menu-filtro-item.active {
+    background-color: #3a3a3a;
+    color: #4caf50;
+}
+
+.menu-filtro-item.active i {
+    color: #4caf50;
+}
+
+.menu-filtro-item i {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 /* --- Adicionar Tarefa --- */
@@ -214,6 +310,122 @@ i {
 
 .add-tarefa:hover {
     background-color: #383838;
+}
+
+/* --- Container de Tarefas --- */
+.container-tarefas {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tarefa-item {
+    background-color: #2a2a2a;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    transition: background 0.2s;
+}
+
+.tarefa-item:hover {
+    background-color: #333;
+}
+
+.tarefa-checkbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #555;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.2s;
+}
+
+.tarefa-checkbox:checked {
+    background-color: #4caf50;
+    border-color: #4caf50;
+}
+
+.tarefa-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.tarefa-conteudo {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tarefa-titulo {
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.tarefa-titulo.concluida {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.tarefa-descricao {
+    font-size: 14px;
+    color: #bbb;
+    line-height: 1.4;
+}
+
+.tarefa-info {
+    display: flex;
+    gap: 15px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.tarefa-data,
+.tarefa-responsavel {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: #999;
+}
+
+.tarefa-data i,
+.tarefa-responsavel i {
+    width: 14px;
+    height: 14px;
+}
+
+.tarefa-btn-excluir {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.tarefa-btn-excluir:hover {
+    color: #ff5555;
+}
+
+.tarefa-btn-excluir i {
+    width: 18px;
+    height: 18px;
 }
 
 /* --- Botões Flutuantes --- */
@@ -244,7 +456,8 @@ i {
 
 /* ===== Estilos de Overlay/Modal (Base) ===== */
 .overlay-perfil,
-.confirma-acao {
+.confirma-acao,
+.overlay-tarefa {
     position: fixed;
     top: 0;
     left: 0;
@@ -256,6 +469,176 @@ i {
     align-items: center;
     justify-content: center;
     /* display: none; */ /* O HTML controla a visibilidade com `style` */
+}
+
+/* ===== Modal Adicionar Tarefa ===== */
+.modal-tarefa {
+    background-color: #3a3a3a;
+    border-radius: 16px;
+    padding: 30px 35px;
+    width: 90%;
+    max-width: 480px;
+    color: #ffffff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.titulo-modal-tarefa {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #ffffff;
+}
+
+.form-tarefa {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.campo-tarefa {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.campo-tarefa label {
+    font-size: 14px;
+    color: #d0d0d0;
+    font-weight: 400;
+}
+
+.campo-tarefa input,
+.campo-tarefa textarea,
+.campo-tarefa select {
+    background-color: #4a4a4a;
+    border: 1px solid #555;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+    transition: background-color 0.2s;
+    resize: none;
+}
+
+.campo-tarefa input:focus,
+.campo-tarefa textarea:focus,
+.campo-tarefa select:focus {
+    background-color: #555;
+    border-color: #777;
+}
+
+.campo-tarefa input::placeholder,
+.campo-tarefa textarea::placeholder {
+    color: #888;
+}
+
+.campo-tarefa select {
+    cursor: pointer;
+}
+
+/* --- Linha com múltiplos campos --- */
+.campo-tarefa-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.campo-tarefa-checkbox {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.campo-tarefa-checkbox label {
+    font-size: 13px;
+    color: #d0d0d0;
+}
+
+.btn-checklist,
+.btn-anexo {
+    background-color: #4a4a4a;
+    border: 1px solid #555;
+    color: #e0e0e0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-checklist:hover,
+.btn-anexo:hover {
+    background-color: #555;
+}
+
+.btn-checklist i,
+.btn-anexo i {
+    width: 18px;
+    height: 18px;
+}
+
+/* Toggle Switch para Notificações */
+.toggle-switch {
+    appearance: none;
+    width: 44px;
+    height: 24px;
+    background-color: #4a4a4a;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s;
+}
+
+.toggle-switch:checked {
+    background-color: #4caf50;
+}
+
+.toggle-switch::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #fff;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s;
+}
+
+.toggle-switch:checked::before {
+    transform: translateX(20px);
+}
+
+/* --- Botões de Ação --- */
+.botoes-acao-tarefa {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+    justify-content: flex-end;
+}
+
+.btn-ok-tarefa,
+.btn-cancelar-tarefa {
+    padding: 11px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #2e2e2e;
+    color: #ffffff;
+}
+
+.btn-ok-tarefa:hover,
+.btn-cancelar-tarefa:hover {
+    background-color: #252525;
 }
 
 /* ===== Modal de Perfil (modalPerfil) ===== */
@@ -670,5 +1053,41 @@ i {
 
     .modal-remover {
         padding: 20px 25px;
+    }
+
+    /* Modal Adicionar Tarefa */
+    .modal-tarefa {
+        width: 95%;
+        padding: 25px;
+    }
+
+    .campo-tarefa-row {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+
+    .campo-tarefa-checkbox {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Tarefas */
+    .tarefa-item {
+        padding: 14px 16px;
+    }
+
+    .tarefa-titulo {
+        font-size: 15px;
+    }
+
+    .tarefa-descricao {
+        font-size: 13px;
+    }
+
+    .tarefa-info {
+        flex-direction: column;
+        gap: 8px;
     }
 }
