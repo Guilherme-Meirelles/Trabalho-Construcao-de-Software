@@ -6,6 +6,8 @@
     <title>ToDaily</title>
     <link rel="stylesheet" href="/css/sidebar.css" />
     <link rel="stylesheet" href="/css/menuPrincipal.css" />
+    <link rel="stylesheet" href="/css/acessibilidade.css" />
+    <link rel="stylesheet" href="/css/calendario.css" />
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -20,14 +22,14 @@
             <div class="titulo-info">
                 <h2 id="titulo-principal">Para Hoje</h2>
                 <span id="subtitulo-principal">- 21/11/24</span>
-            </div>
-            <div class="titulo-acoes">
-                <button class="btn-filtro" id="btnFiltro">
-                    <i data-lucide="filter"></i>
-                </button>
-                <button class="btn-ordenar" id="btnOrdenar">
-                    <i data-lucide="arrow-up-down"></i>
-                </button>
+                <div class="titulo-acoes">
+                    <button class="btn-filtro" id="btnFiltro">
+                        <i data-lucide="filter"></i>
+                    </button>
+                    <button class="btn-ordenar" id="btnOrdenar">
+                        <i data-lucide="arrow-up-down"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -89,13 +91,16 @@
             </button>
         </div>
 
-        <div class="botoes-flutuantes">
-            <button><i data-lucide="plus-circle"></i></button>
-            <button><i data-lucide="calendar-days"></i></button>
-        </div>
+        <!-- Botão de Calendário (removido daqui - agora é um fragment) -->
     </main>
 
 </div>
+
+<!-- Importa o Botão de Acessibilidade -->
+<div th:replace="~{acessibilidade :: acessibilidade}"></div>
+
+<!-- Importa o Botão de Calendário -->
+<div th:replace="~{calendario :: calendario}"></div>
 
 <!-- Modal de Confirmação de Remoção -->
 <div class="overlay-tarefa" id="modalConfirmarRemocao" style="display: none;">
@@ -117,7 +122,6 @@
                 <label>Lista*:</label>
                 <select id="tarefaLista">
                     <option value="">Selecione uma lista...</option>
-                    <option value="para-hoje">Para Hoje</option>
                     <option value="faculdade">Faculdade</option>
                     <option value="casa">Casa</option>
                     <option value="remomeada">Remomeada</option>
@@ -184,10 +188,15 @@
 <!-- Importa os Scripts do fragment -->
 <div th:replace="~{sidebar :: scripts}"></div>
 
+<!-- Importa o Script de Acessibilidade -->
+<div th:replace="~{acessibilidade :: acessibilidade-script}"></div>
+
+<!-- Importa o Script de Calendário -->
+<div th:replace="~{calendario :: calendario-script}"></div>
+
 <script>
     // Mapeamento dos nomes das listas
     const nomesListas = {
-        'para-hoje': 'Para Hoje',
         'faculdade': 'Faculdade',
         'casa': 'Casa',
         'remomeada': 'Remomeada'
@@ -229,7 +238,7 @@
 
             if (!isVisible) {
                 const rect = btnFiltro.getBoundingClientRect();
-                menuFiltro.style.left = rect.left + 'px';
+                menuFiltro.style.left = (rect.right - 220) + 'px';
                 menuFiltro.style.top = (rect.bottom + 5) + 'px';
             }
         });
@@ -242,7 +251,7 @@
 
             if (!isVisible) {
                 const rect = btnOrdenar.getBoundingClientRect();
-                menuOrdenar.style.left = rect.left + 'px';
+                menuOrdenar.style.left = (rect.right - 220) + 'px';
                 menuOrdenar.style.top = (rect.bottom + 5) + 'px';
             }
         });
@@ -260,13 +269,10 @@
         document.querySelectorAll('#menuFiltro .menu-filtro-item').forEach(item => {
             item.addEventListener('click', function() {
                 filtroAtivo = this.dataset.filtro;
-
-                // Atualizar indicador visual
                 document.querySelectorAll('#menuFiltro .menu-filtro-item').forEach(btn => {
                     btn.classList.remove('active');
                 });
                 this.classList.add('active');
-
                 renderizarTarefas(listaAtual);
                 menuFiltro.style.display = 'none';
                 lucide.createIcons();
@@ -277,26 +283,14 @@
         document.querySelectorAll('#menuOrdenar .menu-filtro-item').forEach(item => {
             item.addEventListener('click', function() {
                 ordenacaoAtiva = this.dataset.ordem;
-
-                // Atualizar indicador visual
                 document.querySelectorAll('#menuOrdenar .menu-filtro-item').forEach(btn => {
                     btn.classList.remove('active');
                 });
                 this.classList.add('active');
-
                 renderizarTarefas(listaAtual);
                 menuOrdenar.style.display = 'none';
                 lucide.createIcons();
             });
-        });
-
-        // Fechar menu de contexto ao clicar fora
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.menu-filtro') && !e.target.closest('.btn-filtro') && !e.target.closest('.btn-ordenar')) {
-                menuFiltro.style.display = 'none';
-                menuOrdenar.style.display = 'none';
-            }
-            menuContextoTarefa.style.display = 'none';
         });
 
         // Evitar que o menu feche ao clicar nele
@@ -355,24 +349,20 @@
             const responsavel = document.getElementById('tarefaResponsavel').value;
             const notificacoes = document.getElementById('tarefaNotificacoes').checked;
 
-            // Validação básica
             if (!lista || !titulo) {
                 alert('Por favor, preencha os campos obrigatórios (Lista e Título)');
                 return;
             }
 
             if (tarefaSelecionada) {
-                // Modo Edição
                 tarefaSelecionada.lista = lista;
                 tarefaSelecionada.titulo = titulo;
                 tarefaSelecionada.descricao = descricao;
                 tarefaSelecionada.dataFim = dataFim;
                 tarefaSelecionada.responsavel = responsavel;
                 tarefaSelecionada.notificacoes = notificacoes;
-
                 console.log('Tarefa editada!', tarefaSelecionada);
             } else {
-                // Modo Criação
                 const tarefa = {
                     id: Date.now(),
                     lista: lista,
@@ -383,28 +373,19 @@
                     notificacoes: notificacoes,
                     concluida: false
                 };
-
-                // Adicionar tarefa ao array
                 tarefas.push(tarefa);
-
                 console.log('Tarefa adicionada!', tarefa);
             }
 
-            // Atualizar título da página
             listaAtual = lista;
             atualizarTituloPagina(lista);
-
-            // Renderizar tarefas
             renderizarTarefas(lista);
-
-            // Fechar modal e limpar formulário
             modalAddTarefa.style.display = 'none';
             limparFormulario();
             tarefaSelecionada = null;
             tituloModalTarefa.textContent = 'Adicionar Tarefa';
         });
 
-        // Função para limpar o formulário
         function limparFormulario() {
             document.getElementById('tarefaLista').value = '';
             document.getElementById('tarefaTitulo').value = '';
@@ -414,7 +395,6 @@
             document.getElementById('tarefaNotificacoes').checked = false;
         }
 
-        // Função para preencher o formulário com dados da tarefa (para edição)
         function preencherFormulario(tarefa) {
             document.getElementById('tarefaLista').value = tarefa.lista;
             document.getElementById('tarefaTitulo').value = tarefa.titulo;
@@ -424,7 +404,6 @@
             document.getElementById('tarefaNotificacoes').checked = tarefa.notificacoes;
         }
 
-        // Editar tarefa
         btnEditarTarefa.addEventListener('click', function() {
             if (tarefaSelecionada) {
                 tituloModalTarefa.textContent = 'Editar Tarefa';
@@ -434,20 +413,15 @@
             }
         });
 
-        // Função para atualizar o título da página
         function atualizarTituloPagina(listaId) {
             const tituloPrincipal = document.getElementById('titulo-principal');
             tituloPrincipal.textContent = nomesListas[listaId] || 'Para Hoje';
         }
 
-        // Função para renderizar tarefas
         function renderizarTarefas(listaFiltro) {
             containerTarefas.innerHTML = '';
-
-            // Filtrar tarefas pela lista atual
             let tarefasFiltradas = tarefas.filter(t => t.lista === listaFiltro);
 
-            // Aplicar filtro
             if (filtroAtivo === 'andamento') {
                 tarefasFiltradas = tarefasFiltradas.filter(t => !t.concluida);
             } else if (filtroAtivo === 'concluidas') {
@@ -462,7 +436,6 @@
                 });
             }
 
-            // Aplicar ordenação
             if (ordenacaoAtiva === 'data-inicio') {
                 tarefasFiltradas.sort((a, b) => a.id - b.id);
             } else if (ordenacaoAtiva === 'data-fim') {
@@ -479,28 +452,21 @@
                 tarefasFiltradas.sort((a, b) => a.concluida - b.concluida);
             }
 
-            if (tarefasFiltradas.length === 0) {
-                return;
-            }
+            if (tarefasFiltradas.length === 0) return;
 
-            // Criar elementos de tarefa
             tarefasFiltradas.forEach(tarefa => {
                 const tarefaEl = document.createElement('div');
                 tarefaEl.className = 'tarefa-item';
                 tarefaEl.dataset.id = tarefa.id;
 
-                // Adicionar menu de contexto ao clicar com o botão direito
                 tarefaEl.addEventListener('contextmenu', function(e) {
                     e.preventDefault();
                     tarefaSelecionada = tarefa;
-
-                    // Posicionar menu
                     menuContextoTarefa.style.left = e.pageX + 'px';
                     menuContextoTarefa.style.top = e.pageY + 'px';
                     menuContextoTarefa.style.display = 'block';
                 });
 
-                // Criar checkbox
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.className = 'tarefa-checkbox';
@@ -509,20 +475,15 @@
                     toggleTarefaConcluida(tarefa.id);
                 });
 
-                // Criar conteúdo da tarefa
                 const conteudo = document.createElement('div');
                 conteudo.className = 'tarefa-conteudo';
 
                 const titulo = document.createElement('div');
                 titulo.className = 'tarefa-titulo';
                 titulo.textContent = tarefa.titulo;
-                if (tarefa.concluida) {
-                    titulo.classList.add('concluida');
-                }
-
+                if (tarefa.concluida) titulo.classList.add('concluida');
                 conteudo.appendChild(titulo);
 
-                // Adicionar descrição se existir
                 if (tarefa.descricao) {
                     const descricao = document.createElement('div');
                     descricao.className = 'tarefa-descricao';
@@ -530,7 +491,6 @@
                     conteudo.appendChild(descricao);
                 }
 
-                // Adicionar informações extras se existirem
                 if (tarefa.dataFim || tarefa.responsavel) {
                     const info = document.createElement('div');
                     info.className = 'tarefa-info';
@@ -552,7 +512,6 @@
                     conteudo.appendChild(info);
                 }
 
-                // Botão de excluir
                 const btnExcluir = document.createElement('button');
                 btnExcluir.className = 'tarefa-btn-excluir';
                 btnExcluir.innerHTML = '<i data-lucide="trash-2"></i>';
@@ -563,15 +522,12 @@
                 tarefaEl.appendChild(checkbox);
                 tarefaEl.appendChild(conteudo);
                 tarefaEl.appendChild(btnExcluir);
-
                 containerTarefas.appendChild(tarefaEl);
             });
 
-            // Reinicializar ícones Lucide
             lucide.createIcons();
         }
 
-        // Função para alternar tarefa concluída
         function toggleTarefaConcluida(tarefaId) {
             const tarefa = tarefas.find(t => t.id === tarefaId);
             if (tarefa) {
@@ -580,7 +536,6 @@
             }
         }
 
-        // Função para excluir tarefa
         function excluirTarefa(tarefaId, listaAtual) {
             const tarefa = tarefas.find(t => t.id === tarefaId);
             if (tarefa) {
@@ -589,13 +544,11 @@
             }
         }
 
-        // Função para formatar data
         function formatarData(dataString) {
             const data = new Date(dataString + 'T00:00:00');
             return data.toLocaleDateString('pt-BR');
         }
 
-        // Inicializar ícones Lucide
         lucide.createIcons();
     });
 </script>
