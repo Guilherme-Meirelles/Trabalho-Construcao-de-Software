@@ -30,7 +30,7 @@ i {
     width: 240px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Alinhamento alterado para melhor organização */
+    justify-content: flex-start;
     padding: 15px;
     border-right: 2px solid #000;
 }
@@ -120,11 +120,11 @@ i {
 /* --- Listas do Usuário --- */
 .listas {
     margin-top: 15px;
-    flex-grow: 1; /* Permite que o bloco de listas ocupe o espaço restante */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    overflow-y: auto; /* Adicionado para permitir scroll se houver muitas listas */
+    overflow-y: auto;
 }
 
 .lista {
@@ -162,7 +162,6 @@ i {
     cursor: pointer;
     margin-top: 10px;
     transition: background 0.2s;
-    /* Alinhado ao final do sidebar */
     margin-top: auto;
 }
 
@@ -184,14 +183,13 @@ i {
 .titulo {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 15px;
 }
 
 .titulo-info {
     display: flex;
     align-items: baseline;
-    gap: 6px;
+    gap: 10px;
 }
 
 .titulo h2 {
@@ -208,6 +206,7 @@ i {
 .titulo-acoes {
     display: flex;
     gap: 8px;
+    margin-left: 210px;
 }
 
 .btn-filtro,
@@ -303,7 +302,7 @@ i {
     align-items: center;
     gap: 10px;
     width: 70%;
-    max-width: 500px; /* Limite de largura para melhor estética */
+    max-width: 500px;
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -445,7 +444,7 @@ i {
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s;
-    display: flex; /* Para centralizar ícones */
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -468,7 +467,6 @@ i {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* display: none; */ /* O HTML controla a visibilidade com `style` */
 }
 
 /* ===== Modal Adicionar Tarefa ===== */
@@ -762,7 +760,7 @@ i {
 .btn-excluir {
     background-color: #d32f2f;
     color: #ffffff;
-    font-weight: 600; /* Estilo mais forte para exclusão */
+    font-weight: 600;
 }
 
 .btn-excluir:hover {
@@ -771,7 +769,7 @@ i {
 
 
 /* ===== Modal de Verificação (modalVerificacao) ===== */
-.verificacao { /* Lowercase 'v' to match HTML */
+.verificacao {
     background-color: #3a3a3a;
     border-radius: 16px;
     padding: 30px;
