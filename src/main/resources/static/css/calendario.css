@@ -9,6 +9,8 @@
 .btn-calendario {
     width: 50px;
     height: 50px;
+    min-width: 50px;
+    min-height: 50px;
     background-color: #2a2a2a;
     border: none;
     color: #fff;
@@ -17,18 +19,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    padding: 0;
+    margin: 0;
+    position: relative;
 }
 
 .btn-calendario:hover {
     background-color: #3a3a3a;
-    transform: scale(1.05);
 }
 
 .btn-calendario i {
     width: 24px;
     height: 24px;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 /* ===== Modal do Calendário ===== */

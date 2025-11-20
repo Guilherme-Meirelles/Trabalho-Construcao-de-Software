@@ -14,7 +14,7 @@
 <aside class="sidebar" th:fragment="sidebar">
     <div class="header-sidebar">
         <h1 class="app-title">ToDaily</h1>
-        <button class="btn-config" onclick="abrirModalConfig()">
+        <button class="btn-config" onclick="abrirModalConfig()" title="Configurações">
             <i data-lucide="settings"></i>
         </button>
     </div>
@@ -37,6 +37,9 @@
         </button>
         <button class="menu-item" onclick="alert('Página em desenvolvimento')">
             <i data-lucide="calendar"></i> Agendadas
+        </button>
+        <button class="menu-item" onclick="alert('Página em desenvolvimento')">
+            <i data-lucide="list-checks"></i> Todas as Tarefas
         </button>
         <button class="menu-item" onclick="navegarPara(this, '/areasTrabalho')">
             <i data-lucide="briefcase"></i> Áreas de Trabalho
@@ -490,11 +493,13 @@
             } else if (path === '/agendadas') {
                 const btnAgendadas = document.querySelectorAll('.menu-item')[1];
                 if (btnAgendadas) btnAgendadas.classList.add('active');
+            } else if (path === '/todasTarefas') {
+                const btnTodasTarefas = document.querySelectorAll('.menu-item')[2];
+                if (btnTodasTarefas) btnTodasTarefas.classList.add('active');
             } else if (path.startsWith('/areasTrabalho')) {
-                const btnAreasTrabalho = document.querySelectorAll('.menu-item')[2];
+                const btnAreasTrabalho = document.querySelectorAll('.menu-item')[3];
                 if (btnAreasTrabalho) btnAreasTrabalho.classList.add('active');
             }
-            // Adicione mais condições aqui para outras páginas se necessário
         }
 
         // Executa ao carregar a página

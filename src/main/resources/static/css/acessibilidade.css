@@ -12,6 +12,8 @@
 .btn-acessibilidade {
     width: 50px;
     height: 50px;
+    min-width: 50px;
+    min-height: 50px;
     background-color: #2a2a2a;
     border: none;
     color: #fff;
@@ -20,23 +22,34 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    padding: 0;
+    margin: 0;
+    position: relative;
 }
 
 .btn-acessibilidade:hover {
     background-color: #3a3a3a;
-    transform: scale(1.05);
 }
 
 .btn-acessibilidade.ativo {
     background-color: #4caf50;
-    transform: rotate(90deg);
 }
 
 .btn-acessibilidade i {
     width: 24px;
     height: 24px;
+    transition: transform 0.3s ease;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.btn-acessibilidade.ativo i {
+    transform: translate(-50%, -50%) rotate(45deg);
 }
 
 /* ===== Opções de Acessibilidade ===== */
@@ -58,6 +71,8 @@
 .opcao-acessibilidade {
     width: 45px;
     height: 45px;
+    min-width: 45px;
+    min-height: 45px;
     background-color: #2a2a2a;
     border: none;
     color: #ccc;
@@ -66,8 +81,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    padding: 0;
+    margin: 0;
+    position: relative;
 }
 
 .opcao-acessibilidade:hover {
@@ -80,6 +98,12 @@
 .opcao-acessibilidade i {
     width: 20px;
     height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 /* ===== Animação de entrada dos botões ===== */
@@ -122,6 +146,13 @@
         opacity: 1;
         transform: translateX(0) scale(1);
     }
+}
+
+/* ===== Ajuste para página de Áreas de Trabalho ===== */
+body:has(.conteudo-areas) .botao-acessibilidade-container {
+    right: 15px;
+    bottom: 15px;
+    z-index: 999;
 }
 
 /* ===== Responsividade ===== */
