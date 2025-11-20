@@ -181,6 +181,79 @@
     </div>
 </div>
 
+<!-- Modal: Gerenciar Checklists -->
+<div class="overlay-tarefa" id="modalGerenciarChecklist" style="display: none;">
+    <div class="modal-checklist">
+        <h3 class="titulo-modal-checklist">Gerenciar Checklists</h3>
+
+        <div class="lista-checklists" id="listaChecklists">
+            <!-- Checklists serão renderizados aqui -->
+        </div>
+
+        <div class="botoes-acao-checklist">
+            <button type="button" class="btn-novo-checklist" id="btnNovoChecklist">
+                <i data-lucide="plus"></i> Novo Checklist
+            </button>
+            <button type="button" class="btn-fechar-checklist" id="btnFecharGerenciar">
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Adicionar/Editar Checklist -->
+<div class="overlay-tarefa" id="modalAddChecklist" style="display: none;">
+    <div class="modal-checklist-form">
+        <h3 class="titulo-modal-checklist" id="tituloModalChecklist">Novo Checklist</h3>
+
+        <form class="form-checklist">
+            <div class="campo-checklist">
+                <label>Nome do Checklist*:</label>
+                <input type="text" id="checklistNome" placeholder="Digite o nome do checklist" />
+            </div>
+
+            <div class="campo-checklist">
+                <label>Cor:</label>
+                <div class="seletor-cor">
+                    <button type="button" class="btn-cor-selecionada" id="btnAbrirPaleta">
+                        <div class="cor-preview" id="corPreview" style="background-color: #4caf50;"></div>
+                        <span>Escolher cor</span>
+                    </button>
+
+                    <div class="paleta-cores" id="paletaCores" style="display: none;">
+                        <button type="button" class="cor-opcao" data-cor="#4caf50" style="background-color: #4caf50;"></button>
+                        <button type="button" class="cor-opcao" data-cor="#2196f3" style="background-color: #2196f3;"></button>
+                        <button type="button" class="cor-opcao" data-cor="#ff9800" style="background-color: #ff9800;"></button>
+                        <button type="button" class="cor-opcao" data-cor="#f44336" style="background-color: #f44336;"></button>
+                        <button type="button" class="cor-opcao" data-cor="#9c27b0" style="background-color: #9c27b0;"></button>
+                        <button type="button" class="cor-opcao" data-cor="#ff5722" style="background-color: #ff5722;"></button>
+                        <button type="button" class="cor-opcao" data-cor="#00bcd4" style="background-color: #00bcd4;"></button>
+                        <button type="button" class="cor-opcao" data-cor="#ffeb3b" style="background-color: #ffeb3b;"></button>
+                        <button type="button" class="cor-opcao" data-cor="#795548" style="background-color: #795548;"></button>
+                        <button type="button" class="cor-opcao" data-cor="#607d8b" style="background-color: #607d8b;"></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="botoes-acao-checklist-form">
+                <button type="button" class="btn-cancelar-checklist" id="btnCancelarChecklist">Cancelar</button>
+                <button type="button" class="btn-salvar-checklist" id="btnSalvarChecklist">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Remover Checklist -->
+<div class="overlay-tarefa" id="modalRemoverChecklist" style="display: none;">
+    <div class="modal-remover">
+        <p class="modal-remover-mensagem">Deseja realmente remover este checklist?</p>
+        <div class="modal-remover-botoes">
+            <button class="btn-remover-nao" id="btnCancelarRemoverChecklist">Não</button>
+            <button class="btn-remover-sim" id="btnConfirmarRemoverChecklist">Sim</button>
+        </div>
+    </div>
+</div>
+
 <!-- Importa os Modais do fragment -->
 <div th:replace="~{sidebar :: modais}"></div>
 
@@ -204,7 +277,7 @@
     // Array para armazenar as tarefas
     let tarefas = [];
     let tarefaSelecionada = null;
-    let listaAtual = 'para-hoje'; // Lista atual sendo visualizada
+    let listaAtual = 'para-hoje';
 
     // Script para abrir/fechar modal de Adicionar Tarefa
     document.addEventListener('DOMContentLoaded', function() {
@@ -370,7 +443,8 @@
                     dataFim: dataFim,
                     responsavel: responsavel,
                     notificacoes: notificacoes,
-                    concluida: false
+                    concluida: false,
+                    checklistId: checklistSelecionadoTarefa
                 };
                 tarefas.push(tarefa);
                 console.log('Tarefa adicionada!', tarefa);
@@ -382,6 +456,7 @@
             modalAddTarefa.style.display = 'none';
             limparFormulario();
             tarefaSelecionada = null;
+            checklistSelecionadoTarefa = null;
             tituloModalTarefa.textContent = 'Adicionar Tarefa';
         });
 
@@ -392,6 +467,7 @@
             document.getElementById('tarefaDataFim').value = '';
             document.getElementById('tarefaResponsavel').value = '';
             document.getElementById('tarefaNotificacoes').checked = false;
+            checklistSelecionadoTarefa = null;
         }
 
         function preencherFormulario(tarefa) {
@@ -401,6 +477,7 @@
             document.getElementById('tarefaDataFim').value = tarefa.dataFim;
             document.getElementById('tarefaResponsavel').value = tarefa.responsavel;
             document.getElementById('tarefaNotificacoes').checked = tarefa.notificacoes;
+            checklistSelecionadoTarefa = tarefa.checklistId || null;
         }
 
         btnEditarTarefa.addEventListener('click', function() {
@@ -458,6 +535,15 @@
                 tarefaEl.className = 'tarefa-item';
                 tarefaEl.dataset.id = tarefa.id;
 
+                // Barra de cor do checklist
+                let corBarra = '';
+                if (tarefa.checklistId) {
+                    const checklist = checklists.find(c => c.id === tarefa.checklistId);
+                    if (checklist) {
+                        corBarra = `<div class="tarefa-checklist-barra" style="background-color: ${checklist.cor};"></div>`;
+                    }
+                }
+
                 tarefaEl.addEventListener('contextmenu', function(e) {
                     e.preventDefault();
                     tarefaSelecionada = tarefa;
@@ -490,9 +576,20 @@
                     conteudo.appendChild(descricao);
                 }
 
-                if (tarefa.dataFim || tarefa.responsavel) {
+                if (tarefa.dataFim || tarefa.responsavel || tarefa.checklistId) {
                     const info = document.createElement('div');
                     info.className = 'tarefa-info';
+
+                    if (tarefa.checklistId) {
+                        const checklist = checklists.find(c => c.id === tarefa.checklistId);
+                        if (checklist) {
+                            const badge = document.createElement('span');
+                            badge.className = 'tarefa-checklist-badge';
+                            badge.style.borderLeftColor = checklist.cor;
+                            badge.innerHTML = `<i data-lucide="list"></i> ${checklist.nome}`;
+                            info.appendChild(badge);
+                        }
+                    }
 
                     if (tarefa.dataFim) {
                         const data = document.createElement('span');
@@ -518,6 +615,9 @@
                     excluirTarefa(tarefa.id, listaFiltro);
                 });
 
+                if (corBarra) {
+                    tarefaEl.innerHTML = corBarra;
+                }
                 tarefaEl.appendChild(checkbox);
                 tarefaEl.appendChild(conteudo);
                 tarefaEl.appendChild(btnExcluir);
@@ -546,6 +646,219 @@
         function formatarData(dataString) {
             const data = new Date(dataString + 'T00:00:00');
             return data.toLocaleDateString('pt-BR');
+        }
+
+        // ===== SISTEMA DE CHECKLISTS =====
+        let checklists = [];
+        let checklistSelecionado = null;
+        let checklistSelecionadoTarefa = null;
+        let corSelecionada = '#4caf50';
+
+        // Elementos do DOM
+        const btnChecklist = document.getElementById('btnChecklist');
+        const modalGerenciarChecklist = document.getElementById('modalGerenciarChecklist');
+        const modalAddChecklist = document.getElementById('modalAddChecklist');
+        const modalRemoverChecklist = document.getElementById('modalRemoverChecklist');
+        const listaChecklistsEl = document.getElementById('listaChecklists');
+        const btnFecharGerenciar = document.getElementById('btnFecharGerenciar');
+        const btnNovoChecklist = document.getElementById('btnNovoChecklist');
+        const btnCancelarChecklist = document.getElementById('btnCancelarChecklist');
+        const btnSalvarChecklist = document.getElementById('btnSalvarChecklist');
+        const btnAbrirPaleta = document.getElementById('btnAbrirPaleta');
+        const paletaCores = document.getElementById('paletaCores');
+        const corPreview = document.getElementById('corPreview');
+        const checklistNomeInput = document.getElementById('checklistNome');
+        const tituloModalChecklist = document.getElementById('tituloModalChecklist');
+        const btnCancelarRemoverChecklist = document.getElementById('btnCancelarRemoverChecklist');
+        const btnConfirmarRemoverChecklist = document.getElementById('btnConfirmarRemoverChecklist');
+        let checklistParaRemover = null;
+
+        // Abrir modal de gerenciar checklists
+        btnChecklist.addEventListener('click', function() {
+            modalGerenciarChecklist.style.display = 'flex';
+            renderizarChecklists();
+            setTimeout(() => lucide.createIcons(), 10);
+        });
+
+        // Fechar modal de gerenciar
+        btnFecharGerenciar.addEventListener('click', function() {
+            modalGerenciarChecklist.style.display = 'none';
+        });
+
+        // Abrir modal de novo checklist
+        btnNovoChecklist.addEventListener('click', function() {
+            checklistSelecionado = null;
+            corSelecionada = '#4caf50';
+            tituloModalChecklist.textContent = 'Novo Checklist';
+            checklistNomeInput.value = '';
+            corPreview.style.backgroundColor = corSelecionada;
+            modalAddChecklist.style.display = 'flex';
+        });
+
+        // Cancelar adicionar/editar checklist
+        btnCancelarChecklist.addEventListener('click', function() {
+            modalAddChecklist.style.display = 'none';
+            checklistNomeInput.value = '';
+        });
+
+        // Salvar checklist
+        btnSalvarChecklist.addEventListener('click', function() {
+            const nome = checklistNomeInput.value.trim();
+
+            if (!nome) {
+                alert('Por favor, digite um nome para o checklist');
+                return;
+            }
+
+            if (checklistSelecionado) {
+                // Editando
+                checklistSelecionado.nome = nome;
+                checklistSelecionado.cor = corSelecionada;
+            } else {
+                // Criando novo
+                const novoChecklist = {
+                    id: Date.now(),
+                    nome: nome,
+                    cor: corSelecionada
+                };
+                checklists.push(novoChecklist);
+            }
+
+            modalAddChecklist.style.display = 'none';
+            renderizarChecklists();
+            checklistNomeInput.value = '';
+        });
+
+        // Abrir/Fechar paleta de cores
+        btnAbrirPaleta.addEventListener('click', function(e) {
+            e.stopPropagation();
+            paletaCores.style.display = paletaCores.style.display === 'none' ? 'grid' : 'none';
+        });
+
+        // Selecionar cor
+        document.querySelectorAll('.cor-opcao').forEach(btn => {
+            btn.addEventListener('click', function() {
+                corSelecionada = this.dataset.cor;
+                corPreview.style.backgroundColor = corSelecionada;
+
+                // Remove classe selecionada de todos
+                document.querySelectorAll('.cor-opcao').forEach(b => b.classList.remove('selecionada'));
+                this.classList.add('selecionada');
+
+                paletaCores.style.display = 'none';
+            });
+        });
+
+        // Fechar paleta ao clicar fora
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.seletor-cor')) {
+                paletaCores.style.display = 'none';
+            }
+        });
+
+        // Fechar modais ao clicar no overlay
+        modalGerenciarChecklist.addEventListener('click', function(e) {
+            if (e.target === modalGerenciarChecklist) {
+                modalGerenciarChecklist.style.display = 'none';
+            }
+        });
+
+        modalAddChecklist.addEventListener('click', function(e) {
+            if (e.target === modalAddChecklist) {
+                modalAddChecklist.style.display = 'none';
+                checklistNomeInput.value = '';
+            }
+        });
+
+        modalRemoverChecklist.addEventListener('click', function(e) {
+            if (e.target === modalRemoverChecklist) {
+                modalRemoverChecklist.style.display = 'none';
+                checklistParaRemover = null;
+            }
+        });
+
+        // Cancelar remoção
+        btnCancelarRemoverChecklist.addEventListener('click', function() {
+            modalRemoverChecklist.style.display = 'none';
+            checklistParaRemover = null;
+        });
+
+        // Confirmar remoção
+        btnConfirmarRemoverChecklist.addEventListener('click', function() {
+            if (checklistParaRemover) {
+                checklists = checklists.filter(c => c.id !== checklistParaRemover.id);
+                modalRemoverChecklist.style.display = 'none';
+                renderizarChecklists();
+                checklistParaRemover = null;
+            }
+        });
+
+        // Renderizar lista de checklists
+        function renderizarChecklists() {
+            listaChecklistsEl.innerHTML = '';
+
+            if (checklists.length === 0) {
+                listaChecklistsEl.innerHTML = `
+                    <div class="lista-checklists-vazia">
+                        <i data-lucide="list"></i>
+                        <p>Nenhum checklist criado</p>
+                        <span>Clique em "Novo Checklist" para começar</span>
+                    </div>
+                `;
+                setTimeout(() => lucide.createIcons(), 10);
+                return;
+            }
+
+            checklists.forEach(checklist => {
+                const item = document.createElement('div');
+                item.className = 'checklist-item';
+                item.innerHTML = `
+                    <div class="checklist-cor" style="background-color: ${checklist.cor};"></div>
+                    <div class="checklist-info">
+                        <div class="checklist-nome">${checklist.nome}</div>
+                    </div>
+                    <div class="checklist-acoes">
+                        <button class="btn-editar-checklist" data-id="${checklist.id}">
+                            <i data-lucide="edit-2"></i>
+                        </button>
+                        <button class="btn-excluir-checklist" data-id="${checklist.id}">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                    </div>
+                `;
+
+                // Editar checklist
+                item.querySelector('.btn-editar-checklist').addEventListener('click', function() {
+                    checklistSelecionado = checklist;
+                    tituloModalChecklist.textContent = 'Editar Checklist';
+                    checklistNomeInput.value = checklist.nome;
+                    corSelecionada = checklist.cor;
+                    corPreview.style.backgroundColor = corSelecionada;
+                    modalAddChecklist.style.display = 'flex';
+                });
+
+                // Remover checklist
+                item.querySelector('.btn-excluir-checklist').addEventListener('click', function() {
+                    checklistParaRemover = checklist;
+                    modalRemoverChecklist.style.display = 'flex';
+                });
+
+                // Selecionar checklist para tarefa (clique no item)
+                item.addEventListener('click', function(e) {
+                    if (!e.target.closest('.btn-editar-checklist') && !e.target.closest('.btn-excluir-checklist')) {
+                        checklistSelecionadoTarefa = checklist.id;
+                        modalGerenciarChecklist.style.display = 'none';
+
+                        // Atualiza visual do botão de checklist
+                        btnChecklist.style.borderColor = checklist.cor;
+                        btnChecklist.style.backgroundColor = checklist.cor + '33';
+                    }
+                });
+
+                listaChecklistsEl.appendChild(item);
+            });
+
+            setTimeout(() => lucide.createIcons(), 10);
         }
 
         lucide.createIcons();
