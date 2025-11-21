@@ -6,6 +6,29 @@
   <component name="ChangeListManager">
     <list default="true" id="963ae2cd-f82b-476a-b1c0-108ba5d5c374" name="Changes" comment="1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/ConfigBancoDeDados.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/DemoApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/Modelos/Usuario.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/controle/loginControle.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/repository/UsuarioRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/service/CookieService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/service/autentificador/LoginInterceptor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/service/autentificador/LoginInterceptorConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/static/css/cadastro.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/static/css/menuPrincipal.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/static/css/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/static/img/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/templates/cadastro.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/templates/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/templates/menuPrincipal.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../demo/src/test/java/com/example/demo/DemoApplicationTests.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,18 +47,18 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "matheuskcampaner"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;matheuskcampaner&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Guilherme-Meirelles/Trabalho-Construcao-de-Software.git",
-    "accountId": "282f4f0e-a3e9-4176-bd92-bb8c18d707f5"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Guilherme-Meirelles/Trabalho-Construcao-de-Software.git&quot;,
+    &quot;accountId&quot;: &quot;282f4f0e-a3e9-4176-bd92-bb8c18d707f5&quot;
   }
-}]]></component>
+}</component>
   <component name="IlluminatedCloudWorkspaceSettings">
     <option name="projectWorkspaceSettings">
       <ProjectWorkspaceSettings>
@@ -82,7 +105,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.DemoApplication.executor": "Run",
     "Spring Boot.ToDailyApplication.executor": "Run",
-    "git-widget-placeholder": "matheusc",
+    "git-widget-placeholder": "guilhermej",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/matheus/Trabalho-Construcao-de-Software-main/Trabalho-Construcao-de-Software",
     "node.js.detected.package.eslint": "true",
@@ -94,7 +117,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Spring Boot.ToDailyApplication">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="Trabalho-Construcao-de-Software" />
       <method v="2">
@@ -128,6 +151,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.ToDailyApplication" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
