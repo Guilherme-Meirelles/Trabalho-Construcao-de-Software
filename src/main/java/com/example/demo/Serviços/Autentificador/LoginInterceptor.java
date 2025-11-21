@@ -22,6 +22,9 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true; // ✅ Usuário autenticado, pode prosseguir
         }
 
+        if ((url.equals("/redefinicaoSenha") || url.equals("/redefinirSenha")) && usuarioEmail != null) {
+            return true;
+        }
         // ❌ Não autenticado, redireciona para login
         response.sendRedirect("/login");
         return false;
