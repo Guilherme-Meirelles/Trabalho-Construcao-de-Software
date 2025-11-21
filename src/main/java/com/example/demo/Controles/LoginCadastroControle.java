@@ -18,7 +18,13 @@ public class LoginCadastroControle {
     private UsuarioRepository ur;
 
     @GetMapping("/login")
-    public String login() {
+    public String login(HttpServletResponse response) {
+        /*
+        CookieService.deleteCookie(response, "usuarioId");
+        CookieService.deleteCookie(response, "nomeUsuario");
+        CookieService.deleteCookie(response, "emailUsuario");
+        CookieService.deleteCookie(response, "dataNascimento");
+        */
         return "login";
     }
 

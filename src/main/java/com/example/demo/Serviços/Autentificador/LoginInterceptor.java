@@ -14,12 +14,17 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         // Verifica se há cookie de usuário
         String usuarioId = CookieService.getCookie(request, "usuarioId");
+        String usuarioEmail = CookieService.getCookie(request, "emailUsuario");
 
+        String url = request.getRequestURI();
 
         if (usuarioId != null) {
             return true; // ✅ Usuário autenticado, pode prosseguir
         }
 
+        if ((url.equals("/redefinicaoSenha") || url.equals("/redefinirSenha")) && usuarioEmail != null) {
+            return true;
+        }
         // ❌ Não autenticado, redireciona para login
         response.sendRedirect("/login");
         return false;
