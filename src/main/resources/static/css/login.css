@@ -53,6 +53,12 @@ body {
     font-weight: bold;
 }
 
+.login-container h4{
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
 /* ===== Campos ===== */
 form {
     display: flex;
