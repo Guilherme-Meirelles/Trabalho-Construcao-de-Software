@@ -89,7 +89,7 @@ public class RecuperarSenhaController {
     @PostMapping("/redefinirSenha")
     public String redefinirSenha(@RequestParam("senha") String senha,
                                  @RequestParam("token") String token,
-                                 Model model) {
+                                 Model model,HttpServletResponse response) {
 
         try {
             Token t = tokenRepository.findByToken(token);
@@ -106,6 +106,11 @@ public class RecuperarSenhaController {
             // invalidar token
             t.setUsado(true);
             tokenRepository.save(t);
+
+            CookieService.deleteCookie(response, "usuarioId");
+            CookieService.deleteCookie(response, "nomeUsuario");
+            CookieService.deleteCookie(response, "emailUsuario");
+            CookieService.deleteCookie(response, "dataNascimento");
 
             model.addAttribute("mensagem", "Senha redefinida com sucesso!");
             return "login";
