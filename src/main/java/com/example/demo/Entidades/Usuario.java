@@ -7,6 +7,7 @@ import java.util.Set;
 @Entity
 public class Usuario {
 
+    // CAMPOS DE USUÁRIO
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,6 +17,8 @@ public class Usuario {
     private String senha;
     private String dataNascimento;
 
+    // RELACIONAMENTOS DE USUÁRIO
+
     // Áreas que o usuário criou
     @OneToMany(mappedBy = "dono")
     private Set<AreaTrabalho> areasCriadas = new HashSet<>();
@@ -23,6 +26,10 @@ public class Usuario {
     // Participações do usuário em áreas
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Set<ParticipacaoArea> participacoes = new HashSet<>();
+
+    // usuario(n)-(n)tarefa
+    @ManyToMany(mappedBy = "responsaveis")
+    private Set<Tarefa> tarefasAtribuidas = new HashSet<>();
 
     // getters e setters básicos
     public Long getId() { return id; }
@@ -37,4 +44,7 @@ public class Usuario {
 
     public Set<AreaTrabalho> getAreasCriadas() { return areasCriadas; }
     public Set<ParticipacaoArea> getParticipacoes() { return participacoes; }
+
+    // tarefasAtribuidas
+    public Set<Tarefa> getTarefasAtribuidas() { return tarefasAtribuidas; }
 }

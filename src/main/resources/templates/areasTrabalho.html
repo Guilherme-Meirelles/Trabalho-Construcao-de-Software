@@ -21,24 +21,24 @@
             <h2>Áreas de Trabalho</h2>
         </div>
 
-    <div class="areas-grid" id="areasGrid">
+        <div class="areas-grid" id="areasGrid">
 
-        <!-- Renderiza cada área do usuário -->
-        <div class="area-card"
-            th:each="area : ${areas}"
-            th:data-id="${area.id}"
-            th:data-nome="${area.nome}"
-            onclick="abrirArea(this)"
-            oncontextmenu="abrirMenuContexto(event, this)">
-            <h3 th:text="${area.nome}"></h3>
+            <!-- Renderiza cada área do usuário -->
+            <div class="area-card"
+                th:each="area : ${areas}"
+                th:data-id="${area.id}"
+                th:data-nome="${area.nome}"
+                onclick="abrirArea(this)"
+                oncontextmenu="abrirMenuContexto(event, this)">
+                <h3 th:text="${area.nome}"></h3>
+            </div>
+
+            <!-- Card de adicionar área -->
+            <div class="area-card area-add" onclick="abrirModalNovaArea()">
+                <i data-lucide="plus-circle" data-size="52"></i>
+            </div>
+
         </div>
-
-        <!-- Card de adicionar área -->
-        <div class="area-card area-add" onclick="abrirModalNovaArea()">
-            <i data-lucide="plus-circle" data-size="52"></i>
-        </div>
-
-    </div>
 
         <!-- Botões de ação flutuantes -->
         <div class="acoes-flutuantes">
