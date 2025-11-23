@@ -26,7 +26,7 @@ public class AreaTrabalho {
 
     // areaTrabalho(1)-(n)Lista
     // Area de trabalho é dona da relação
-    @OneToMany(mappedBy = "areaMae")
+    @OneToMany(mappedBy = "areaMae", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Lista> listas = new HashSet<>();
 
     // GETTERS E SETTERS
@@ -37,6 +37,5 @@ public class AreaTrabalho {
     public Usuario getDono() { return dono; }
     public void setDono(Usuario dono) { this.dono = dono; }
     public Set<ParticipacaoArea> getParticipacoes() { return participacoes; }
-
     public Set<Lista> getListas() { return listas; }
 }

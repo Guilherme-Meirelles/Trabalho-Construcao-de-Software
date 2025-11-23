@@ -9,7 +9,7 @@ public class Categoria {
     /*
      * id : Long
      * nome : String
-     * cor : Sting
+     * cor : String
      * REL: tarefas : Set<Tarefa>
      */
 
@@ -18,7 +18,6 @@ public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nome;
     private String cor;
 

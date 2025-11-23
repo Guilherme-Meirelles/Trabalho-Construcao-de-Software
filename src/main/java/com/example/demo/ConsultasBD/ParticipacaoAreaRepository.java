@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ParticipacaoAreaRepository extends JpaRepository<ParticipacaoArea, Long> {
-
     List<ParticipacaoArea> findByUsuario(Usuario usuario);
     List<ParticipacaoArea> findByArea(AreaTrabalho area);
     ParticipacaoArea findByUsuarioAndArea(Usuario usuario, AreaTrabalho area);

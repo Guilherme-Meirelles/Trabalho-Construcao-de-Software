@@ -20,7 +20,6 @@ public class Lista {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String titulo;
     private String descricao;
 
@@ -34,7 +33,7 @@ public class Lista {
 
     // lista(1)-(n)tarefa
     // lista é dona da relação
-    @OneToMany(mappedBy="listaOrigem")
+    @OneToMany(mappedBy="listaOrigem", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Tarefa> tarefas = new HashSet<>();
     
     // GETTERS E SETTERS
