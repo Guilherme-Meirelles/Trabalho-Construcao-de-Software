@@ -55,21 +55,17 @@ public class edicaoUsuario {
             if (usuarioId != null) {
                 Long id = Long.parseLong(usuarioId);
 
-                // 2️⃣ Busca o usuário atual no banco
                 Usuario usuarioExistente = ur.findUsuarioById(id);
 
                 if (usuarioExistente != null) {
-                    // 3️⃣ Atualiza apenas os campos permitidos
                     usuarioExistente.setNome(usuarioEditado.getNome());
                     usuarioExistente.setEmail(usuarioEditado.getEmail());
                     usuarioExistente.setDataNascimento(usuarioEditado.getDataNascimento());
 
-                    // Atualiza senha somente se foi alterada
                     if (usuarioEditado.getSenha() != null && !usuarioEditado.getSenha().isBlank()) {
                         usuarioExistente.setSenha(usuarioEditado.getSenha());
                     }
 
-                    // 4️⃣ Salva de volta no banco
                     ur.save(usuarioExistente);
 
                     model.addAttribute("mensagem", "Dados atualizados com sucesso!");

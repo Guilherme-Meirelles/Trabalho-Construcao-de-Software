@@ -57,7 +57,6 @@ public class MenuPrincipalControle {
             Usuario usuario = this.ur.findUsuarioById(Long.parseLong(usuarioId));
 
             if (usuario != null && usuarioSenha.getSenha().equals(usuario.getSenha())) {
-                // ✅ Senha correta
                 this.ur.delete(usuario);
 
                 CookieService.deleteCookie(response, "usuarioId");
@@ -68,11 +67,8 @@ public class MenuPrincipalControle {
                 model.addAttribute("remocao", "Usuário removido com sucesso!");
                 return "login";
             } else {
-                // ⚠️ Senha incorreta — reabre modal e mostra erro
                 model.addAttribute("erro", "Senha incorreta. Tente novamente.");
                 model.addAttribute("abrirModal", "verificacao");
-
-                // ✅ repopula dados do usuário logado
                 model.addAttribute("nome", usuario.getNome());
                 model.addAttribute("email", usuario.getEmail());
                 model.addAttribute("dataNascimento", usuario.getDataNascimento());
@@ -97,15 +93,12 @@ public class MenuPrincipalControle {
             Usuario usuario = this.ur.findUsuarioById(Long.parseLong(usuarioId));
 
             if (usuario != null && usuarioSenha.getSenha().equals(usuario.getSenha())) {
-                // ✅ Senha correta
 
                 return "redirect:/edicaoUsuario";
             } else {
-                // ⚠️ Senha incorreta — reabre modal e mostra erro
                 model.addAttribute("erro", "Senha incorreta. Tente novamente.");
                 model.addAttribute("abrirModal", "verificacao");
 
-                // ✅ repopula dados do usuário logado
                 model.addAttribute("nome", usuario.getNome());
                 model.addAttribute("email", usuario.getEmail());
                 return "menuPrincipal"; // sem redirect

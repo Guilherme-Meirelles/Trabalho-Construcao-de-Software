@@ -17,8 +17,10 @@ public class ConfigBancoDeDados {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://localhost:3306/todaily_db?useTimezone=true&serverTimezone=UTC");
-        dataSource.setUsername("ToDaily_user");
-        dataSource.setPassword("ToDaily_123");
+        //dataSource.setUsername("ToDaily_user");
+        //dataSource.setPassword("ToDaily_123");
+        dataSource.setUsername("admin");
+        dataSource.setPassword("admin");
         return  dataSource;
     }
     @Bean
@@ -32,6 +34,4 @@ public class ConfigBancoDeDados {
         adapter.setPrepareConnection(true);
         return adapter;
     }
-
-
 }
