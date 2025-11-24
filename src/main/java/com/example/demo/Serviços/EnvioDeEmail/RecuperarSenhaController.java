@@ -62,7 +62,7 @@ public class RecuperarSenhaController {
             emailService2.enviarEmail(usuario.getEmail(), usuario.getNome(), tokenString);
 
             model.addAttribute("mensagem", "Email enviado com sucesso!");
-            CookieService.setCookie(response, "emailUsuario", usuario.getEmail(), 10000);
+
         } catch (Exception e) {
             model.addAttribute("erro", "Erro ao enviar email! \n" + e.getMessage());
         }
