@@ -38,8 +38,6 @@ i {
 .app-title {
     font-size: 18px;
     font-weight: bold;
-    padding: 5px 0 15px 5px;
-    border-bottom: 1px solid #333;
 }
 
 /* --- Perfil (no Sidebar) --- */

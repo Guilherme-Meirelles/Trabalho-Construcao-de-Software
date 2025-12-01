@@ -457,10 +457,12 @@ body {
     padding: 0;
     width: 90%;
     max-width: 580px;
+    max-height: 90vh;
     color: #ffffff;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
     animation: slideUp 0.3s ease;
-    overflow: hidden;
+    overflow-y: auto;   /* deixa rolar */
+    overflow-x: hidden;
 }
 
 @keyframes slideUp {

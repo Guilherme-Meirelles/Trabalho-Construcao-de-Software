@@ -1,10 +1,13 @@
 package com.example.demo.Controles;
 
 import com.example.demo.ConsultasBD.AreaTrabalhoRepository;
+import com.example.demo.ConsultasBD.ListaRepository;
 import com.example.demo.ConsultasBD.UsuarioRepository;
 import com.example.demo.Entidades.AreaTrabalho;
+import com.example.demo.Entidades.Lista;
 import com.example.demo.Entidades.Usuario;
 import com.example.demo.Serviços.CookieService;
+import com.example.demo.Serviços.ListaService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +35,12 @@ public class AreaTrabalhoController {
     @Autowired
     private AreaTrabalhoRepository areaTrabalhoRepository;
 
+    @Autowired
+    private ListaRepository listaRepository;
+
+    @Autowired
+    private ListaService listaService;
+
     @GetMapping("/areasTrabalho")
     public String areasTrabalho(Model model, HttpServletRequest request) {
 
@@ -50,17 +59,19 @@ public class AreaTrabalhoController {
         model.addAttribute("usuarioId", usuarioId);
         model.addAttribute("nome", usuario.getNome());
         model.addAttribute("email", usuario.getEmail());
+        model.addAttribute("dataNascimento", usuario.getDataNascimento());
 
         List<AreaTrabalho> areas = areaTrabalhoRepository.findByDono(usuario);
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("areas", areas);
+        model.addAttribute("isMenu", true);
 
         return "areasTrabalho";
     }
 
-    @GetMapping("/areasTrabalho/{name}")
-    public String areasTrabalhoId(Model model, HttpServletRequest request) {
+    @GetMapping("/areasTrabalho/{id}/{name}")
+    public String areasTrabalhoId(@PathVariable Long id, @PathVariable String name, Model model, HttpServletRequest request) {
 
         String usuarioId = CookieService.getCookie(request, "usuarioId");
 
@@ -74,10 +85,21 @@ public class AreaTrabalhoController {
             return "redirect:/login";
         }
 
+        AreaTrabalho area = areaTrabalhoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Área não encontrada"));
+
+        List<Lista> listas = listaService.listarPorArea(id);
+
         model.addAttribute("nome", usuario.getNome());
         model.addAttribute("email", usuario.getEmail());
+        model.addAttribute("dataNascimento", usuario.getDataNascimento());
 
-        return "menuPrincipal";
+        model.addAttribute("areaId", id);
+        model.addAttribute("areaName", name);
+        model.addAttribute("area", area);
+        model.addAttribute("listas", listas);
+
+        return "menu";
     }
 
     @PostMapping("/areasTrabalho/criar")
@@ -246,6 +268,42 @@ public class AreaTrabalhoController {
 
 
         return ResponseEntity.ok(membros);
+    }
+
+    @GetMapping("/areasTrabalho/{id}/listas")
+    @ResponseBody
+    public ResponseEntity<?> listarListas(@PathVariable Long id, HttpServletRequest request) {
+        // Verifica se o usuário está logado
+        String usuarioId = CookieService.getCookie(request, "usuarioId");
+        if (usuarioId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NOT_LOGGED");
+
+        Usuario usuario = usuarioRepository.findById(Long.parseLong(usuarioId)).orElse(null);
+        if (usuario == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("USER_NOT_FOUND");
+
+        // Verifica se a área existe
+        AreaTrabalho area = areaTrabalhoRepository.findById(id).orElse(null);
+        if (area == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("AREA_NOT_FOUND");
+
+        // Verifica se o usuário tem acesso à área
+        boolean temAcesso = area.getParticipacoes().stream()
+                .anyMatch(p -> p.getUsuario().getId().equals(usuario.getId()));
+        if (!temAcesso) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("NO_ACCESS");
+
+        // Obtém as listas da área
+        List<Lista> listas = listaService.listarPorArea(id);
+
+        // Mapeia as listas para JSON simples
+        List<Map<String, Object>> listasJson = listas.stream()
+                .map(l -> {
+                    Map<String, Object> mapa = new HashMap<>();
+                    mapa.put("id", l.getId());
+                    mapa.put("nome", l.getNome());
+                    mapa.put("descricao", l.getDescricao());
+                    return mapa;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(listasJson);
     }
 
 }

@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.Optional;
 
 @Controller
-public class MenuPrincipalControle {
+public class MenuController {
 
     @Autowired
     private UsuarioRepository ur;
 
-    @GetMapping("/menuPrincipal")
-    public String menuPrincipal(Model model, HttpServletRequest request) {
+    @GetMapping("/menu")
+    public String Menu(Model model, HttpServletRequest request) {
         String nome = CookieService.getCookie(request, "nomeUsuario");
         String email = CookieService.getCookie(request, "emailUsuario");
         String dataNascimento = CookieService.getCookie(request, "dataNascimento");
@@ -34,8 +34,14 @@ public class MenuPrincipalControle {
         model.addAttribute("nome", nome);
         model.addAttribute("email", email);
         model.addAttribute("dataNascimento", dataNascimento);
+        model.addAttribute("isMenu", true);
 
-        return "menuPrincipal"; // Retorna a view, não redirect
+        model.addAttribute("areaId", "");
+        model.addAttribute("areaName", "");
+        model.addAttribute("area", "");
+        model.addAttribute("listas", "");
+
+        return "menu"; // Retorna a view, não redirect
     }
 
     @GetMapping("/sidebar")
@@ -72,7 +78,14 @@ public class MenuPrincipalControle {
                 model.addAttribute("nome", usuario.getNome());
                 model.addAttribute("email", usuario.getEmail());
                 model.addAttribute("dataNascimento", usuario.getDataNascimento());
-                return "menuPrincipal"; // sem redirect
+                model.addAttribute("isMenu", true);
+
+                model.addAttribute("areaId", "");
+                model.addAttribute("areaName", "");
+                model.addAttribute("area", "");
+                model.addAttribute("listas", "");
+
+                return "menu"; // sem redirect
             }
         } else {
             model.addAttribute("erro", "Nenhum usuário logado.");
@@ -101,7 +114,15 @@ public class MenuPrincipalControle {
 
                 model.addAttribute("nome", usuario.getNome());
                 model.addAttribute("email", usuario.getEmail());
-                return "menuPrincipal"; // sem redirect
+                model.addAttribute("dataNascimento", usuario.getDataNascimento());
+                model.addAttribute("isMenu", true);
+                
+                model.addAttribute("areaId", "");
+                model.addAttribute("areaName", "");
+                model.addAttribute("area", "");
+                model.addAttribute("listas", "");
+                
+                return "menu"; // sem redirect
             }
         } else {
             model.addAttribute("erro", "Nenhum usuário logado.");

@@ -1,4 +1,5 @@
 // Mapeamento dos nomes das listas
+
 const nomesListas = {
     'faculdade': 'Faculdade',
     'casa': 'Casa',
@@ -7,8 +8,61 @@ const nomesListas = {
 
 // Array para armazenar as tarefas
 let tarefas = [];
+let listasCarregadas = [];
+let membrosCarregados = [];
+let listaAtual = null; 
 let tarefaSelecionada = null;
-let listaAtual = 'para-hoje';
+
+// Listas
+let listas = document.querySelectorAll('.lista');
+
+async function carregarTarefas(listaId) {
+    const response = await fetch(`/listas/${listaId}/tarefas`);
+    if (!response.ok) return [];
+    const tarefasJson = await response.json();
+    tarefas = tarefasJson; // preenche a variável global
+
+    // renderiza apenas as tarefas da lista filtrada
+    renderizarTarefas(+listaId);
+}
+
+// Chamada sempre que abrir o modal de tarefa
+async function atualizarCamposModalTarefa() {
+    const idArea = window.areaAtualId; // você definirá isso ao entrar na página
+
+    // 1) Carregar listas da área
+    const respListas = await fetch(`/areasTrabalho/${idArea}/listas`);
+    listasCarregadas = await respListas.json();
+
+    const selectLista = document.getElementById("tarefaLista");
+    selectLista.innerHTML = `<option value="">Selecione uma lista...</option>`;
+
+    listasCarregadas.forEach(l => {
+        selectLista.innerHTML += `
+            <option value="${l.id}" ${listaAtual === l.id ? "selected" : ""}>
+                ${l.nome}
+            </option>
+        `;
+    });
+
+    // 2) Carregar membros responsáveis
+    const respMembros = await fetch(`/areasTrabalho/${idArea}/membros`);
+    membrosCarregados = await respMembros.json();
+
+    const selectResp = document.getElementById("tarefaResponsavel");
+    selectResp.innerHTML = `<option value="">Selecione...</option>`;
+
+    membrosCarregados.forEach(m => {
+        selectResp.innerHTML += `
+            <option value="${m.id}">${m.nome}</option>
+        `;
+    });
+
+    // Se estiver editando uma tarefa, preenche tudo
+    if (tarefaSelecionada) {
+        preencherModalEdicao();
+    }
+}
 
 // Script para abrir/fechar modal de Adicionar Tarefa
 document.addEventListener('DOMContentLoaded', function() {
@@ -23,7 +77,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalConfirmarRemocao = document.getElementById('modalConfirmarRemocao');
     const btnCancelarRemocao = document.getElementById('btnCancelarRemocao');
     const btnConfirmarRemocao = document.getElementById('btnConfirmarRemocao');
+    const btnParaHoje = document.querySelector('.menu-item:nth-child(1)');
+    const btnAgendadas = document.querySelector('.menu-item:nth-child(2)');
+    const btnTodasTarefas = document.querySelector('.menu-item:nth-child(3)');
     let tarefaParaRemover = null;
+
+    btnParaHoje.innerText
 
     const btnFiltro = document.getElementById('btnFiltro');
     const btnOrdenar = document.getElementById('btnOrdenar');
@@ -31,6 +90,65 @@ document.addEventListener('DOMContentLoaded', function() {
     const menuOrdenar = document.getElementById('menuOrdenar');
     let filtroAtivo = 'todas';
     let ordenacaoAtiva = null;
+
+    // Data de Hoje
+
+    const hoje = new Date();
+    const dia = String(hoje.getDate()).padStart(2, "0");
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+    const ano = String(hoje.getFullYear()).slice(-2); // pega só os dois últimos dígitos
+
+    const dataFormatada = `${dia}/${mes}/${ano}`;
+
+    document.getElementById("subtitulo-principal").textContent = `- ${dataFormatada}`;
+
+    window.mudarTituloPrincipal = function (elementoClicado) {
+        const novoTitulo = elementoClicado.innerText.trim();
+        const tituloH2 = document.getElementById('titulo-principal');
+        const subtituloSpan = document.getElementById('subtitulo-principal');
+
+        // Atualiza o título
+        if (tituloH2) {
+            tituloH2.innerText = novoTitulo;
+        }
+
+        subtituloSpan.innerText = "";
+    }
+
+    window.clickLista = function(lista) {
+        listas.forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        lista.classList.add('active');
+        const listaId = lista.getAttribute('data-id');
+        listaAtual = +listaId
+        carregarTarefas(listaId);
+        atualizarCamposModalTarefa()
+        mudarTituloPrincipal(lista)
+    }
+
+    listas.forEach(lista => {
+        lista.addEventListener('click', () => clickLista(lista));
+    });
+
+    window.adicionarListaNaTela = function (lista) {
+        const container = document.getElementById("listasContainer");
+
+        const btn = document.createElement("button");
+        btn.className = "lista";
+        btn.dataset.id = lista.id;
+        btn.onclick = () => clickLista(btn);
+        btn.oncontextmenu = (e) => mostrarMenuContexto(e, "menuContextoLista", btn);
+
+        btn.innerHTML = `
+            <i data-lucide="list"></i>
+            <span>${lista.nome}</span>
+        `;
+
+        container.appendChild(btn);
+
+        listas = document.querySelectorAll('.lista');
+        lucide.createIcons(); // recarrega ícones
+    }
 
     // Abrir/fechar menus de filtro e ordenação
     btnFiltro.addEventListener('click', function(e) {
@@ -76,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.classList.remove('active');
             });
             this.classList.add('active');
-            renderizarTarefas(listaAtual);
+            carregarTarefas(listaAtual);
             menuFiltro.style.display = 'none';
             lucide.createIcons();
         });
@@ -90,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.classList.remove('active');
             });
             this.classList.add('active');
-            renderizarTarefas(listaAtual);
+            carregarTarefas(listaAtual);
             menuOrdenar.style.display = 'none';
             lucide.createIcons();
         });
@@ -126,7 +244,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Abrir modal
     btnAddTarefa.addEventListener('click', function() {
-        modalAddTarefa.style.display = 'flex';
+        btnOkTarefa.style.display = "block";
+        btnCancelarTarefa.textContent = "Cancelar";
+
+        tarefaSelecionada = null;
+        document.getElementById("tituloModalTarefa").textContent = "Adicionar Tarefa";
+
+        atualizarCamposModalTarefa();
+        modalAddTarefa.style.display = "flex";
     });
 
     // Fechar modal ao clicar no overlay
@@ -144,54 +269,85 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Ação do botão OK - Adicionar ou Editar tarefa
-    btnOkTarefa.addEventListener('click', function() {
-        const lista = document.getElementById('tarefaLista').value;
+    btnOkTarefa.addEventListener("click", async function () {
+
+        const listaId = +document.getElementById('tarefaLista').value;
         const titulo = document.getElementById('tarefaTitulo').value.trim();
         const descricao = document.getElementById('tarefaDescricao').value.trim();
-        const dataFim = document.getElementById('tarefaDataFim').value;
-        const responsavel = document.getElementById('tarefaResponsavel').value;
+        const dataFim = document.getElementById('tarefaDataFim').value || null; // LocalDate
+        const responsavelId = +document.getElementById('tarefaResponsavel').value || null;
         const notificacoes = document.getElementById('tarefaNotificacoes').checked;
+        const checklistId = checklistSelecionadoTarefa || null;
 
-        if (!lista || !titulo) {
-            alert('Por favor, preencha os campos obrigatórios (Lista e Título)');
+        if (!listaId || !titulo) {
+            alert("Lista e título são obrigatórios.");
             return;
         }
 
+        // Corpo JSON enviado ao backend
+        const corpo = {
+            titulo,
+            descricao,
+            dataFim,            // LocalDate string
+            notificacoes,
+            checklistId,
+            listaId,
+            responsavelId
+        };
+
+        let resposta;
+        let tarefaCriadaOuEditada;
+
+        // EDITAR
         if (tarefaSelecionada) {
-            tarefaSelecionada.lista = lista;
-            tarefaSelecionada.titulo = titulo;
-            tarefaSelecionada.descricao = descricao;
-            tarefaSelecionada.dataFim = dataFim;
-            tarefaSelecionada.responsavel = responsavel;
-            tarefaSelecionada.notificacoes = notificacoes;
-            console.log('Tarefa editada!', tarefaSelecionada);
+            console.log(tarefaSelecionada)
+            resposta = await fetch(`/tarefas/${tarefaSelecionada.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(corpo)
+            });
+
+        // CRIAR
         } else {
-            const tarefa = {
-                id: Date.now(),
-                lista: lista,
-                titulo: titulo,
-                descricao: descricao,
-                dataFim: dataFim,
-                responsavel: responsavel,
-                notificacoes: notificacoes,
-                concluida: false,
-                checklistId: checklistSelecionadoTarefa
-            };
-            tarefas.push(tarefa);
-            console.log('Tarefa adicionada!', tarefa);
+            resposta = await fetch(`/tarefas`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(corpo)
+            });
         }
 
-        listaAtual = lista;
-        atualizarTituloPagina(lista);
-        renderizarTarefas(lista);
-        modalAddTarefa.style.display = 'none';
+        if (!resposta.ok) {
+            const txt = await resposta.text();
+            throw new Error("Erro ao salvar a tarefa: " + txt);
+        }
+
+        tarefaCriadaOuEditada = await resposta.json();
+
+        // Atualiza arrays locais
+        if (tarefaSelecionada) {
+            const idx = tarefas.findIndex(t => t.id === tarefaCriadaOuEditada.id);
+            if (idx !== -1) tarefas[idx] = tarefaCriadaOuEditada;
+        } else {
+            tarefas.push(tarefaCriadaOuEditada);
+        }
+
+        // Renderizar apenas tarefas daquela lista
+        carregarTarefas(listaId);
+
+        // Reset
+        modalAddTarefa.style.display = "none";
         limparFormulario();
         tarefaSelecionada = null;
         checklistSelecionadoTarefa = null;
-        tituloModalTarefa.textContent = 'Adicionar Tarefa';
     });
 
-    function limparFormulario() {
+    window.limparFormulario = function () {
+        document.querySelectorAll("#modalAddTarefa input, #modalAddTarefa textarea, #modalAddTarefa select")
+            .forEach(el => el.disabled = false);
+        document.getElementById("btnAnexo").disabled = false;
+        document.getElementById("btnChecklist").disabled = false;
+
+        document.getElementById('tarefaLista').disabled = false;
         document.getElementById('tarefaLista').value = '';
         document.getElementById('tarefaTitulo').value = '';
         document.getElementById('tarefaDescricao').value = '';
@@ -201,8 +357,33 @@ document.addEventListener('DOMContentLoaded', function() {
         checklistSelecionadoTarefa = null;
     }
 
-    function preencherFormulario(tarefa) {
-        document.getElementById('tarefaLista').value = tarefa.lista;
+    window.preencherFormulario = async function (tarefa) {
+
+        //const lista = await fetch(`/listas/${tarefa.listaId}`);
+        //resp = await lista.json()
+        const idArea = window.areaAtualId;
+
+        // 1) Carregar listas da área
+        const respListas = await fetch(`/areasTrabalho/${idArea}/listas`);
+        listasCarregadas = await respListas.json();
+
+        document.querySelectorAll("#modalAddTarefa input, #modalAddTarefa textarea, #modalAddTarefa select")
+            .forEach(el => el.disabled = false);
+        document.getElementById("btnAnexo").disabled = false;
+        document.getElementById("btnChecklist").disabled = false;
+
+        // aa
+        const selectLista = document.getElementById("tarefaLista");
+        selectLista.innerHTML = `<option value="">Selecione uma lista...</option>`;
+
+        listasCarregadas.forEach(l => {
+            selectLista.innerHTML += `
+                <option value="${l.id}" ${tarefa.listaId === l.id ? "selected" : ""}>
+                    ${l.nome}
+                </option>
+            `;
+        });
+
         document.getElementById('tarefaTitulo').value = tarefa.titulo;
         document.getElementById('tarefaDescricao').value = tarefa.descricao;
         document.getElementById('tarefaDataFim').value = tarefa.dataFim;
@@ -215,19 +396,62 @@ document.addEventListener('DOMContentLoaded', function() {
         if (tarefaSelecionada) {
             tituloModalTarefa.textContent = 'Editar Tarefa';
             preencherFormulario(tarefaSelecionada);
-            modalAddTarefa.style.display = 'flex';
+            document.getElementById('tarefaLista').disabled = true;
             menuContextoTarefa.style.display = 'none';
+
+            document.getElementById("btnOkTarefa").style.display = "block";
+            document.getElementById("btnCancelarTarefa").textContent = "Cancelar";
+
+            modalAddTarefa.style.display = 'flex';
         }
     });
 
-    function atualizarTituloPagina(listaId) {
+    window.visualizarTarefa = async function(tarefa) {
+
+        const idArea = window.areaAtualId;
+
+        // 1) Carregar listas da área
+        const respListas = await fetch(`/areasTrabalho/${idArea}/listas`);
+        listasCarregadas = await respListas.json();
+
+        const selectLista = document.getElementById("tarefaLista");
+        selectLista.innerHTML = `<option value="">Selecione uma lista...</option>`;
+
+        listasCarregadas.forEach(l => {
+            selectLista.innerHTML += `
+                <option value="${l.id}" ${tarefa.listaId === l.id ? "selected" : ""}>
+                    ${l.nome}
+                </option>
+            `;
+        });
+
+        document.getElementById("tarefaTitulo").value = tarefa.titulo;
+        document.getElementById("tarefaDescricao").value = tarefa.descricao || "";
+        document.getElementById("tarefaDataFim").value = tarefa.dataFim || "";
+        document.getElementById("tarefaResponsavel").value = tarefa.responsavel || "";
+        document.getElementById("tarefaNotificacoes").checked = tarefa.notificacoes || false;
+
+        document.querySelectorAll("#modalAddTarefa input, #modalAddTarefa textarea, #modalAddTarefa select")
+            .forEach(el => el.disabled = true);
+        document.getElementById("btnAnexo").disabled = true;
+        document.getElementById("btnChecklist").disabled = true;
+
+        document.querySelector(".titulo-modal-tarefa").textContent = "Detalhes da Tarefa";
+        document.getElementById("btnOkTarefa").style.display = "none";
+        document.getElementById("btnCancelarTarefa").textContent = "Fechar";
+
+        modalAddTarefa.style.display = 'flex';
+    }
+
+    window.atualizarTituloPagina = function (listaId) {
         const tituloPrincipal = document.getElementById('titulo-principal');
         tituloPrincipal.textContent = nomesListas[listaId] || 'Para Hoje';
     }
 
-    function renderizarTarefas(listaFiltro) {
+    window.renderizarTarefas = function (listaFiltro) {
+        // VERIFICAR A PARTIR DAQUI ESSA MERDA
         containerTarefas.innerHTML = '';
-        let tarefasFiltradas = tarefas.filter(t => t.lista === listaFiltro);
+        let tarefasFiltradas = tarefas.filter(t => t.listaId === listaFiltro);
 
         if (filtroAtivo === 'andamento') {
             tarefasFiltradas = tarefasFiltradas.filter(t => !t.concluida);
@@ -281,6 +505,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 menuContextoTarefa.style.left = e.pageX + 'px';
                 menuContextoTarefa.style.top = e.pageY + 'px';
                 menuContextoTarefa.style.display = 'block';
+            });
+
+            tarefaEl.addEventListener('click', function(e) {
+                // Evita abrir visualização ao clicar no botão excluir ou no checkbox
+                if (e.target.closest('.tarefa-btn-excluir')) return;
+                if (e.target.closest('.tarefa-checkbox')) return;
+
+                tarefaSelecionada = tarefa;
+                visualizarTarefa(tarefa);
             });
 
             const checkbox = document.createElement('input');
@@ -358,7 +591,31 @@ document.addEventListener('DOMContentLoaded', function() {
         lucide.createIcons();
     }
 
-    function toggleTarefaConcluida(tarefaId) {
+    btnParaHoje.addEventListener('click', function() {
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.lista').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        renderizarTarefas("hoje");
+        mudarTituloPrincipal(btnParaHoje)
+    });
+
+    btnAgendadas.addEventListener('click', function() {
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.lista').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        renderizarTarefas("agendadas");
+        mudarTituloPrincipal(btnAgendadas)
+    });
+
+    btnTodasTarefas.addEventListener('click', function() {
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.lista').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        renderizarTarefas("todas");
+        mudarTituloPrincipal(btnTodasTarefas)
+    });
+
+    window.toggleTarefaConcluida = function (tarefaId) {
         const tarefa = tarefas.find(t => t.id === tarefaId);
         if (tarefa) {
             tarefa.concluida = !tarefa.concluida;
@@ -366,15 +623,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function excluirTarefa(tarefaId, listaAtual) {
-        const tarefa = tarefas.find(t => t.id === tarefaId);
-        if (tarefa) {
-            tarefaParaRemover = tarefa;
-            modalConfirmarRemocao.style.display = 'flex';
-        }
-    }
+    window.excluirTarefa = function (tarefaId, list) {
+        fetch(`/tarefas/${tarefaId}`, { method: 'DELETE' })
+            .then(() => {
+                tarefas = tarefas.filter(t => t.id !== tarefaId);
+                renderizarTarefas(list);
+            });
+    };
 
-    function formatarData(dataString) {
+    window.formatarData = function (dataString) {
         const data = new Date(dataString + 'T00:00:00');
         return data.toLocaleDateString('pt-BR');
     }
@@ -525,7 +782,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Renderizar lista de checklists
-    function renderizarChecklists() {
+    window.renderizarChecklists = function () {
         listaChecklistsEl.innerHTML = '';
 
         if (checklists.length === 0) {

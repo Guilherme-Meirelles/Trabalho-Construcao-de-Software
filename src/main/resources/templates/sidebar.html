@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToDaily</title>
     <link rel="stylesheet" href="/css/sidebar.css" />
-    <link rel="stylesheet" href="/css/menuPrincipal.css" />
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/css/menu.css" />
 </head>
 <body>
 
@@ -32,13 +31,13 @@
 
     <!-- Menu de Navegação -->
     <nav class="menu">
-        <button class="menu-item active" onclick="navegarPara(this, '/menuPrincipal')">
+        <button class="menu-item active">
             <i data-lucide="sun"></i> Para Hoje
         </button>
-        <button class="menu-item" onclick="alert('Página em desenvolvimento')">
+        <button class="menu-item">
             <i data-lucide="calendar"></i> Agendadas
         </button>
-        <button class="menu-item" onclick="alert('Página em desenvolvimento')">
+        <button class="menu-item">
             <i data-lucide="list-checks"></i> Todas as Tarefas
         </button>
         <button class="menu-item" onclick="navegarPara(this, '/areasTrabalho')">
@@ -46,26 +45,23 @@
         </button>
     </nav>
 
-    <!-- Campo de Busca -->
-    <div class="busca">
+    <div class="busca" th:if="${not (isMenu ?: false)}">
         <input type="text" placeholder="Buscar" />
     </div>
 
     <!-- Listas do Usuário -->
-    <div class="listas">
-        <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
-            <i data-lucide="list"></i> Faculdade
-        </button>
-        <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
-            <i data-lucide="list"></i> Casa
-        </button>
-        <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
-            <i data-lucide="list"></i> Renomeada
+    <div class="listas" th:if="${not (isMenu ?: false)}" id="listasContainer">
+        <button class="lista"
+                th:each="lista : ${listas}"
+                th:data-id="${lista.id}"
+                oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)">
+            <i data-lucide="list"></i>
+            <span th:text="${lista.nome}"></span>
         </button>
     </div>
 
     <!-- Botão Nova Lista -->
-    <button class="nova-lista" onclick="abrirModalPerfil('modalAddLista')">
+    <button class="nova-lista" onclick="abrirModalPerfil('modalAddLista')" th:if="${not (isMenu ?: false)}">
         <i data-lucide="plus"></i> Nova Lista
     </button>
 </aside>
@@ -148,7 +144,7 @@
                     <textarea id="descricao-lista" rows="4"></textarea>
                 </div>
                 <div class="botoes-acao-lista">
-                    <button type="button" class="btn-ok" onclick="fecharModalPerfil('modalAddLista')">OK</button>
+                    <button type="button" class="btn-ok" onclick="confirmarCriacaoLista()">OK</button>
                     <button type="button" class="btn-cancelar-lista" onclick="fecharModalPerfil('modalAddLista')">Cancelar</button>
                 </div>
             </form>
@@ -169,7 +165,7 @@
                     <textarea id="descricao-lista-edit" rows="4"></textarea>
                 </div>
                 <div class="botoes-acao-lista">
-                    <button type="button" class="btn-ok" onclick="fecharModalPerfil('modalEditLista')">OK</button>
+                    <button type="button" class="btn-ok" onclick="confirmarEdicaoLista()">OK</button>
                     <button type="button" class="btn-cancelar-lista" onclick="fecharModalPerfil('modalEditLista')">Cancelar</button>
                 </div>
             </form>
@@ -181,7 +177,7 @@
         <div class="modal-remover" onclick="event.stopPropagation()">
             <h3 class="modal-remover-mensagem">Deseja realmente remover esta lista?</h3>
             <div class="modal-remover-botoes">
-                <button class="btn-remover-sim" onclick="executarRemocaoLista()">Sim</button>
+                <button class="btn-remover-sim" onclick="confirmarRemocaoLista()">Sim</button>
                 <button class="btn-remover-nao" onclick="fecharModalPerfil('modalRemoveLista')">Não</button>
             </div>
         </div>
@@ -189,14 +185,13 @@
 
     <!-- Menu de Contexto (Clique direito nas listas) -->
     <div id="menuContextoLista" class="context-menu" style="display: none;">
-        <button class="context-menu-item" onclick="abrirModalPerfil('modalEditLista')">Editar Lista</button>
-        <button class="context-menu-item" onclick="abrirModalPerfil('modalRemoveLista')">Remover Lista</button>
+        <button class="context-menu-item" onclick="abrirModalEditarLista()">Editar Lista</button>
+        <button class="context-menu-item" onclick="abrirModalRemoverLista()">Remover Lista</button>
     </div>
 
     <!-- Modal: Configurações -->
     <div id="modalConfig" class="overlay-config" style="display: none;" onclick="fecharModalConfig()">
         <div class="modal-config" onclick="event.stopPropagation()">
-
             <!-- Header -->
             <div class="modal-config-header">
                 <h2>Configurações</h2>
@@ -268,13 +263,21 @@
         </div>
     </div>
 
+    <div id="daata"
+        th:data-listas="${listas}">
+    </div>
+
 </div>
 
 
 <!-- ========== FRAGMENT: SCRIPTS ========== -->
-<div th:fragment="scripts"></div>
-
-<script src="../static/js/sidebar.js"></script>
+<div th:fragment="scripts">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="/js/sidebar.js"></script>
+    <script th:inline="javascript">
+        window.areaAtualId = /*[[${areaId}]]*/ 0;
+    </script>
+</div>
 
 </body>
 </html>

@@ -8,7 +8,7 @@ let membroAtualPermissao = { id: null, nome: null, permissaoAtual: null };
 let membroAtualId = null;    // ID do usuário logado
 let membroCriadorId = null;  // ID do criador da área selecionada
 
-function abrirModalNovaArea() {
+window.abrirModalNovaArea = function () {
     modoEdicao = false;
     document.getElementById('tituloModalArea').textContent = 'Nova Área de Trabalho';
     document.getElementById('inputNomeArea').value = '';
@@ -19,12 +19,12 @@ function abrirModalNovaArea() {
     setTimeout(() => lucide.createIcons(), 10);
 }
 
-function fecharModalArea() {
+window.fecharModalArea = function () {
     document.getElementById('modalArea').style.display = 'none';
     document.getElementById('inputNomeArea').value = '';
 }
 
-function adicionarCardArea(id, nome) {
+window.adicionarCardArea = function (id, nome) {
     const grid = document.getElementById("areasGrid");
 
     const card = document.createElement("div");
@@ -43,7 +43,7 @@ function adicionarCardArea(id, nome) {
     lucide.createIcons(); // atualiza ícones se necessário
 }
 
-function atualizarNomeNoCard(id, novoNome) {
+window.atualizarNomeNoCard = function (id, novoNome) {
     const card = document.querySelector(`.area-card[data-id="${id}"]`);
     if (card) {
         const h3 = card.querySelector("h3");
@@ -52,7 +52,7 @@ function atualizarNomeNoCard(id, novoNome) {
     }
 }
 
-function salvarArea(event) {
+window.salvarArea = function (event) {
     event.preventDefault();
 
     const id = document.getElementById("areaIdEdicao").value;
@@ -110,14 +110,14 @@ function salvarArea(event) {
     });
 }
 
-function abrirArea(elemento) {
+window.abrirArea = function (elemento) {
     const id = elemento.dataset.id;
     const name = elemento.dataset.nome
-    window.location.href = `/areasTrabalho/${name}`;
+    window.location.href = `/areasTrabalho/${id}/${name}`;
 }
 
 // Menu de contexto (botão direito)
-function abrirMenuContexto(event, elemento) {
+window.abrirMenuContexto = function (event, elemento) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -135,11 +135,11 @@ function abrirMenuContexto(event, elemento) {
     setTimeout(() => lucide.createIcons(), 10);
 }
 
-function fecharMenuContexto() {
+window.fecharMenuContexto = function () {
     document.getElementById('menuContexto').style.display = 'none';
 }
 
-function renomearAreaContexto() {
+window.renomearAreaContexto = function () {
     fecharMenuContexto();
     modoEdicao = true;
     
@@ -159,7 +159,7 @@ function renomearAreaContexto() {
 
 // Compartilhamento
 
-function carregarAreasCompartilhamento(areas) {
+window.carregarAreasCompartilhamento = function (areas) {
     const container = document.querySelector('.lista-areas-compartilhar');
     container.innerHTML = ''; // limpa antes de gerar
 
@@ -185,7 +185,7 @@ function carregarAreasCompartilhamento(areas) {
     });
 }
 
-function abrirModalCompartilhar() {
+window.abrirModalCompartilhar = function () {
     document.getElementById('modalCompartilhar').style.display = 'flex';
     areaSelecionadaCompartilhar = null;
 
@@ -217,12 +217,12 @@ function abrirModalCompartilhar() {
     setTimeout(() => lucide.createIcons(), 10);
 }
 
-function fecharModalCompartilhar() {
+window.fecharModalCompartilhar = function () {
     document.getElementById('modalCompartilhar').style.display = 'none';
     areaSelecionadaCompartilhar = null;
 }
 
-function selecionarAreaCompartilhar(areaId) {
+window.selecionarAreaCompartilhar = function (areaId) {
     areaSelecionadaCompartilhar = areaId;
 
     // Marca o radio correspondente
@@ -235,7 +235,7 @@ function selecionarAreaCompartilhar(areaId) {
     atualizarSelecaoArea();
 }
 
-function atualizarSelecaoArea() {
+window.atualizarSelecaoArea = function () {
     const radioSelecionado = document.querySelector('input[name="areaCompartilhar"]:checked');
 
     // Remove seleção visual de todos
@@ -265,7 +265,7 @@ function atualizarSelecaoArea() {
     }
 }
 
-function compartilharVia(metodo) {
+window.compartilharVia = function (metodo) {
     if (!areaSelecionadaCompartilhar) {
         alert('Selecione uma área para compartilhar');
         return;
@@ -295,7 +295,7 @@ function compartilharVia(metodo) {
 
 }
 
-function gerarLinkCompartilhamento() {
+window.gerarLinkCompartilhamento = function () {
     if (!areaSelecionadaCompartilhar) {
         alert('Selecione uma área para compartilhar');
         return;
@@ -320,7 +320,7 @@ function gerarLinkCompartilhamento() {
 }
 
 // Exclusão de áreas
-function abrirModalExcluir() {
+window.abrirModalExcluir = function () {
     document.getElementById('modalExcluir').style.display = 'flex';
     areasSelecionadasExcluir = [];
 
@@ -341,12 +341,12 @@ function abrirModalExcluir() {
     setTimeout(() => lucide.createIcons(), 10);
 }
 
-function fecharModalExcluir() {
+window.fecharModalExcluir = function () {
     document.getElementById('modalExcluir').style.display = 'none';
     areasSelecionadasExcluir = [];
 }
 
-function atualizarSelecaoExclusao() {
+window.atualizarSelecaoExclusao = function () {
     const checkboxesSelecionados = document.querySelectorAll('input[name="areaExcluir"]:checked');
     areasSelecionadasExcluir = Array.from(checkboxesSelecionados).map(cb => cb.value);
 
@@ -374,7 +374,7 @@ function atualizarSelecaoExclusao() {
     setTimeout(() => lucide.createIcons(), 10);
 }
 
-function confirmarExclusao() {
+window.confirmarExclusao = function () {
     if (areasSelecionadasExcluir.length === 0) {
         alert('Selecione pelo menos uma área para excluir');
         return;
@@ -407,7 +407,7 @@ function confirmarExclusao() {
     });
 }
 
-function popularListaAreasExcluir(areas) {
+window.popularListaAreasExcluir = function (areas) {
     const lista = document.getElementById('listaAreasExcluir');
     lista.innerHTML = ''; // limpa antes
 
@@ -442,7 +442,7 @@ function popularListaAreasExcluir(areas) {
 }
 
 // Gerenciamento de áreas
-function abrirModalGerenciamento() {
+window.abrirModalGerenciamento = function () {
     document.getElementById('modalGerenciamento').style.display = 'flex';
     areaSelecionadaGerenciar = null;
     nomeAreaGerenciar = null;
@@ -494,13 +494,13 @@ function abrirModalGerenciamento() {
     setTimeout(() => lucide.createIcons(), 10);
 }
 
-function fecharModalGerenciamento() {
+window.fecharModalGerenciamento = function () {
     document.getElementById('modalGerenciamento').style.display = 'none';
     areaSelecionadaGerenciar = null;
     nomeAreaGerenciar = null;
 }
 
-function selecionarAreaGerenciar(areaId) {
+window.selecionarAreaGerenciar = function (areaId) {
     const radio = document.getElementById('gerenciar-' + areaId);
     if (radio) {
         radio.checked = true;
@@ -508,7 +508,7 @@ function selecionarAreaGerenciar(areaId) {
     }
 }
 
-function atualizarSelecaoGerenciar() {
+window.atualizarSelecaoGerenciar = function () {
     const radioSelecionado = document.querySelector('input[name="areaGerenciar"]:checked');
 
     // Remove seleção visual de todos
@@ -534,7 +534,7 @@ function atualizarSelecaoGerenciar() {
     }
 }
 
-function avancarParaDetalhes() {
+window.avancarParaDetalhes = function () {
     if (!areaSelecionadaGerenciar) {
         alert('Selecione uma área para gerenciar');
         return;
@@ -553,14 +553,14 @@ function avancarParaDetalhes() {
     setTimeout(() => lucide.createIcons(), 10);
 }
 
-function voltarParaSelecao() {
+window.voltarParaSelecao = function () {
     document.getElementById('etapaDetalhesArea').style.display = 'none';
     document.getElementById('etapaSelecaoArea').style.display = 'block';
 
     setTimeout(() => lucide.createIcons(), 10);
 }
 
-function abrirMembros() {
+window.abrirMembros = function () {
     if (!areaSelecionadaGerenciar) return;
 
     const listaMembros = document.getElementById('listaMembros');
@@ -632,21 +632,21 @@ function abrirMembros() {
     document.getElementById('etapaMembros').style.display = 'block';
 }
 
-function voltarParaDetalhes() {
+window.voltarParaDetalhes = function () {
     document.getElementById('etapaMembros').style.display = 'none';
     document.getElementById('etapaDetalhesArea').style.display = 'block';
 
     setTimeout(() => lucide.createIcons(), 10);
 }
 
-function abrirSolicitacoes() {
+window.abrirSolicitacoes = function () {
     console.log('Carregando solicitações da área:', areaSelecionadaGerenciar);
     // Aqui você implementaria a tela de solicitações
     alert('Funcionalidade de Solicitações em desenvolvimento');
 }
 
 // Gerenciamento de permissões de membros
-function abrirModalPermissao(membroId, membroNome, permissaoAtual) {
+window.abrirModalPermissao = function (membroId, membroNome, permissaoAtual) {
     membroAtualPermissao = { id: membroId, nome: membroNome, permissaoAtual: permissaoAtual };
 
     document.getElementById('tituloModalPermissao').textContent = `Alterar Permissão`;
@@ -667,12 +667,12 @@ function abrirModalPermissao(membroId, membroNome, permissaoAtual) {
     setTimeout(() => lucide.createIcons(), 10);
 }
 
-function fecharModalPermissao() {
+window.fecharModalPermissao = function () {
     document.getElementById('modalPermissao').style.display = 'none';
     membroAtualPermissao = { id: null, nome: null, permissaoAtual: null };
 }
 
-function selecionarPermissao(permissao) {
+window.selecionarPermissao = function (permissao) {
     const radio = document.getElementById('perm-' + permissao);
     if (radio) {
         radio.checked = true;
@@ -687,7 +687,7 @@ function selecionarPermissao(permissao) {
     }
 }
 
-function salvarPermissao() {
+window.salvarPermissao = function () {
     const permissaoSelecionada = document.querySelector('input[name="permissaoMembro"]:checked');
 
     if (!permissaoSelecionada) {
@@ -729,7 +729,7 @@ function salvarPermissao() {
     fecharModalPermissao();
 }
 
-function removerMembro(membroId, membroNome) {
+window.removerMembro = function (membroId, membroNome) {
     const confirmacao = confirm(`Tem certeza que deseja remover ${membroNome} desta área?\n\nEle perderá acesso a todas as tarefas e informações.`);
 
     if (confirmacao) {
