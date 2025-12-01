@@ -47,4 +47,8 @@ public class Usuario {
 
     // tarefasAtribuidas
     public Set<Tarefa> getTarefasAtribuidas() { return tarefasAtribuidas; }
+    public Usuario orElseThrow(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    }
 }

@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToDaily</title>
     <link rel="stylesheet" href="/css/sidebar.css" />
-    <link rel="stylesheet" href="/css/menuPrincipal.css" />
+    <link rel="stylesheet" href="/css/menu.css" />
     <link rel="stylesheet" href="/css/acessibilidade.css" />
     <link rel="stylesheet" href="/css/calendario.css" />
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="app-container">
@@ -21,7 +20,7 @@
         <div class="titulo">
             <div class="titulo-info">
                 <h2 id="titulo-principal">Para Hoje</h2>
-                <span id="subtitulo-principal">- 21/11/24</span>
+                <span id="subtitulo-principal"></span>
                 <div class="titulo-acoes">
                     <button class="btn-filtro" id="btnFiltro">
                         <i data-lucide="filter"></i>
@@ -33,7 +32,7 @@
             </div>
         </div>
 
-        <div class="add-tarefa" id="btnAddTarefa">
+        <div class="add-tarefa" id="btnAddTarefa" th:if="${not (isMenu ?: false)}">
             <i data-lucide="plus"></i>
             <span>Adicionar Tarefa</span>
         </div>
@@ -51,6 +50,11 @@
         <!-- Menu de Filtro -->
         <div class="menu-filtro" id="menuFiltro" style="display: none;">
             <h4 class="menu-filtro-titulo">Filtrar por:</h4>
+
+            <div class="campo-filtro">
+                <input type="text" id="filtroTexto" placeholder="Pesquisa..." />
+            </div>
+
             <button class="menu-filtro-item" data-filtro="todas">
                 <i data-lucide="circle"></i> Todas as tarefas
             </button>
@@ -74,6 +78,7 @@
         <!-- Menu de Ordenação -->
         <div class="menu-filtro" id="menuOrdenar" style="display: none;">
             <h4 class="menu-filtro-titulo">Ordenar por:</h4>
+
             <button class="menu-filtro-item" data-ordem="data-inicio">
                 <i data-lucide="circle"></i> Data de início
             </button>
@@ -115,41 +120,37 @@
 <!-- Modal Adicionar Tarefa -->
 <div class="overlay-tarefa" id="modalAddTarefa" style="display: none;">
     <div class="modal-tarefa">
-        <h3 class="titulo-modal-tarefa">Adicionar Tarefa</h3>
+        <h3 class="titulo-modal-tarefa" id="tituloModalTarefa">Adicionar Tarefa</h3>
         <form class="form-tarefa">
+
+            <!-- LISTA -->
             <div class="campo-tarefa">
                 <label>Lista*:</label>
-                <select id="tarefaLista">
-                    <option value="">Selecione uma lista...</option>
-                    <option value="faculdade">Faculdade</option>
-                    <option value="casa">Casa</option>
-                    <option value="remomeada">Remomeada</option>
-                </select>
+                <select id="tarefaLista"></select>
             </div>
 
+            <!-- TÍTULO -->
             <div class="campo-tarefa">
                 <label>Título*:</label>
                 <input type="text" id="tarefaTitulo" placeholder="Digite o título da tarefa" />
             </div>
 
+            <!-- DESCRIÇÃO -->
             <div class="campo-tarefa">
                 <label>Descrição:</label>
                 <textarea id="tarefaDescricao" rows="3" placeholder="Adicione uma descrição (opcional)"></textarea>
             </div>
 
+            <!-- DATA -->
             <div class="campo-tarefa">
                 <label>Data de Fim:</label>
                 <input type="date" id="tarefaDataFim" />
             </div>
 
+            <!-- RESPONSÁVEIS -->
             <div class="campo-tarefa">
                 <label>Responsáveis:</label>
-                <select id="tarefaResponsavel">
-                    <option value="">Selecione...</option>
-                    <option value="matheus">Matheus</option>
-                    <option value="usuario2">Usuário 2</option>
-                    <option value="usuario3">Usuário 3</option>
-                </select>
+                <select id="tarefaResponsavel"></select>
             </div>
 
             <div class="campo-tarefa-row">
@@ -180,6 +181,7 @@
         </form>
     </div>
 </div>
+
 
 <!-- Modal: Gerenciar Checklists -->
 <div class="overlay-tarefa" id="modalGerenciarChecklist" style="display: none;">
@@ -266,7 +268,7 @@
 <!-- Importa o Script de Calendário -->
 <div th:replace="~{calendario :: calendario-script}"></div>
 
-<script src="../static/js/menuPrincipal.js"></script>
-
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="/js/menu.js"></script>
 </body>
 </html>

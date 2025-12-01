@@ -3,7 +3,6 @@ package com.example.demo.Controles;
 import com.example.demo.Entidades.Usuario;
 import com.example.demo.ConsultasBD.UsuarioRepository;
 import com.example.demo.Serviços.CookieService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -65,7 +64,7 @@ public class LoginCadastroControle {
             CookieService.setCookie(response, "nomeUsuario", usuarioLogado.getNome(), 10000);
             CookieService.setCookie(response, "emailUsuario", usuarioLogado.getEmail(), 10000);
             CookieService.setCookie(response, "dataNascimento", usuarioLogado.getDataNascimento(), 10000);
-            return "redirect:/menuPrincipal"; // ✅ Agora redireciona corretamente
+            return "redirect:/menu"; // ✅ Agora redireciona corretamente
         }
 
         model.addAttribute("erro", "Usuário Inválido");

@@ -3,11 +3,13 @@ lucide.createIcons();
 
 // Variável para guardar qual lista será removida
 let listaParaRemover = null;
+let listaSelecionada = null;  // lista escolhida para editar
+let listaParaRemoverId = null; // id da lista para remover
 
 /**
  * Abre um modal pelo ID
  */
-function abrirModalPerfil(nomeModal) {
+window.abrirModalPerfil = function (nomeModal) {
     document.getElementById(nomeModal).style.display = 'flex';
     setTimeout(() => {
         const modal = document.getElementById(nomeModal);
@@ -20,7 +22,7 @@ function abrirModalPerfil(nomeModal) {
 /**
  * Fecha um modal pelo ID
  */
-function fecharModalPerfil(nomeModal) {
+window.fecharModalPerfil = function (nomeModal) {
     const modal = document.getElementById(nomeModal);
     modal.style.display = 'none';
 
@@ -28,6 +30,11 @@ function fecharModalPerfil(nomeModal) {
     const erroMsg = modal.querySelector('.mensagem-erro');
     if (erroMsg) {
         erroMsg.textContent = '';
+    }
+
+    const nome = document.getElementById("nome-lista");
+    if(nome){
+        nome.value = "";
     }
 
     // Limpa o campo de senha, se existir
@@ -40,7 +47,7 @@ function fecharModalPerfil(nomeModal) {
 /**
  * Abre o modal de configurações
  */
-function abrirModalConfig() {
+window.abrirModalConfig = function () {
     document.getElementById('modalConfig').style.display = 'flex';
     setTimeout(() => {
         lucide.createIcons();
@@ -50,14 +57,14 @@ function abrirModalConfig() {
 /**
  * Fecha o modal de configurações
  */
-function fecharModalConfig() {
+window.fecharModalConfig = function () {
     document.getElementById('modalConfig').style.display = 'none';
 }
 
 /**
  * Mostra o menu de contexto (clique direito)
  */
-function mostrarMenuContexto(event, menuId, elemento) {
+window.mostrarMenuContexto = function (event, menuId, elemento) {
     event.preventDefault();
 
     // Guarda o botão da lista clicada
@@ -110,7 +117,7 @@ document.addEventListener('keydown', (e) => {
 /**
  * Navega para qualquer página e marca como ativo
  */
-function navegarPara(elementoClicado, url) {
+window.navegarPara = function (elementoClicado, url) {
     const currentPath = window.location.pathname;
 
     // Se já estiver na página, apenas atualiza o visual
@@ -124,8 +131,8 @@ function navegarPara(elementoClicado, url) {
         elementoClicado.classList.add('active');
 
         // Se estiver no menu principal, atualiza o título
-        if (url === '/menuPrincipal') {
-            atualizarTituloMenuPrincipal(elementoClicado);
+        if (url === '/menu') {
+            atualizarTituloMenu(elementoClicado);
         }
         return;
     }
@@ -145,7 +152,7 @@ function navegarPara(elementoClicado, url) {
 /**
  * Atualiza o título da página principal quando já está nela
  */
-function atualizarTituloMenuPrincipal(elementoClicado) {
+window.atualizarTituloMenu = function (elementoClicado) {
     const novoTitulo = elementoClicado.innerText.trim();
     const tituloH2 = document.getElementById('titulo-principal');
     const subtituloSpan = document.getElementById('subtitulo-principal');
@@ -158,51 +165,22 @@ function atualizarTituloMenuPrincipal(elementoClicado) {
     // Atualiza o subtítulo (só mostra data para "Para Hoje")
     if (subtituloSpan) {
         if (novoTitulo === "Para Hoje") {
-            subtituloSpan.innerText = "- 21/11/24";
+            const hoje = new Date();
+            const dia = String(hoje.getDate()).padStart(2, "0");
+            const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+            const ano = String(hoje.getFullYear()).slice(-2); // pega só os dois últimos dígitos
+            const dataFormatada = `${dia}/${mes}/${ano}`;
+            subtituloSpan.innerText = `- ${dataFormatada}`;
         } else {
             subtituloSpan.innerText = "";
         }
     }
-}
-
-/**
- * Muda o título da página principal (para listas)
- */
-function mudarTituloPrincipal(elementoClicado) {
-    if (window.location.pathname !== "/menuPrincipal") {
-        window.location.href = "/menuPrincipal";
-        return;
-    }
-
-    const novoTitulo = elementoClicado.innerText.trim();
-    const tituloH2 = document.getElementById('titulo-principal');
-    const subtituloSpan = document.getElementById('subtitulo-principal');
-
-    // Atualiza o título
-    if (tituloH2) {
-        tituloH2.innerText = novoTitulo;
-    }
-
-    // Atualiza o subtítulo (só mostra data para "Para Hoje")
-    if (subtituloSpan) {
-        if (novoTitulo === "Para Hoje") {
-            subtituloSpan.innerText = "- 21/11/24";
-        } else {
-            subtituloSpan.innerText = "";
-        }
-    }
-
-    // Remove classe 'active' de todos os itens e adiciona no clicado
-    document.querySelectorAll('.menu-item, .lista').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    elementoClicado.classList.add('active');
 }
 
 /**
  * Marca o item correto da sidebar como ativo ao carregar a página
  */
-function marcarItemAtivoSidebar() {
+window.marcarItemAtivoSidebar = function () {
     const path = window.location.pathname;
 
     // Remove active de todos os itens
@@ -211,7 +189,7 @@ function marcarItemAtivoSidebar() {
     });
 
     // Marca o item correto baseado na URL
-    if (path === '/menuPrincipal' || path === '/') {
+    if (path === '/menu' || path === '/') {
         const btnParaHoje = document.querySelector('.menu-item');
         if (btnParaHoje) btnParaHoje.classList.add('active');
     } else if (path === '/agendadas') {
@@ -232,7 +210,7 @@ marcarItemAtivoSidebar();
 /**
  * Executa a remoção da lista
  */
-function executarRemocaoLista() {
+window.executarRemocaoLista = function () {
     // Remove o item da lista (se ele estiver guardado)
     if (listaParaRemover) {
         listaParaRemover.remove();
@@ -249,11 +227,7 @@ function executarRemocaoLista() {
     }
 }
 
-/**
- * Abre o modal de confirmação e define qual ação o backend vai executar
- * @param {string} tipo - 'editar' ou 'remover'
- */
-function abrirModalAcao(tipo) {
+window.abrirModalAcao = function (tipo) {
     const modal = document.getElementById('modalVerificacao');
     const mensagem = document.getElementById('mensagemVerificacao');
     const form = document.getElementById('formConfirmacao');
@@ -270,3 +244,130 @@ function abrirModalAcao(tipo) {
     document.getElementById('senhaConfirmacao').value = '';
     modal.style.display = 'flex';
 }
+
+window.criarLista = async function (areaId, nome) {
+    const response = await fetch("/listas", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ areaId, nome })
+    });
+
+    const lista = await response.json();
+    adicionarListaNaTela(lista);
+}
+
+window.adicionarListaNaTela = function (lista) {
+    const container = document.getElementById("listasContainer");
+
+    const btn = document.createElement("button");
+    btn.className = "lista";
+    btn.dataset.id = lista.id;
+    btn.oncontextmenu = (e) => mostrarMenuContexto(e, "menuContextoLista", btn);
+
+    btn.innerHTML = `
+        <i data-lucide="list"></i>
+        <span>${lista.nome}</span>
+    `;
+
+    container.appendChild(btn);
+    lucide.createIcons(); // recarrega ícones
+}
+
+window.editarLista = async function (id, novoNome) {
+    const response = await fetch(`/listas/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ nome: novoNome })
+    });
+
+    const atualizada = await response.json();
+
+    const botao = document.querySelector(`button.lista[data-id='${id}']`);
+    botao.querySelector("span").textContent = atualizada.nome;
+}
+
+window.deletarLista = async function (id) {
+    await fetch(`/listas/${id}`, { method: "DELETE" });
+
+    const btn = document.querySelector(`button.lista[data-id='${id}']`);
+    btn.remove();
+}
+
+window.abrirModalEditarLista = function () {
+    if (!listaParaRemover) return;
+
+    listaSelecionada = listaParaRemover;
+    const nomeAtual = listaSelecionada.querySelector("span").textContent;
+
+    document.getElementById("nome-lista-edit").value = nomeAtual;
+
+    abrirModalPerfil("modalEditLista");
+};
+
+window.abrirModalRemoverLista = function () {
+    if (!listaParaRemover) return;
+
+    listaParaRemoverId = listaParaRemover.dataset.id;
+
+    abrirModalPerfil("modalRemoveLista");
+};
+
+window.confirmarCriacaoLista = async function () {
+    const nome = document.getElementById("nome-lista").value.trim();
+    document.getElementById("nome-lista").value = "";
+    const descricao = document.getElementById("descricao-lista").value.trim();
+    const areaId = window.areaAtualId; // ID da área carregada na página
+    
+    if (!nome) {
+        alert("O nome da lista é obrigatório!");
+        return;
+    }
+
+    const response = await fetch("/listas", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ areaId, nome, descricao })
+    });
+
+    const novaLista = await response.json();
+    adicionarListaNaTela(novaLista);
+
+    fecharModalPerfil("modalAddLista");
+};
+
+window.confirmarEdicaoLista = async function () {
+    if (!listaSelecionada) return;
+
+    const id = listaSelecionada.dataset.id;
+    const nome = document.getElementById("nome-lista-edit").value.trim();
+
+    if (!nome) {
+        alert("O nome é obrigatório!");
+        return;
+    }
+
+    const response = await fetch(`/listas/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ nome })
+    });
+
+    const atualizada = await response.json();
+
+    listaSelecionada.querySelector("span").textContent = atualizada.nome;
+
+    fecharModalPerfil("modalEditLista");
+};
+
+window.confirmarRemocaoLista = async function () {
+    if (!listaParaRemoverId) return;
+
+    await fetch(`/listas/${listaParaRemoverId}`, { method: "DELETE" });
+
+    document.querySelector(`button.lista[data-id='${listaParaRemoverId}']`)?.remove();
+
+    listaParaRemoverId = null;
+    listaParaRemover = null;
+
+    fecharModalPerfil("modalRemoveLista");
+};

@@ -1,6 +1,8 @@
 package com.example.demo.Entidades;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,7 +30,9 @@ public class Tarefa {
     private String titulo;
     private String descricao;
     private Integer cor;
+    private LocalDate dataFim;
     private Boolean status;
+    private Boolean notificacoes;
 
     // RELACIONAMENTOS DE TAREFA
 
@@ -60,22 +64,39 @@ public class Tarefa {
 
     // GETTERS E SETTERS
     public Long getId() { return id;}
+
     // titulo
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; } 
+
     // descricao
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
+
     // cor
     public Integer getCor() { return cor; }
     public void setCor(Integer cor) { this.cor = cor; }
+
     // status
     public Boolean getStatus() { return status; }
     public void setStatus(Boolean status) { this.status = status; }
+
+    // notificações
+    public Boolean getNotificacoes() { return notificacoes; }
+    public void setNotificacoes(Boolean not) { this.notificacoes = not; }
+
+    // Date
+    public LocalDate getDataFim() {return dataFim;}
+    public void setDataFim(LocalDate dat) {this.dataFim = dat;}
+
     // listaOrigem
     public Lista getListaOrigem() { return listaOrigem; }
+    public void setListaOrigem(Lista list) {this.listaOrigem = list;}
+
     // categorias
     public Set<Categoria> getCategorias() { return categorias; }
+
     // responsaveis
     public Set<Usuario> getResponsaveis() { return responsaveis; }
+    public void setResponsaveis(Usuario u) { this.responsaveis = Set.of(u);}
 }
