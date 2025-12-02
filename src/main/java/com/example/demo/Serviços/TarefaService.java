@@ -94,6 +94,16 @@ public class TarefaService {
         return tarefaRepository.save(tarefa);
     }
 
+    public Tarefa toggleTarefa(Long id, Boolean concluida) {
+
+        Tarefa tarefa = tarefaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+
+        tarefa.setStatus(concluida);
+
+        return tarefaRepository.save(tarefa);
+    }
+
     // ------------------------
     // LISTAR POR LISTA
     // ------------------------

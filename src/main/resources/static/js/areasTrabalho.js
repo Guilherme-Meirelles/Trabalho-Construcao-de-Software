@@ -8,6 +8,10 @@ let membroAtualPermissao = { id: null, nome: null, permissaoAtual: null };
 let membroAtualId = null;    // ID do usuário logado
 let membroCriadorId = null;  // ID do criador da área selecionada
 
+const btnParaHoje = document.querySelector('.menu-item:nth-child(1)');
+const btnAgendadas = document.querySelector('.menu-item:nth-child(2)');
+const btnTodasTarefas = document.querySelector('.menu-item:nth-child(3)');
+
 window.abrirModalNovaArea = function () {
     modoEdicao = false;
     document.getElementById('tituloModalArea').textContent = 'Nova Área de Trabalho';
@@ -764,6 +768,24 @@ document.addEventListener('click', function(event) {
     if (menu && !menu.contains(event.target)) {
         fecharMenuContexto();
     }
+});
+
+window.navegarPara = function (e, url) {
+
+    // Redireciona
+    window.location.href = url;
+}
+
+btnParaHoje.addEventListener('click', function() {
+    navegarPara("", "/menu")
+});
+
+btnAgendadas.addEventListener('click', function() {
+    navegarPara("", "/menu")
+});
+
+btnTodasTarefas.addEventListener('click', function() {
+    navegarPara("", "/menu")
 });
 
 // Inicializa os ícones do Lucide ao carregar a página

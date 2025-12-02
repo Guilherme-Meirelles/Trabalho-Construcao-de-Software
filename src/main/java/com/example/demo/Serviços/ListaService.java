@@ -39,11 +39,12 @@ public class ListaService {
         return lista;
     }
 
-    public Lista editarLista(Long id, String nome) {
+    public Lista editarLista(Long id, String nome, String desc) {
         Lista lista = listaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lista não encontrada"));
 
         lista.setNome(nome);
+        lista.setDescricao(desc);
         return listaRepository.save(lista);
     }
 

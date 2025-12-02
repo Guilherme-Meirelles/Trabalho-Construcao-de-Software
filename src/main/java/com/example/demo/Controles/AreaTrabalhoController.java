@@ -2,12 +2,15 @@ package com.example.demo.Controles;
 
 import com.example.demo.ConsultasBD.AreaTrabalhoRepository;
 import com.example.demo.ConsultasBD.ListaRepository;
+import com.example.demo.ConsultasBD.TarefaRepository;
 import com.example.demo.ConsultasBD.UsuarioRepository;
 import com.example.demo.Entidades.AreaTrabalho;
 import com.example.demo.Entidades.Lista;
 import com.example.demo.Entidades.Usuario;
 import com.example.demo.Serviços.CookieService;
 import com.example.demo.Serviços.ListaService;
+import com.example.demo.Serviços.TarefaService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.demo.Entidades.ParticipacaoArea;
 import com.example.demo.Entidades.PermissaoArea;
 
+import com.example.demo.Entidades.Tarefa;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +45,13 @@ public class AreaTrabalhoController {
     private ListaRepository listaRepository;
 
     @Autowired
+    private TarefaRepository tarefaRepository;
+
+    @Autowired
     private ListaService listaService;
+
+    @Autowired
+    private TarefaService tarefaService;
 
     @GetMapping("/areasTrabalho")
     public String areasTrabalho(Model model, HttpServletRequest request) {
@@ -304,6 +316,170 @@ public class AreaTrabalhoController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(listasJson);
+    }
+
+    @GetMapping("/areasTrabalho/{areaId}/tarefas")
+    @ResponseBody
+    public ResponseEntity<?> listarTarefasPorArea(@PathVariable Long areaId, HttpServletRequest request) {
+        // Verifica se o usuário está logado
+        String usuarioId = CookieService.getCookie(request, "usuarioId");
+        if (usuarioId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NOT_LOGGED");
+
+        Usuario usuario = usuarioRepository.findById(Long.parseLong(usuarioId)).orElse(null);
+        if (usuario == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("USER_NOT_FOUND");
+
+        // Verifica se a área existe
+        AreaTrabalho area = areaTrabalhoRepository.findById(areaId).orElse(null);
+        if (area == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("AREA_NOT_FOUND");
+
+        // Verifica se o usuário tem acesso à área
+        boolean temAcesso = area.getParticipacoes().stream()
+                .anyMatch(p -> p.getUsuario().getId().equals(usuario.getId()));
+        if (!temAcesso) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("NO_ACCESS");
+
+        // Obtém as listas da área
+        List<Lista> listas = listaService.listarPorArea(areaId);
+
+        //List<Tarefa> tarefas = tarefaService.listarTarefasPorLista(listaId);
+
+        List<Tarefa> todasTarefas = new ArrayList<>();
+        for (Lista lista : listas) {
+            todasTarefas.addAll(lista.getTarefas());
+        }
+
+        List<Map<String, Object>> tarefasJson = todasTarefas.stream().map(t -> {
+            Map<String, Object> mapa = new HashMap<>();
+            mapa.put("id", t.getId());
+            mapa.put("titulo", t.getTitulo());
+            mapa.put("descricao", t.getDescricao());
+            mapa.put("cor", t.getCor());
+            mapa.put("dataFim", t.getDataFim() != null ? t.getDataFim().toString() : null);
+            mapa.put("listaId", t.getListaOrigem().getId());
+            mapa.put("concluida", t.getStatus());
+            if (!t.getResponsaveis().isEmpty()) {
+                mapa.put("responsavel", t.getResponsaveis().iterator().next().getId());
+                mapa.put("responsavelNome", t.getResponsaveis().iterator().next().getNome());
+            } else {
+                mapa.put("responsavel", null);
+                mapa.put("responsavelNome", null);
+            }
+            mapa.put("notificacoes", t.getNotificacoes());
+            return mapa;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(tarefasJson);
+    }
+
+    @GetMapping("/user/tarefas")
+    @ResponseBody
+    public ResponseEntity<?> listarTarefasPorUser(HttpServletRequest request) {
+        
+        // Verifica se o usuário está logado
+        String usuarioId = CookieService.getCookie(request, "usuarioId");
+
+        if (usuarioId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NOT_LOGGED");
+
+        Usuario usuario = usuarioRepository.findById(Long.parseLong(usuarioId)).orElse(null);
+        if (usuario == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("USER_NOT_FOUND");
+
+        List<AreaTrabalho> areas = areaTrabalhoRepository.findByDono(usuario);
+
+        
+        List<Lista> todasListas = new ArrayList<>();
+        for (AreaTrabalho area : areas) {
+            todasListas.addAll(area.getListas());
+        }
+
+        List<Tarefa> todasTarefas = new ArrayList<>();
+        for (Lista lista : todasListas) {
+            todasTarefas.addAll(lista.getTarefas());
+        }
+
+        List<Map<String, Object>> tarefasJson = todasTarefas.stream().map(t -> {
+            Map<String, Object> mapa = new HashMap<>();
+            mapa.put("id", t.getId());
+            mapa.put("titulo", t.getTitulo());
+            mapa.put("descricao", t.getDescricao());
+            mapa.put("cor", t.getCor());
+            mapa.put("dataFim", t.getDataFim() != null ? t.getDataFim().toString() : null);
+            mapa.put("listaId", t.getListaOrigem().getId());
+            mapa.put("concluida", t.getStatus());
+            if (!t.getResponsaveis().isEmpty()) {
+                mapa.put("responsavel", t.getResponsaveis().iterator().next().getId());
+                mapa.put("responsavelNome", t.getResponsaveis().iterator().next().getNome());
+            } else {
+                mapa.put("responsavel", null);
+                mapa.put("responsavelNome", null);
+            }
+            mapa.put("notificacoes", t.getNotificacoes());
+            return mapa;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(tarefasJson);
+    }
+
+    @GetMapping("/user/listas")
+    @ResponseBody
+    public ResponseEntity<?> listarListasPorUser(HttpServletRequest request) {
+        
+        // Verifica se o usuário está logado
+        String usuarioId = CookieService.getCookie(request, "usuarioId");
+
+        if (usuarioId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NOT_LOGGED");
+
+        Usuario usuario = usuarioRepository.findById(Long.parseLong(usuarioId)).orElse(null);
+        if (usuario == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("USER_NOT_FOUND");
+
+        List<AreaTrabalho> areas = areaTrabalhoRepository.findByDono(usuario);
+        
+        List<Lista> todasListas = new ArrayList<>();
+        for (AreaTrabalho area : areas) {
+            todasListas.addAll(area.getListas());
+        }
+
+        // Mapeia as listas para JSON simples
+        List<Map<String, Object>> listasJson = todasListas.stream()
+                .map(l -> {
+                    Map<String, Object> mapa = new HashMap<>();
+                    mapa.put("id", l.getId());
+                    mapa.put("nome", l.getNome());
+                    mapa.put("descricao", l.getDescricao());
+                    return mapa;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(listasJson);
+    }
+
+    @GetMapping("/user/membros")
+    @ResponseBody
+    public ResponseEntity<?> listarUserMembros(HttpServletRequest request) {
+        String usuarioId = CookieService.getCookie(request, "usuarioId");
+        if (usuarioId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NOT_LOGGED");
+
+        Usuario usuario = usuarioRepository.findById(Long.parseLong(usuarioId)).orElse(null);
+        if (usuario == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("USER_NOT_FOUND");
+
+        List<AreaTrabalho> areas = areaTrabalhoRepository.findByDono(usuario);
+        
+        List<ParticipacaoArea> todosMembros = new ArrayList<>();
+        for (AreaTrabalho area : areas) {
+            todosMembros.addAll(area.getParticipacoes());
+        }
+
+        // Mapeia membros para JSON
+        List<Map<String, Object>> membros = todosMembros.stream()
+            .map(p -> {
+                Map<String, Object> mapa = new HashMap<>();
+                mapa.put("id", p.getUsuario().getId());
+                mapa.put("nome", p.getUsuario().getNome());
+                mapa.put("email", p.getUsuario().getEmail());
+                mapa.put("permissao", p.getPermissao() == PermissaoArea.ADMIN ? "editar" : "visualizar");
+                return mapa;
+            })
+            .collect(Collectors.toList());
+
+        return ResponseEntity.ok(membros);
     }
 
 }

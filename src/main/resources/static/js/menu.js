@@ -26,12 +26,71 @@ async function carregarTarefas(listaId) {
     renderizarTarefas(+listaId);
 }
 
+async function carregarTarefasHoje() {
+
+    let response
+
+    if(window.areaAtualId){
+        response = await fetch(`/areasTrabalho/${window.areaAtualId}/tarefas`);
+    }else{
+        response = await fetch(`/user/tarefas`);
+    }
+
+    if (!response.ok) return [];
+    const tarefasJson = await response.json();
+    tarefas = tarefasJson; // preenche a variável global
+
+    // renderiza apenas as tarefas da lista filtrada
+    renderizarTarefas("hoje");
+}
+
+async function carregarTarefasTodas() {
+
+    let response
+
+    if(window.areaAtualId){
+        response = await fetch(`/areasTrabalho/${window.areaAtualId}/tarefas`);
+    }else{
+        response = await fetch(`/user/tarefas`);
+    }
+
+    if (!response.ok) return [];
+    const tarefasJson = await response.json();
+    tarefas = tarefasJson; // preenche a variável global
+
+    // renderiza apenas as tarefas da lista filtrada
+    renderizarTarefas("todas");
+}
+
+async function carregarTarefasAgendadas() {
+
+    let response
+
+    if(window.areaAtualId){
+        response = await fetch(`/areasTrabalho/${window.areaAtualId}/tarefas`);
+    }else{
+        response = await fetch(`/user/tarefas`);
+    }
+
+    if (!response.ok) return [];
+    const tarefasJson = await response.json();
+    tarefas = tarefasJson; // preenche a variável global
+
+    // renderiza apenas as tarefas da lista filtrada
+    renderizarTarefas("agendadas");
+}
+
 // Chamada sempre que abrir o modal de tarefa
 async function atualizarCamposModalTarefa() {
-    const idArea = window.areaAtualId; // você definirá isso ao entrar na página
+    let respListas
 
     // 1) Carregar listas da área
-    const respListas = await fetch(`/areasTrabalho/${idArea}/listas`);
+    if(window.areaAtualId){
+        respListas = await fetch(`/areasTrabalho/${window.areaAtualId}/listas`);
+    }else{
+        respListas = await fetch(`/user/listas`);
+    }
+
     listasCarregadas = await respListas.json();
 
     const selectLista = document.getElementById("tarefaLista");
@@ -46,7 +105,14 @@ async function atualizarCamposModalTarefa() {
     });
 
     // 2) Carregar membros responsáveis
-    const respMembros = await fetch(`/areasTrabalho/${idArea}/membros`);
+    let respMembros;
+
+    if(window.areaAtualId){
+        respMembros = await fetch(`/areasTrabalho/${window.areaAtualId}/membros`);
+    }else{
+        respMembros = await fetch(`/user/membros`);
+    }
+
     membrosCarregados = await respMembros.json();
 
     const selectResp = document.getElementById("tarefaResponsavel");
@@ -103,7 +169,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("subtitulo-principal").textContent = `- ${dataFormatada}`;
 
     window.mudarTituloPrincipal = function (elementoClicado) {
+
         const novoTitulo = elementoClicado.innerText.trim();
+        const desc = elementoClicado.dataset.desc
         const tituloH2 = document.getElementById('titulo-principal');
         const subtituloSpan = document.getElementById('subtitulo-principal');
 
@@ -112,7 +180,54 @@ document.addEventListener('DOMContentLoaded', function() {
             tituloH2.innerText = novoTitulo;
         }
 
-        subtituloSpan.innerText = "";
+        if(desc){
+            subtituloSpan.innerText = desc;
+        }else{
+            subtituloSpan.innerText = "";
+        }
+
+        // Atualiza o subtítulo (só mostra data para "Para Hoje")
+        if (subtituloSpan) {
+            if (novoTitulo === "Para Hoje") {
+                const hoje = new Date();
+                const dia = String(hoje.getDate()).padStart(2, "0");
+                const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+                const ano = String(hoje.getFullYear()).slice(-2); // pega só os dois últimos dígitos
+                const dataFormatada = `${dia}/${mes}/${ano}`;
+                subtituloSpan.innerText = `- ${dataFormatada}`;
+            }
+        }
+    }
+
+    window.resetFiltro = function(){
+        filtroAtivo = "todas"
+        document.getElementById("filtroTexto").value = ""
+        document.querySelectorAll('#menuFiltro .menu-filtro-item').forEach(btn => {
+            btn.classList.remove('active');
+        });
+    }
+
+    window.resetOrdem = function(){
+        ordenacaoAtiva = null
+        document.querySelectorAll('#menuOrdenar .menu-filtro-item').forEach(btn => {
+                btn.classList.remove('active');
+        });
+    }
+
+    // Simula click no botão hoje
+    {
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.lista').forEach(i => i.classList.remove('active'));
+        btnParaHoje.classList.add('active');
+
+        listaAtual = "hoje"
+        resetFiltro()
+        resetOrdem()
+
+        carregarTarefasHoje()
+        atualizarCamposModalTarefa()
+
+        mudarTituloPrincipal(btnParaHoje)
     }
 
     window.clickLista = function(lista) {
@@ -121,6 +236,10 @@ document.addEventListener('DOMContentLoaded', function() {
         lista.classList.add('active');
         const listaId = lista.getAttribute('data-id');
         listaAtual = +listaId
+
+        resetFiltro()
+        resetOrdem()
+
         carregarTarefas(listaId);
         atualizarCamposModalTarefa()
         mudarTituloPrincipal(lista)
@@ -132,10 +251,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.adicionarListaNaTela = function (lista) {
         const container = document.getElementById("listasContainer");
-
         const btn = document.createElement("button");
         btn.className = "lista";
         btn.dataset.id = lista.id;
+        btn.dataset.desc = lista.descricao
         btn.onclick = () => clickLista(btn);
         btn.oncontextmenu = (e) => mostrarMenuContexto(e, "menuContextoLista", btn);
 
@@ -186,6 +305,24 @@ document.addEventListener('DOMContentLoaded', function() {
         menuContextoTarefa.style.display = 'none';
     });
 
+    document.getElementById("filtroTexto").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            // Mark
+            if(listaAtual == "hoje"){
+                carregarTarefasHoje();
+            }else if(listaAtual == "agendadas"){
+                carregarTarefasAgendadas();
+            }else if(listaAtual == "todas"){
+                carregarTarefasTodas();
+            }else{
+                carregarTarefas(listaAtual);
+            }
+
+            menuFiltro.style.display = 'none';
+            lucide.createIcons();
+        }
+    });
+
     // Aplicar filtros
     document.querySelectorAll('#menuFiltro .menu-filtro-item').forEach(item => {
         item.addEventListener('click', function() {
@@ -194,7 +331,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.classList.remove('active');
             });
             this.classList.add('active');
-            carregarTarefas(listaAtual);
+
+            if(listaAtual == "hoje"){
+                carregarTarefasHoje();
+            }else if(listaAtual == "agendadas"){
+                carregarTarefasAgendadas();
+            }else if(listaAtual == "todas"){
+                carregarTarefasTodas();
+            }else{
+                carregarTarefas(listaAtual);
+            }
+
             menuFiltro.style.display = 'none';
             lucide.createIcons();
         });
@@ -208,7 +355,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.classList.remove('active');
             });
             this.classList.add('active');
-            carregarTarefas(listaAtual);
+
+            // MARKDOWN
+            if(listaAtual == "hoje"){
+                carregarTarefasHoje();
+            }else if(listaAtual == "agendadas"){
+                carregarTarefasAgendadas();
+            }else if(listaAtual == "todas"){
+                carregarTarefasTodas();
+            }else{
+                carregarTarefas(listaAtual);
+            }
+
             menuOrdenar.style.display = 'none';
             lucide.createIcons();
         });
@@ -258,6 +416,7 @@ document.addEventListener('DOMContentLoaded', function() {
     modalAddTarefa.addEventListener('click', function(e) {
         if (e.target === modalAddTarefa) {
             modalAddTarefa.style.display = 'none';
+            tarefaSelecionada = null;
             limparFormulario();
         }
     });
@@ -265,6 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fechar modal ao clicar em Cancelar
     btnCancelarTarefa.addEventListener('click', function() {
         modalAddTarefa.style.display = 'none';
+        tarefaSelecionada = null;
         limparFormulario();
     });
 
@@ -300,7 +460,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // EDITAR
         if (tarefaSelecionada) {
-            console.log(tarefaSelecionada)
             resposta = await fetch(`/tarefas/${tarefaSelecionada.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -332,7 +491,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Renderizar apenas tarefas daquela lista
-        carregarTarefas(listaId);
+        if(listaAtual == "hoje"){
+            carregarTarefasHoje();
+        }else if(listaAtual == "agendadas"){
+            carregarTarefasAgendadas();
+        }else if(listaAtual == "todas"){
+            carregarTarefasTodas();
+        }else{
+            carregarTarefas(listaId);
+        }
 
         // Reset
         modalAddTarefa.style.display = "none";
@@ -359,12 +526,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.preencherFormulario = async function (tarefa) {
 
-        //const lista = await fetch(`/listas/${tarefa.listaId}`);
-        //resp = await lista.json()
-        const idArea = window.areaAtualId;
+        let respListas
 
-        // 1) Carregar listas da área
-        const respListas = await fetch(`/areasTrabalho/${idArea}/listas`);
+        if(window.areaAtualId){
+            respListas = await fetch(`/areasTrabalho/${window.areaAtualId}/listas`);
+        }else{
+            respListas = await fetch(`/user/listas`);
+        }
+
         listasCarregadas = await respListas.json();
 
         document.querySelectorAll("#modalAddTarefa input, #modalAddTarefa textarea, #modalAddTarefa select")
@@ -372,7 +541,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("btnAnexo").disabled = false;
         document.getElementById("btnChecklist").disabled = false;
 
-        // aa
         const selectLista = document.getElementById("tarefaLista");
         selectLista.innerHTML = `<option value="">Selecione uma lista...</option>`;
 
@@ -393,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     btnEditarTarefa.addEventListener('click', function() {
-        if (tarefaSelecionada) {
+        if (tarefaSelecionada && window.areaAtualId) {
             tituloModalTarefa.textContent = 'Editar Tarefa';
             preencherFormulario(tarefaSelecionada);
             document.getElementById('tarefaLista').disabled = true;
@@ -408,10 +576,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.visualizarTarefa = async function(tarefa) {
 
-        const idArea = window.areaAtualId;
+        let respListas
 
-        // 1) Carregar listas da área
-        const respListas = await fetch(`/areasTrabalho/${idArea}/listas`);
+        if(window.areaAtualId){
+            respListas = await fetch(`/areasTrabalho/${window.areaAtualId}/listas`);
+        }else{
+            respListas = await fetch(`/user/listas`);
+        }
+
         listasCarregadas = await respListas.json();
 
         const selectLista = document.getElementById("tarefaLista");
@@ -450,8 +622,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.renderizarTarefas = function (listaFiltro) {
         // VERIFICAR A PARTIR DAQUI ESSA MERDA
+
         containerTarefas.innerHTML = '';
-        let tarefasFiltradas = tarefas.filter(t => t.listaId === listaFiltro);
+        let tarefasFiltradas;
+        
+        const textoFiltro = document.getElementById("filtroTexto").value;
+        console.log(textoFiltro)
+
+        if(listaFiltro === "hoje"){
+            const hoje = new Date();
+            const dia = String(hoje.getDate()).padStart(2, "0");
+            const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+            const ano = String(hoje.getFullYear());
+            const dataFormatada = `${ano}-${mes}-${dia}`;
+            tarefasFiltradas = tarefas.filter(t => t.dataFim === dataFormatada)
+
+        }else if(listaFiltro === "agendadas"){
+            const hoje = new Date();
+            const dia = String(hoje.getDate()).padStart(2, "0");
+            const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+            const ano = String(hoje.getFullYear());
+            const dataFormatada = `${ano}-${mes}-${dia}`;
+            tarefasFiltradas = tarefas.filter(t => t.dataFim && t.dataFim != dataFormatada)
+
+        }else if(listaFiltro === "todas"){
+            tarefasFiltradas = tarefas
+            
+        }else{
+            tarefasFiltradas = tarefas.filter(t => t.listaId === listaFiltro);
+        }
 
         if (filtroAtivo === 'andamento') {
             tarefasFiltradas = tarefasFiltradas.filter(t => !t.concluida);
@@ -466,21 +665,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 return dataFim < hoje && !t.concluida;
             });
         }
+        
+        if (filtroAtivo === "titulo" && textoFiltro){
+            const tex = textoFiltro.toLowerCase();
+            tarefasFiltradas = tarefasFiltradas.filter(t =>
+                t.titulo?.toLowerCase().includes(tex)
+            );
+        } else if (filtroAtivo === "responsavel" && textoFiltro){
+            const tex = textoFiltro.toLowerCase();
+            tarefasFiltradas = tarefasFiltradas.filter(t =>
+                t.responsavelNome?.toLowerCase().includes(tex)
+            );
+        } else if (textoFiltro){
+            // Filtro geral: busca em título, descrição e responsável
+            const tex = textoFiltro.toLowerCase();
+            tarefasFiltradas = tarefasFiltradas.filter(t =>
+                (t.titulo && t.titulo.toLowerCase().includes(tex)) ||
+                (t.descricao && t.descricao.toLowerCase().includes(tex)) ||
+                (t.responsavelNome && t.responsavelNome.toLowerCase().includes(tex))
+            );
+        }
 
-        if (ordenacaoAtiva === 'data-inicio') {
-            tarefasFiltradas.sort((a, b) => a.id - b.id);
-        } else if (ordenacaoAtiva === 'data-fim') {
+        // Ordenação original
+        tarefasFiltradas.sort((a, b) => a.titulo.localeCompare(b.titulo));
+
+        if (ordenacaoAtiva === 'data-fim') {
             tarefasFiltradas.sort((a, b) => {
                 if (!a.dataFim) return 1;
                 if (!b.dataFim) return -1;
                 return new Date(a.dataFim) - new Date(b.dataFim);
             });
         } else if (ordenacaoAtiva === 'data-adicao') {
-            tarefasFiltradas.sort((a, b) => b.id - a.id);
-        } else if (ordenacaoAtiva === 'notificacao') {
-            tarefasFiltradas.sort((a, b) => b.notificacoes - a.notificacoes);
+            tarefasFiltradas.sort((a, b) => a.id - b.id);
         } else if (ordenacaoAtiva === 'status') {
             tarefasFiltradas.sort((a, b) => a.concluida - b.concluida);
+        } else if (ordenacaoAtiva === 'titulo') {
+            tarefasFiltradas.sort((a, b) => a.titulo.localeCompare(b.titulo));
+        } else if (ordenacaoAtiva === 'responsavel') {
+            tarefasFiltradas.sort((a, b) => {
+                const nomeA = a.responsavelNome ? a.responsavelNome.toLowerCase() : "";
+                const nomeB = b.responsavelNome ? b.responsavelNome.toLowerCase() : "";
+                return nomeB.localeCompare(nomeA);
+            });
         }
 
         if (tarefasFiltradas.length === 0) return;
@@ -562,10 +788,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     info.appendChild(data);
                 }
 
-                if (tarefa.responsavel) {
+                if (tarefa.responsavelNome) {
                     const resp = document.createElement('span');
                     resp.className = 'tarefa-responsavel';
-                    resp.innerHTML = `<i data-lucide="user"></i> ${tarefa.responsavel}`;
+                    resp.innerHTML = `<i data-lucide="user"></i> ${tarefa.responsavelNome}`;
                     info.appendChild(resp);
                 }
 
@@ -576,7 +802,7 @@ document.addEventListener('DOMContentLoaded', function() {
             btnExcluir.className = 'tarefa-btn-excluir';
             btnExcluir.innerHTML = '<i data-lucide="trash-2"></i>';
             btnExcluir.addEventListener('click', function() {
-                excluirTarefa(tarefa.id, listaFiltro);
+                excluirTarefa(tarefa.id, tarefa.listaId);
             });
 
             if (corBarra) {
@@ -595,7 +821,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
         document.querySelectorAll('.lista').forEach(i => i.classList.remove('active'));
         this.classList.add('active');
-        renderizarTarefas("hoje");
+
+        listaAtual = "hoje"
+        resetFiltro()
+        resetOrdem()
+
+        carregarTarefasHoje()
+        atualizarCamposModalTarefa()
         mudarTituloPrincipal(btnParaHoje)
     });
 
@@ -603,7 +835,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
         document.querySelectorAll('.lista').forEach(i => i.classList.remove('active'));
         this.classList.add('active');
-        renderizarTarefas("agendadas");
+
+        listaAtual = "agendadas"
+        resetFiltro()
+        resetOrdem()
+
+        carregarTarefasAgendadas()
+        atualizarCamposModalTarefa()
         mudarTituloPrincipal(btnAgendadas)
     });
 
@@ -611,15 +849,64 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
         document.querySelectorAll('.lista').forEach(i => i.classList.remove('active'));
         this.classList.add('active');
-        renderizarTarefas("todas");
+
+        listaAtual = "todas"
+        resetFiltro()
+        resetOrdem()
+
+        carregarTarefasTodas()
+        atualizarCamposModalTarefa()
         mudarTituloPrincipal(btnTodasTarefas)
     });
 
-    window.toggleTarefaConcluida = function (tarefaId) {
+    window.toggleTarefaConcluida = async function (tarefaId) {
         const tarefa = tarefas.find(t => t.id === tarefaId);
         if (tarefa) {
             tarefa.concluida = !tarefa.concluida;
-            renderizarTarefas(tarefa.lista);
+
+            titulo = tarefa.titulo
+            listaId = tarefa.listaId
+            concluida = tarefa.concluida
+            responsavelId = tarefa.responsavel
+
+            const corpo = {
+                titulo,
+                listaId,
+                concluida,
+                responsavelId
+            };
+
+            let resposta;
+            let tarefaCriadaOuEditada;
+
+            // EDITAR
+            resposta = await fetch(`/tarefas/${tarefa.id}/toggle`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(corpo)
+            });
+
+            if (!resposta.ok) {
+                const txt = await resposta.text();
+                throw new Error("Erro ao salvar a tarefa: " + txt);
+            }
+
+            tarefaCriadaOuEditada = await resposta.json();
+
+            const idx = tarefas.findIndex(t => t.id === tarefaCriadaOuEditada.id);
+            if (idx !== -1) tarefas[idx] = tarefaCriadaOuEditada;
+
+            // Renderizar apenas tarefas daquela lista
+            if(listaAtual == "hoje"){
+                carregarTarefasHoje();
+            }else if(listaAtual == "agendadas"){
+                carregarTarefasAgendadas();
+            }else if(listaAtual == "todas"){
+                carregarTarefasTodas();
+            }else{
+                carregarTarefas(listaId);
+            }
+
         }
     }
 

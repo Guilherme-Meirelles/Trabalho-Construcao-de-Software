@@ -32,7 +32,7 @@
             </div>
         </div>
 
-        <div class="add-tarefa" id="btnAddTarefa" th:if="${not (isMenu ?: false)}">
+        <div class="add-tarefa" id="btnAddTarefa">
             <i data-lucide="plus"></i>
             <span>Adicionar Tarefa</span>
         </div>
@@ -79,17 +79,17 @@
         <div class="menu-filtro" id="menuOrdenar" style="display: none;">
             <h4 class="menu-filtro-titulo">Ordenar por:</h4>
 
-            <button class="menu-filtro-item" data-ordem="data-inicio">
-                <i data-lucide="circle"></i> Data de início
+            <button class="menu-filtro-item" data-ordem="titulo">
+                <i data-lucide="circle"></i> Título
+            </button>
+            <button class="menu-filtro-item" data-ordem="responsavel">
+                <i data-lucide="circle"></i> Responsável
             </button>
             <button class="menu-filtro-item" data-ordem="data-fim">
                 <i data-lucide="circle"></i> Data de fim
             </button>
             <button class="menu-filtro-item" data-ordem="data-adicao">
                 <i data-lucide="circle"></i> Data de adição
-            </button>
-            <button class="menu-filtro-item" data-ordem="notificacao">
-                <i data-lucide="circle"></i> Aviso de notificação
             </button>
             <button class="menu-filtro-item" data-ordem="status">
                 <i data-lucide="circle"></i> Status de completude
@@ -267,6 +267,10 @@
 
 <!-- Importa o Script de Calendário -->
 <div th:replace="~{calendario :: calendario-script}"></div>
+
+<script>
+    window.areaName = /*[[${areaName}]]*/ "";
+</script>
 
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="/js/menu.js"></script>

@@ -61,10 +61,13 @@ public class ListaController {
             mapa.put("cor", t.getCor());
             mapa.put("dataFim", t.getDataFim() != null ? t.getDataFim().toString() : null);
             mapa.put("listaId", t.getListaOrigem().getId());
+            mapa.put("concluida", t.getStatus());
             if (!t.getResponsaveis().isEmpty()) {
                 mapa.put("responsavel", t.getResponsaveis().iterator().next().getId());
+                mapa.put("responsavelNome", t.getResponsaveis().iterator().next().getNome());
             } else {
                 mapa.put("responsavel", null);
+                mapa.put("responsavelNome", null);
             }
             mapa.put("notificacoes", t.getNotificacoes());
             return mapa;
@@ -76,9 +79,10 @@ public class ListaController {
     @PutMapping("/{id}")
     public ResponseEntity<Lista> editarLista(
             @PathVariable Long id,
-            @RequestParam String nome
+            @RequestParam String nome,
+            @RequestParam String descricao
     ) {
-        Lista lista = listaService.editarLista(id, nome);
+        Lista lista = listaService.editarLista(id, nome, descricao);
         return ResponseEntity.ok(lista);
     }
 

@@ -90,6 +90,31 @@ public class TarefaController {
         return ResponseEntity.ok(tarefaJson);
     }
 
+    @PutMapping("/{id}/toggle")
+    public ResponseEntity<Map<String, Object>> toggleTarefa(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> body
+    ) {
+
+        Long responsavelId = body.get("responsavelId") != null ? Long.valueOf(body.get("responsavelId").toString()) : null;
+        Boolean concluida = body.get("concluida") != null ? Boolean.valueOf(body.get("concluida").toString()) : null;
+
+        Tarefa tarefa = tarefaService.toggleTarefa(id, concluida);
+
+        Map<String, Object> tarefaJson = new HashMap<>();
+        tarefaJson.put("id", tarefa.getId());
+        tarefaJson.put("titulo", tarefa.getTitulo());
+        tarefaJson.put("descricao", tarefa.getDescricao());
+        tarefaJson.put("cor", tarefa.getCor());
+        tarefaJson.put("dataFim", tarefa.getDataFim() != null ? tarefa.getDataFim().toString() : null);
+        tarefaJson.put("listaId", tarefa.getListaOrigem() != null ? tarefa.getListaOrigem().getId() : null);
+        tarefaJson.put("responsavelId", responsavelId);
+        tarefaJson.put("notificacoes", tarefa.getNotificacoes());
+        tarefaJson.put("concluida", tarefa.getStatus());
+
+        return ResponseEntity.ok(tarefaJson);
+    }
+
     // LISTAR TAREFAS DA LISTA
     @GetMapping("/lista/{listaId}")
     public ResponseEntity<List<Tarefa>> listarPorLista(@PathVariable Long listaId) {

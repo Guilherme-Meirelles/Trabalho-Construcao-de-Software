@@ -3,6 +3,9 @@ package com.example.demo.Controles;
 import com.example.demo.Entidades.Usuario;
 import com.example.demo.ConsultasBD.UsuarioRepository;
 import com.example.demo.Serviços.CookieService;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -70,6 +73,28 @@ public class LoginCadastroControle {
         model.addAttribute("erro", "Usuário Inválido");
         return "login";
 
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+
+        // Lista de todos os cookies que você usa
+        String[] cookies = {
+            "usuarioId",
+            "nomeUsuario",
+            "emailUsuario",
+            "dataNascimento"
+        };
+
+        // Apaga cada cookie
+        for (String nome : cookies) {
+            Cookie cookie = new Cookie(nome, "");
+            cookie.setMaxAge(0); // apaga
+            cookie.setPath("/"); // importante!!
+            response.addCookie(cookie);
+        }
+
+        return "redirect:/login"; // volta para a página de login
     }
 }
 

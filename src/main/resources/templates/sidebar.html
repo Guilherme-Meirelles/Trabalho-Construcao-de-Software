@@ -12,7 +12,7 @@
 <!-- ========== FRAGMENT: SIDEBAR ========== -->
 <aside class="sidebar" th:fragment="sidebar">
     <div class="header-sidebar">
-        <h1 class="app-title">ToDaily</h1>
+        <h1 class="app-title" onclick="navegarPara(this, '/menu')" style="cursor: pointer;">ToDaily</h1>
         <button class="btn-config" onclick="abrirModalConfig()" title="Configurações">
             <i data-lucide="settings"></i>
         </button>
@@ -54,6 +54,7 @@
         <button class="lista"
                 th:each="lista : ${listas}"
                 th:data-id="${lista.id}"
+                th:data-desc="${lista.descricao}"
                 oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)">
             <i data-lucide="list"></i>
             <span th:text="${lista.nome}"></span>
@@ -218,7 +219,7 @@
                         <i data-lucide="user-cog"></i>
                         <span>Gerenciar Contas</span>
                     </button>
-                    <button class="btn-config-acao red" onclick="alert('Sair da conta')">
+                    <button class="btn-config-acao red" onclick="fazerLogout()">
                         <i data-lucide="log-out"></i>
                         <span>Sair</span>
                     </button>

@@ -19,6 +19,16 @@ window.abrirModalPerfil = function (nomeModal) {
     }, 10);
 }
 
+function fazerLogout() {
+    // Fecha modal se estiver aberto
+    if (typeof fecharModalConfig === "function") {
+        fecharModalConfig();
+    }
+
+    // Redireciona para a rota de logout
+    window.location.href = "/logout";
+}
+
 /**
  * Fecha um modal pelo ID
  */
@@ -35,6 +45,11 @@ window.fecharModalPerfil = function (nomeModal) {
     const nome = document.getElementById("nome-lista");
     if(nome){
         nome.value = "";
+    }
+
+    const desc = document.getElementById("descricao-lista");
+    if(desc){
+        desc.value = "";
     }
 
     // Limpa o campo de senha, se existir
@@ -118,32 +133,6 @@ document.addEventListener('keydown', (e) => {
  * Navega para qualquer página e marca como ativo
  */
 window.navegarPara = function (elementoClicado, url) {
-    const currentPath = window.location.pathname;
-
-    // Se já estiver na página, apenas atualiza o visual
-    if (currentPath === url) {
-        // Remove classe 'active' de todos os itens
-        document.querySelectorAll('.menu-item, .lista').forEach(btn => {
-            btn.classList.remove('active');
-        });
-
-        // Marca o item clicado como ativo
-        elementoClicado.classList.add('active');
-
-        // Se estiver no menu principal, atualiza o título
-        if (url === '/menu') {
-            atualizarTituloMenu(elementoClicado);
-        }
-        return;
-    }
-
-    // Remove classe 'active' de todos os itens
-    document.querySelectorAll('.menu-item, .lista').forEach(btn => {
-        btn.classList.remove('active');
-    });
-
-    // Marca o item clicado como ativo
-    elementoClicado.classList.add('active');
 
     // Redireciona
     window.location.href = url;
@@ -257,11 +246,12 @@ window.criarLista = async function (areaId, nome) {
 }
 
 window.adicionarListaNaTela = function (lista) {
-    const container = document.getElementById("listasContainer");
 
+    const container = document.getElementById("listasContainer");
     const btn = document.createElement("button");
     btn.className = "lista";
     btn.dataset.id = lista.id;
+    btn.dataset.desc = lista.descricao
     btn.oncontextmenu = (e) => mostrarMenuContexto(e, "menuContextoLista", btn);
 
     btn.innerHTML = `
@@ -273,17 +263,20 @@ window.adicionarListaNaTela = function (lista) {
     lucide.createIcons(); // recarrega ícones
 }
 
-window.editarLista = async function (id, novoNome) {
+window.editarLista = async function (id, novoNome, descricao) {
     const response = await fetch(`/listas/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ nome: novoNome })
+        body: new URLSearchParams({ nome: novoNome, desc: descricao})
     });
 
     const atualizada = await response.json();
 
     const botao = document.querySelector(`button.lista[data-id='${id}']`);
+    
     botao.querySelector("span").textContent = atualizada.nome;
+    botao.dataset.desc = descricao
+    
 }
 
 window.deletarLista = async function (id) {
@@ -298,8 +291,10 @@ window.abrirModalEditarLista = function () {
 
     listaSelecionada = listaParaRemover;
     const nomeAtual = listaSelecionada.querySelector("span").textContent;
+    const desc = listaSelecionada.dataset.desc;
 
     document.getElementById("nome-lista-edit").value = nomeAtual;
+    document.getElementById("descricao-lista-edit").value = desc;
 
     abrirModalPerfil("modalEditLista");
 };
@@ -330,6 +325,7 @@ window.confirmarCriacaoLista = async function () {
     });
 
     const novaLista = await response.json();
+
     adicionarListaNaTela(novaLista);
 
     fecharModalPerfil("modalAddLista");
@@ -340,6 +336,7 @@ window.confirmarEdicaoLista = async function () {
 
     const id = listaSelecionada.dataset.id;
     const nome = document.getElementById("nome-lista-edit").value.trim();
+    const desc = document.getElementById("descricao-lista-edit").value.trim();
 
     if (!nome) {
         alert("O nome é obrigatório!");
@@ -349,12 +346,13 @@ window.confirmarEdicaoLista = async function () {
     const response = await fetch(`/listas/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ nome })
+        body: new URLSearchParams({ nome: nome, descricao: desc})
     });
 
     const atualizada = await response.json();
 
     listaSelecionada.querySelector("span").textContent = atualizada.nome;
+    listaSelecionada.dataset.desc = desc
 
     fecharModalPerfil("modalEditLista");
 };
