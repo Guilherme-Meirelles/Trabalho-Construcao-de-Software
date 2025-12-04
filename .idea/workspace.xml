@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="963ae2cd-f82b-476a-b1c0-108ba5d5c374" name="Changes" comment="1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/ConfigBancoDeDados.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/ConfigBancoDeDados.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitattributes" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
