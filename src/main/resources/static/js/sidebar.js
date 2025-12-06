@@ -296,6 +296,8 @@ window.abrirModalEditarLista = function () {
     document.getElementById("nome-lista-edit").value = nomeAtual;
     document.getElementById("descricao-lista-edit").value = desc;
 
+    document.querySelectorAll('.context-menu').forEach(menu => menu.style.display = 'none');
+
     abrirModalPerfil("modalEditLista");
 };
 
@@ -303,6 +305,8 @@ window.abrirModalRemoverLista = function () {
     if (!listaParaRemover) return;
 
     listaParaRemoverId = listaParaRemover.dataset.id;
+
+    document.querySelectorAll('.context-menu').forEach(menu => menu.style.display = 'none');
 
     abrirModalPerfil("modalRemoveLista");
 };
@@ -369,3 +373,18 @@ window.confirmarRemocaoLista = async function () {
 
     fecharModalPerfil("modalRemoveLista");
 };
+
+// Abre o modal de confirmação de logout
+window.abrirModalLogout = function () {
+    document.getElementById('modalConfirmarLogout').style.display = 'flex';
+}
+
+// Confirma o logout e redireciona
+window.confirmarLogout = function () {
+    window.location.href = "/logout";
+}
+
+// Função de logout (antiga - não será mais usada diretamente)
+function fazerLogout() {
+    abrirModalLogout();
+}

@@ -137,8 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnCancelarTarefa = document.getElementById('btnCancelarTarefa');
     const btnOkTarefa = document.getElementById('btnOkTarefa');
     const containerTarefas = document.getElementById('containerTarefas');
-    const menuContextoTarefa = document.getElementById('menuContextoTarefa');
-    const btnEditarTarefa = document.getElementById('btnEditarTarefa');
     const tituloModalTarefa = document.querySelector('.titulo-modal-tarefa');
     const modalConfirmarRemocao = document.getElementById('modalConfirmarRemocao');
     const btnCancelarRemocao = document.getElementById('btnCancelarRemocao');
@@ -302,7 +300,6 @@ document.addEventListener('DOMContentLoaded', function() {
             menuFiltro.style.display = 'none';
             menuOrdenar.style.display = 'none';
         }
-        menuContextoTarefa.style.display = 'none';
     });
 
     document.getElementById("filtroTexto").addEventListener("keydown", function (e) {
@@ -372,11 +369,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Evitar que o menu feche ao clicar nele
-    menuContextoTarefa.addEventListener('click', function(e) {
-        e.stopPropagation();
-    });
-
     // Modal de confirmação de remoção
     btnCancelarRemocao.addEventListener('click', function() {
         modalConfirmarRemocao.style.display = 'none';
@@ -385,8 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     btnConfirmarRemocao.addEventListener('click', function() {
         if (tarefaParaRemover) {
-            tarefas = tarefas.filter(t => t.id !== tarefaParaRemover.id);
-            renderizarTarefas(tarefaParaRemover.lista);
+            excluirTarefa(tarefaParaRemover.id, tarefaParaRemover.lista);
             modalConfirmarRemocao.style.display = 'none';
             tarefaParaRemover = null;
         }
@@ -560,20 +551,6 @@ document.addEventListener('DOMContentLoaded', function() {
         checklistSelecionadoTarefa = tarefa.checklistId || null;
     }
 
-    btnEditarTarefa.addEventListener('click', function() {
-        if (tarefaSelecionada && window.areaAtualId) {
-            tituloModalTarefa.textContent = 'Editar Tarefa';
-            preencherFormulario(tarefaSelecionada);
-            document.getElementById('tarefaLista').disabled = true;
-            menuContextoTarefa.style.display = 'none';
-
-            document.getElementById("btnOkTarefa").style.display = "block";
-            document.getElementById("btnCancelarTarefa").textContent = "Cancelar";
-
-            modalAddTarefa.style.display = 'flex';
-        }
-    });
-
     window.visualizarTarefa = async function(tarefa) {
 
         let respListas
@@ -625,7 +602,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         containerTarefas.innerHTML = '';
         let tarefasFiltradas;
-        
+
         const textoFiltro = document.getElementById("filtroTexto").value;
         console.log(textoFiltro)
 
@@ -647,7 +624,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         }else if(listaFiltro === "todas"){
             tarefasFiltradas = tarefas
-            
+
         }else{
             tarefasFiltradas = tarefas.filter(t => t.listaId === listaFiltro);
         }
@@ -665,7 +642,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return dataFim < hoje && !t.concluida;
             });
         }
-        
+
         if (filtroAtivo === "titulo" && textoFiltro){
             const tex = textoFiltro.toLowerCase();
             tarefasFiltradas = tarefasFiltradas.filter(t =>
@@ -734,8 +711,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             tarefaEl.addEventListener('click', function(e) {
-                // Evita abrir visualização ao clicar no botão excluir ou no checkbox
+                // Evita abrir visualização ao clicar nos botões ou no checkbox
                 if (e.target.closest('.tarefa-btn-excluir')) return;
+                if (e.target.closest('.tarefa-btn-editar')) return;
                 if (e.target.closest('.tarefa-checkbox')) return;
 
                 tarefaSelecionada = tarefa;
@@ -798,11 +776,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 conteudo.appendChild(info);
             }
 
+            // Botão editar
+            const btnEditar = document.createElement('button');
+            btnEditar.className = 'tarefa-btn-editar';
+            btnEditar.title = 'Editar tarefa';
+            btnEditar.innerHTML = '<i data-lucide="edit-2"></i>';
+            btnEditar.addEventListener('click', function(e) {
+                e.stopPropagation();
+                tarefaSelecionada = tarefa;
+                tituloModalTarefa.textContent = 'Editar Tarefa';
+                preencherFormulario(tarefa);
+                document.getElementById('tarefaLista').disabled = true;
+                document.getElementById("btnOkTarefa").style.display = "block";
+                document.getElementById("btnCancelarTarefa").textContent = "Cancelar";
+                modalAddTarefa.style.display = 'flex';
+            });
+
+            // Botão excluir
             const btnExcluir = document.createElement('button');
             btnExcluir.className = 'tarefa-btn-excluir';
+            btnExcluir.title = 'Excluir tarefa';
             btnExcluir.innerHTML = '<i data-lucide="trash-2"></i>';
-            btnExcluir.addEventListener('click', function() {
-                excluirTarefa(tarefa.id, tarefa.listaId);
+            btnExcluir.addEventListener('click', function(e) {
+                e.stopPropagation();
+                tarefaParaRemover = { id: tarefa.id, lista: tarefa.listaId };
+                modalConfirmarRemocao.style.display = 'flex';
             });
 
             if (corBarra) {
@@ -810,6 +808,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             tarefaEl.appendChild(checkbox);
             tarefaEl.appendChild(conteudo);
+            tarefaEl.appendChild(btnEditar);
             tarefaEl.appendChild(btnExcluir);
             containerTarefas.appendChild(tarefaEl);
         });

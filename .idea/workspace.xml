@@ -6,30 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="963ae2cd-f82b-476a-b1c0-108ba5d5c374" name="Changes" comment="1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/ConfigBancoDeDados.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/ConfigBancoDeDados.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/ConfigBancoDeDados.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/DemoApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/Modelos/Usuario.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/controle/loginControle.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/repository/UsuarioRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/service/CookieService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/service/autentificador/LoginInterceptor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/java/com/example/demo/service/autentificador/LoginInterceptorConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/static/css/cadastro.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/static/css/menuPrincipal.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/static/css/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/static/img/logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/templates/cadastro.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/templates/login.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/main/resources/templates/menuPrincipal.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../demo/src/test/java/com/example/demo/DemoApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/acessibilidade.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/acessibilidade.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/cadastro.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/cadastro.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/login.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/login.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/menu.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/menu.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/sidebar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/menu.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/js/menu.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/js/sidebar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/cadastro.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/cadastro.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/menu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/sidebar.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,33 +79,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.ToDailyApplication.executor": "Run",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.DemoApplication.executor": "Run",
-    "Spring Boot.ToDailyApplication.executor": "Run",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/matheus/Trabalho-Construcao-de-Software-main/Trabalho-Construcao-de-Software",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.ToDailyApplication.executor&quot;: &quot;Run&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-Lombok plugin&quot;: &quot;Lombok integration problem&quot;,
+    &quot;Notification.DoNotAsk-Lombok plugin&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.DemoApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ToDailyApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;matheusc&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/matheus/Trabalho-Construcao-de-Software-main/Trabalho-Construcao-de-Software&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
-  <component name="RunManager" selected="Spring Boot.ToDailyApplication">
+}</component>
+  <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="Trabalho-Construcao-de-Software" />
       <method v="2">
@@ -152,17 +141,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Spring Boot.ToDailyApplication" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
-        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
       </set>
     </attachedChunks>
   </component>
