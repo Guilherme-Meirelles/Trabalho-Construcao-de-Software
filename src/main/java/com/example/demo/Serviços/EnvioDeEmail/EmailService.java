@@ -63,7 +63,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8"); // UTF-8 e Multipart ativados
 
             helper.setFrom("noreply@todaily.com");
-            helper.setSubject("Redefinição de senha ToDaily");
+            helper.setSubject("Compartilhamento de Área de Trabalho ToDaily");
             helper.setTo(destinatario.getEmail());
 
             String template = carregaTemplateEmail("templates/compartilhamentoAreaTrabalho.html");

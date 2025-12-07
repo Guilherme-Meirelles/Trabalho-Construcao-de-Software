@@ -258,32 +258,27 @@ window.abrirModalCompartilhar = function () {
     document.getElementById('modalCompartilhar').style.display = 'flex';
     areaSelecionadaCompartilhar = null;
 
+    // AQUI ESTÁ A MUDANÇA PRINCIPAL
     const areas = Array.from(document.querySelectorAll('.area-card'))
-        .filter(card => card.dataset.id && card.dataset.nome)
-        .map(card => ({
-            id: card.dataset.id,
-            nome: card.dataset.nome
-    }));
+        .filter(card => {
+            // Verifica se tem ID, Nome e se a permissão é ADMIN
+            // Ajuste 'ADMIN' para corresponder exatamente ao nome do seu Enum em Java
+            return card.dataset.id &&
+                card.dataset.nome &&
+                card.dataset.permissao === 'ADMIN';
+        })
+        .map(card => ({ id: card.dataset.id, nome: card.dataset.nome }));
 
-    carregarAreasCompartilhamento(areas)
+    // Se a lista estiver vazia, pode ser útil avisar o usuário
+    if (areas.length === 0) {
+        alert("Você não possui permissão de administrador em nenhuma área para compartilhar.");
+        fecharModalCompartilhar();
+        return;
+    }
 
-    // Desmarca todos os radios
-    document.querySelectorAll('input[name="areaCompartilhar"]').forEach(radio => {
-        radio.checked = false;
-    });
+    carregarAreasCompartilhamento(areas);
 
-    // Remove seleção visual de todos
-    document.querySelectorAll('.area-item-compartilhar').forEach(item => {
-        item.classList.remove('selecionada');
-    });
-
-    // Desabilita todos os botões de compartilhamento
-    document.getElementById('btnGoogle').disabled = true;
-    document.getElementById('btnMicrosoft').disabled = true;
-    document.getElementById('btnGithub').disabled = true;
-    document.getElementById('btnLink').disabled = true;
-
-    setTimeout(() => lucide.createIcons(), 10);
+    // ... (resto da função de limpar radios e botões permanece igual)
 }
 
 window.fecharModalCompartilhar = function () {
@@ -654,7 +649,7 @@ window.abrirMembros = function () {
                 div.classList.add('membro-item');
                 div.setAttribute('data-membro-id', membro.id);
 
-                const btnAlterar = membro.id !== membroAtualId ? 
+                const btnAlterar =  membro.permissao !== 'editar'?
                     `<button class="btn-acao-membro" onclick="abrirModalPermissao('${membro.id}','${membro.nome}','${membro.permissao}')">
                         <i data-lucide="shield"></i> Alterar Permissão
                     </button>` :
@@ -662,8 +657,8 @@ window.abrirMembros = function () {
                         <i data-lucide="shield"></i> Alterar Permissão
                     </button>`;
 
-                const btnRemover = membro.id !== membroCriadorId ? 
-                    `<button class="btn-acao-membro remover" onclick="removerMembro('${membro.id}','${membro.nome}')">
+                const btnRemover = membro.permissao !== 'editar'  ?
+                    `<button class="btn-acao-membro remover" onclick="removerMembro('${membro.id}','${membro.nome}','${areaSelecionadaGerenciar}')">
                         <i data-lucide="user-minus"></i> Remover
                     </button>` :
                     `<button class="btn-acao-membro remover" disabled title="O criador não pode ser removido">
@@ -678,7 +673,7 @@ window.abrirMembros = function () {
                         </div>
                         <div class="membro-badges">
                             <span class="badge-permissao ${membro.permissao}" data-permissao="${membro.permissao}">
-                                ${membro.permissao === 'editar' ? 'Pode editar' : 'Pode visualizar'}
+                                ${membro.permissao === 'editar' ? 'Administrador' : 'Editor'}
                             </span>
                         </div>
                     </div>
@@ -780,10 +775,10 @@ window.salvarPermissao = function () {
 
             // Atualiza texto e classe
             if (novaPermissao === 'editar') {
-                badgePermissao.textContent = 'Pode editar';
+                badgePermissao.textContent = 'Administrador';
                 badgePermissao.classList.add('editar');
             } else if (novaPermissao === 'visualizar') {
-                badgePermissao.textContent = 'Pode visualizar';
+                badgePermissao.textContent = 'Editor';
             }
         }
 
@@ -794,20 +789,46 @@ window.salvarPermissao = function () {
         }
     }
 
-    alert(`Permissão de ${membroAtualPermissao.nome} alterada para "${novaPermissao === 'editar' ? 'Pode editar' : 'Pode visualizar'}"`);
+    alert(`Permissão de ${membroAtualPermissao.nome} alterada para "${novaPermissao === 'editar' ? 'Administrador' : 'Editor'}"`);
     fecharModalPermissao();
 }
 
-window.removerMembro = function (membroId, membroNome) {
+// Adicionamos 'async' para poder esperar a resposta do servidor
+window.removerMembro = async function (membroId, membroNome, idArea) {
+
+    // Confirmação antes de qualquer coisa
     const confirmacao = confirm(`Tem certeza que deseja remover ${membroNome} desta área?\n\nEle perderá acesso a todas as tarefas e informações.`);
 
-    if (confirmacao) {
-        console.log('Removendo membro:', membroId);
-        // Aqui você implementa a chamada ao backend
+    if (!confirmacao) return; // Se cancelar, para aqui.
 
-        // Remove o card da tela
+    try {
+        // --- 1. Chamada ao Backend ---
+        // Substitua '/api/remover-membro' pela URL real do seu backend
+        const resposta = await fetch('/remover-membro', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Se precisar de token, adicione aqui: 'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                areaId: idArea,    // Enviando o ID da área
+                usuarioId: membroId // Enviando o ID do membro
+            })
+        });
+
+        // Verifica se a requisição deu erro (ex: 404, 500)
+        if (!resposta.ok) {
+            throw new Error('Erro ao processar a remoção no servidor.');
+        }
+
+        // --- 2. Sucesso: Atualiza a Interface ---
+        console.log('Membro removido com sucesso:', membroId);
+
         const membroCard = document.querySelector(`.membro-item[data-membro-id="${membroId}"]`);
+
         if (membroCard) {
+            // Animação de saída
+            membroCard.style.transition = 'all 0.3s ease';
             membroCard.style.opacity = '0';
             membroCard.style.transform = 'translateX(-20px)';
 
@@ -817,15 +838,20 @@ window.removerMembro = function (membroId, membroNome) {
                 // Atualiza contador de membros
                 const contador = document.getElementById('contadorMembros');
                 if (contador) {
-                    const numeroAtual = parseInt(contador.textContent);
-                    contador.textContent = numeroAtual - 1;
+                    const numeroAtual = parseInt(contador.textContent) || 0;
+                    contador.textContent = Math.max(0, numeroAtual - 1);
                 }
-            }, 200);
+            }, 300); // Espera a animação terminar
         }
 
         alert(`${membroNome} foi removido da área de trabalho.`);
+
+    } catch (erro) {
+        // --- 3. Tratamento de Erro ---
+        console.error('Falha ao remover:', erro);
+        alert('Ocorreu um erro ao tentar remover o membro. Tente novamente. ' + erro);
     }
-}
+};
 
 // Fecha o menu de contexto ao clicar em qualquer lugar
 document.addEventListener('click', function(event) {

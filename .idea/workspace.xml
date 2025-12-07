@@ -5,17 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="963ae2cd-f82b-476a-b1c0-108ba5d5c374" name="Changes" comment="1">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/ConsultasBD/AreaCompartilhamentoRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Entidades/AreaCompartilhamento.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/compartilhamentoAreaTrabalho.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/AreaTrabalhoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/AreaTrabalhoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Serviços/EnvioDeEmail/EmailService2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Serviços/EnvioDeEmail/EmailService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Serviços/EnvioDeEmail/RecuperarSenhaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/RecuperarSenhaController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/areasTrabalho.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/areasTrabalho.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/CompartilharAreadeTrabalho.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/CompartilharAreadeTrabalho.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Serviços/EnvioDeEmail/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Serviços/EnvioDeEmail/EmailService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/areasTrabalho.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/js/areasTrabalho.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/areasTrabalho.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/areasTrabalho.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/recuperarSenhaEmail.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/recuperarSenhaEmail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitattributes" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />

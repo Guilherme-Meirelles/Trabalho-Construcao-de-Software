@@ -144,7 +144,7 @@ public class CompartilharAreadeTrabalho {
                 return "login";
             }
             else{
-                ParticipacaoArea participacaoArea = new ParticipacaoArea(destinatario, area, OBSERVADOR);
+                ParticipacaoArea participacaoArea = new ParticipacaoArea(destinatario, area, EDITOR);
                 participacaoAreaRepository.save(participacaoArea);
                 token.setUsado(true);
                 tokenRepository.save(token);

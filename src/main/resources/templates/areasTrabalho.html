@@ -21,17 +21,21 @@
             <h2>Áreas de Trabalho</h2>
         </div>
 
+        <!-- Renderiza cada área do usuário -->
         <div class="areas-grid" id="areasGrid">
 
-            <!-- Renderiza cada área do usuário -->
             <div class="area-card"
-                th:each="area : ${areas}"
-                th:data-id="${area.id}"
-                th:data-nome="${area.nome}"
-                onclick="abrirArea(this)"
-                oncontextmenu="abrirMenuContexto(event, this)">
-                <h3 th:text="${area.nome}"></h3>
+                 th:each="participacao : ${participacoes}"
+                 th:data-id="${participacao.area.id}"
+                 th:data-nome="${participacao.area.nome}"
+                 th:data-permissao="${participacao.permissao}"
+                 onclick="abrirArea(this)"
+                 oncontextmenu="abrirMenuContexto(event, this)">
+
+                <h3 th:text="${participacao.area.nome}"></h3>
             </div>
+
+        </div>
 
             <!-- Card de adicionar área -->
             <div class="area-card area-add" onclick="abrirModalNovaArea()">
@@ -123,7 +127,7 @@
 
     <div id="ModalCompartilhamentoOverlay" style="display: none">
         <div class="login-container">
-            <h4>Insira o email do usuário...</h4>
+            <h4>Insira o email do usuário <br> para compartilhar area de trabalho</h4>
 
             <p id="msgFeedback" style="text-align:center; display:none;"></p>
 

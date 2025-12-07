@@ -1,9 +1,7 @@
 package com.example.demo.Controles;
 
 import com.example.demo.ConsultasBD.*;
-import com.example.demo.Entidades.AreaTrabalho;
-import com.example.demo.Entidades.Lista;
-import com.example.demo.Entidades.Usuario;
+import com.example.demo.Entidades.*;
 import com.example.demo.Serviços.CookieService;
 import com.example.demo.Serviços.ListaService;
 import com.example.demo.Serviços.TarefaService;
@@ -11,6 +9,7 @@ import com.example.demo.Serviços.TarefaService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
@@ -18,15 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.example.demo.Entidades.ParticipacaoArea;
-import com.example.demo.Entidades.PermissaoArea;
 
-import com.example.demo.Entidades.Tarefa;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -74,14 +67,10 @@ public class AreaTrabalhoController {
         model.addAttribute("dataNascimento", usuario.getDataNascimento());
 
         List<ParticipacaoArea> participacaoAreas = participacaoAreaRepository.findByUsuario(usuario);
-        List<AreaTrabalho> areas = new ArrayList<>();
-        for (ParticipacaoArea participacaoArea : participacaoAreas) {
-            areas.add(participacaoArea.getArea());
-        }
 
         model.addAttribute("usuario", usuario);
-        model.addAttribute("areas", areas);
         model.addAttribute("isMenu", true);
+        model.addAttribute("participacoes", participacaoAreas);
 
         return "areasTrabalho";
     }
@@ -179,18 +168,30 @@ public class AreaTrabalhoController {
 
     @DeleteMapping("/areasTrabalho/excluir")
     public ResponseEntity<?> excluirAreas(@RequestBody Map<String, List<Long>> body, HttpServletRequest request) {
-        String usuarioId = CookieService.getCookie(request, "usuarioId");
-        if (usuarioId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
-        Usuario usuario = usuarioRepository.findById(Long.parseLong(usuarioId)).orElse(null);
+        String usuarioIdString = CookieService.getCookie(request, "usuarioId");
+        if (usuarioIdString == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        Long usuarioId = Long.parseLong(usuarioIdString);
+        Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
         if (usuario == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         List<Long> ids = body.get("ids");
         for (Long id : ids) {
             AreaTrabalho area = areaTrabalhoRepository.findById(id).orElse(null);
-            if (area != null && area.getDono().getId().equals(usuario.getId())) {
-                areaTrabalhoRepository.delete(area);
+            if (area != null){
+                List<ParticipacaoArea> participacoes = participacaoAreaRepository.findByArea(area);
+                ParticipacaoArea participacaoArea = participacoes.stream().filter(e -> e.getUsuario().getId() == usuarioId).findFirst().orElse(null);
+                if (participacaoArea.getPermissao().equals(PermissaoArea.ADMIN)) {
+                    areaTrabalhoRepository.delete(area);
+                    for (ParticipacaoArea p : participacoes) {
+                        participacaoAreaRepository.delete(p);
+                    }
+                }
+                else{
+                    participacaoAreaRepository.delete(participacaoArea);
+                }
             }
+
+
         }
         return ResponseEntity.ok().body(Map.of("status", "success"));
     }
@@ -485,5 +486,60 @@ public class AreaTrabalhoController {
 
         return ResponseEntity.ok(membros);
     }
+    @PostMapping("/remover-membro") // Certifique-se que a classe não tem @RequestMapping("/api")
+    @ResponseBody
+    @Transactional // Necessário para operações de delete funcionarem corretamente
+    public ResponseEntity<?> removerMembro(@RequestBody Map<String, Object> map) {
+        try {
+            // 1. Validação de segurança na entrada de dados
+            if (map.get("usuarioId") == null || map.get("areaId") == null) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "IDs não fornecidos."));
+            }
 
+            // 2. Conversão segura (trata tanto se vier como String quanto Integer/Long do JSON)
+            Long idUsuario = Long.parseLong(map.get("usuarioId").toString());
+            Long idArea = Long.parseLong(map.get("areaId").toString());
+
+            Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
+            AreaTrabalho area = areaTrabalhoRepository.findById(idArea).orElse(null);
+
+            // 3. Parar a execução se não encontrar (Return explícito)
+            if (area == null) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Área não encontrada."));
+            }
+
+            if (usuario == null) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Usuário não encontrado."));
+            }
+
+            // 4. Remoção Otimizada
+            // Em vez de trazer TODOS e fazer loop, tentamos achar a participação exata
+            // Se você tiver um método findByAreaAndUsuario no repository, use-o.
+            // Caso contrário, mantive sua lógica de loop mas com break para otimizar.
+
+            boolean removeu = false;
+            List<ParticipacaoArea> todosMembros = participacaoAreaRepository.findByArea(area);
+
+            for (ParticipacaoArea participacao : todosMembros) {
+                // Comparação segura de Longs usa .equals
+                if (participacao.getUsuario().getId().equals(idUsuario)) {
+                    participacaoAreaRepository.delete(participacao);
+                    removeu = true;
+                    break; // Importante: para o loop assim que encontrar
+                }
+            }
+
+            if (!removeu) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Este usuário não faz parte desta área."));
+            }
+
+            // Retorna sucesso
+            return ResponseEntity.ok(Map.of("success", true, "message", "Membro removido com sucesso!"));
+
+        } catch (Exception e) {
+            // 5. Log do erro para você ver no console do servidor o que houve
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Erro interno: " + e.getMessage()));
+        }
+    }
 }
