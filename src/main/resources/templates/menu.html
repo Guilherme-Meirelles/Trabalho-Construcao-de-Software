@@ -20,13 +20,13 @@
         <div class="titulo">
             <div class="titulo-info">
                 <h2 id="titulo-principal">Para Hoje</h2>
-                <span id="subtitulo-principal"></span>
+                <span id="subtitulo-principal" th:text="${descricaoDaLista}" th:title="${descricaoDaLista}"></span>
                 <div class="titulo-acoes">
-                    <button class="btn-filtro" id="btnFiltro">
+                    <button class="btn-filtro" id="btnFiltro" title="Filtrar tarefas">
                         <i data-lucide="filter"></i>
                     </button>
-                    <button class="btn-ordenar" id="btnOrdenar">
-                        <i data-lucide="arrow-up-down"></i>
+                    <button class="btn-ordenar" id="btnOrdenar" title="Ordenar tarefas">
+                    <i data-lucide="arrow-up-down"></i>
                     </button>
                 </div>
             </div>
@@ -40,11 +40,6 @@
         <!-- Container para as tarefas -->
         <div class="container-tarefas" id="containerTarefas">
             <!-- As tarefas serão adicionadas aqui dinamicamente -->
-        </div>
-
-        <!-- Menu de Contexto da Tarefa -->
-        <div class="context-menu" id="menuContextoTarefa" style="display: none;">
-            <button class="context-menu-item" id="btnEditarTarefa">Editar Tarefa</button>
         </div>
 
         <!-- Menu de Filtro -->

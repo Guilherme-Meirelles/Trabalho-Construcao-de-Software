@@ -12,14 +12,14 @@
 <!-- ========== FRAGMENT: SIDEBAR ========== -->
 <aside class="sidebar" th:fragment="sidebar">
     <div class="header-sidebar">
-        <h1 class="app-title" onclick="navegarPara(this, '/menu')" style="cursor: pointer;">ToDaily</h1>
+        <h1 class="app-title" onclick="navegarPara(this, '/menu')" style="cursor: pointer;" title="Menu Principal">ToDaily</h1>
         <button class="btn-config" onclick="abrirModalConfig()" title="Configurações">
             <i data-lucide="settings"></i>
         </button>
     </div>
 
     <!-- Perfil -->
-    <div class="perfil" onclick="abrirModalPerfil('modalPerfil')" style="cursor: pointer;">
+    <div class="perfil" onclick="abrirModalPerfil('modalPerfil')" style="cursor: pointer;" title="Ver perfil">
         <div class="avatar">
             <i data-lucide="user"></i>
         </div>
@@ -142,7 +142,7 @@
                 </div>
                 <div class="campo-lista">
                     <label for="descricao-lista">Descrição:</label>
-                    <textarea id="descricao-lista" rows="4"></textarea>
+                    <textarea id="descricao-lista" rows="4" placeholder="Adicione uma descrição (opcional)"></textarea>
                 </div>
                 <div class="botoes-acao-lista">
                     <button type="button" class="btn-ok" onclick="confirmarCriacaoLista()">OK</button>
@@ -163,7 +163,7 @@
                 </div>
                 <div class="campo-lista">
                     <label for="descricao-lista-edit">Descrição:</label>
-                    <textarea id="descricao-lista-edit" rows="4"></textarea>
+                    <textarea id="descricao-lista-edit" rows="4" placeholder="Adicione uma descrição (opcional)"></textarea>
                 </div>
                 <div class="botoes-acao-lista">
                     <button type="button" class="btn-ok" onclick="confirmarEdicaoLista()">OK</button>
@@ -178,8 +178,8 @@
         <div class="modal-remover" onclick="event.stopPropagation()">
             <h3 class="modal-remover-mensagem">Deseja realmente remover esta lista?</h3>
             <div class="modal-remover-botoes">
-                <button class="btn-remover-sim" onclick="confirmarRemocaoLista()">Sim</button>
                 <button class="btn-remover-nao" onclick="fecharModalPerfil('modalRemoveLista')">Não</button>
+                <button class="btn-remover-sim" onclick="confirmarRemocaoLista()">Sim</button>
             </div>
         </div>
     </div>
@@ -188,6 +188,17 @@
     <div id="menuContextoLista" class="context-menu" style="display: none;">
         <button class="context-menu-item" onclick="abrirModalEditarLista()">Editar Lista</button>
         <button class="context-menu-item" onclick="abrirModalRemoverLista()">Remover Lista</button>
+    </div>
+
+    <!-- Modal: Confirmação de Logout -->
+    <div id="modalConfirmarLogout" class="confirma-acao" style="display: none;" onclick="fecharModalPerfil('modalConfirmarLogout')">
+        <div class="modal-remover" onclick="event.stopPropagation()">
+            <h3 class="modal-remover-mensagem">Deseja realmente sair da sua conta?</h3>
+            <div class="modal-remover-botoes">
+                <button class="btn-remover-nao" onclick="fecharModalPerfil('modalConfirmarLogout')">Não</button>
+                <button class="btn-remover-sim" onclick="confirmarLogout()">Sim</button>
+            </div>
+        </div>
     </div>
 
     <!-- Modal: Configurações -->
@@ -219,7 +230,7 @@
                         <i data-lucide="user-cog"></i>
                         <span>Gerenciar Contas</span>
                     </button>
-                    <button class="btn-config-acao red" onclick="fazerLogout()">
+                    <button class="btn-config-acao red" onclick="abrirModalLogout()">
                         <i data-lucide="log-out"></i>
                         <span>Sair</span>
                     </button>

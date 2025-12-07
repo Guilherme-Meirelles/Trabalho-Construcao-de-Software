@@ -688,3 +688,7 @@ body {
         text-align: center;
     }
 }
+
+#modalConfirmarLogout {
+    z-index: 10000; /* Maior que o modalConfig que tem z-index: 9999 */
+}
