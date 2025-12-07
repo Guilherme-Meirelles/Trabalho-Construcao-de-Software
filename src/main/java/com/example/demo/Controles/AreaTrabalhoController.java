@@ -1,9 +1,6 @@
 package com.example.demo.Controles;
 
-import com.example.demo.ConsultasBD.AreaTrabalhoRepository;
-import com.example.demo.ConsultasBD.ListaRepository;
-import com.example.demo.ConsultasBD.TarefaRepository;
-import com.example.demo.ConsultasBD.UsuarioRepository;
+import com.example.demo.ConsultasBD.*;
 import com.example.demo.Entidades.AreaTrabalho;
 import com.example.demo.Entidades.Lista;
 import com.example.demo.Entidades.Usuario;
@@ -42,6 +39,9 @@ public class AreaTrabalhoController {
     private AreaTrabalhoRepository areaTrabalhoRepository;
 
     @Autowired
+    private ParticipacaoAreaRepository participacaoAreaRepository;
+
+    @Autowired
     private ListaRepository listaRepository;
 
     @Autowired
@@ -73,7 +73,11 @@ public class AreaTrabalhoController {
         model.addAttribute("email", usuario.getEmail());
         model.addAttribute("dataNascimento", usuario.getDataNascimento());
 
-        List<AreaTrabalho> areas = areaTrabalhoRepository.findByDono(usuario);
+        List<ParticipacaoArea> participacaoAreas = participacaoAreaRepository.findByUsuario(usuario);
+        List<AreaTrabalho> areas = new ArrayList<>();
+        for (ParticipacaoArea participacaoArea : participacaoAreas) {
+            areas.add(participacaoArea.getArea());
+        }
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("areas", areas);

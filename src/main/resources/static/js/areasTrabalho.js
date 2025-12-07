@@ -189,6 +189,71 @@ window.carregarAreasCompartilhamento = function (areas) {
     });
 }
 
+window.abrirModalEmail = function(){
+    // Atualizado para o ID sem espaço
+    document.getElementById('ModalCompartilhamentoOverlay').style.display = 'flex';
+}
+
+window.fecharModalEmail = function(){
+    document.getElementById('ModalCompartilhamentoOverlay').style.display = 'none';
+}
+
+function enviarViaAjax() {
+    // 1. Pega os valores
+    var emailInput = document.getElementById('email').value;
+    var msgFeedback = document.getElementById('msgFeedback');
+
+    // Validação básica
+    if (!emailInput) {
+        alert("Por favor, preencha o email.");
+        return;
+    }
+
+    // Verifica a variável global do ID da Área
+    if (typeof areaSelecionadaCompartilhar === 'undefined' || !areaSelecionadaCompartilhar) {
+        alert("Erro: ID da área não identificado.");
+        return;
+    }
+
+    // 2. Monta o objeto para enviar (JSON)
+    var dadosParaEnviar = {
+        email: emailInput,
+        id_area: areaSelecionadaCompartilhar
+    };
+
+    // 3. Faz o POST via Fetch (Sem recarregar a página)
+    fetch('/notificacaoArea', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dadosParaEnviar)
+    })
+        .then(response => response.json()) // Converte a resposta do Java para objeto JS
+        .then(data => {
+            // 4. Trata o sucesso ou erro visualmente
+            msgFeedback.style.display = 'block';
+            msgFeedback.innerText = data.message;
+
+            if (data.success) {
+                msgFeedback.style.color = 'lightgreen';
+                // Opcional: Limpar o campo de email
+                document.getElementById('email').value = '';
+
+                // Se quiser fechar o modal automaticamente após 2 segundos:
+                // setTimeout(fecharModalEmail, 2000);
+            } else {
+                msgFeedback.style.color = '#ff6b6b';
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            msgFeedback.style.display = 'block';
+            msgFeedback.innerText = "Erro de conexão com o servidor.";
+            msgFeedback.style.color = '#ff6b6b';
+        });
+}
+
 window.abrirModalCompartilhar = function () {
     document.getElementById('modalCompartilhar').style.display = 'flex';
     areaSelecionadaCompartilhar = null;

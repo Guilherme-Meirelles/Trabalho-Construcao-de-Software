@@ -5,6 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="963ae2cd-f82b-476a-b1c0-108ba5d5c374" name="Changes" comment="1">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/ConsultasBD/AreaCompartilhamentoRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Entidades/AreaCompartilhamento.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/compartilhamentoAreaTrabalho.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/AreaTrabalhoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/AreaTrabalhoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Serviços/EnvioDeEmail/EmailService2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Serviços/EnvioDeEmail/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Serviços/EnvioDeEmail/RecuperarSenhaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/RecuperarSenhaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/areasTrabalho.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/areasTrabalho.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/js/areasTrabalho.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/js/areasTrabalho.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/areasTrabalho.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/areasTrabalho.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/recuperarSenhaEmail.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/recuperarSenhaEmail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitattributes" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
@@ -39,6 +50,7 @@
       <list>
         <option value="HTML File" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -181,7 +193,10 @@
       <workItem from="1762870122655" duration="14740000" />
       <workItem from="1764011355157" duration="1449000" />
       <workItem from="1764043415191" duration="12000" />
-      <workItem from="1764884237648" duration="298000" />
+      <workItem from="1764884237648" duration="11503000" />
+      <workItem from="1764934903763" duration="6067000" />
+      <workItem from="1765062343056" duration="1437000" />
+      <workItem from="1765064346075" duration="3423000" />
     </task>
     <task id="LOCAL-00001" summary="1">
       <option name="closed" value="true" />

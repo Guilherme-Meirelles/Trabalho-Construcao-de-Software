@@ -1,12 +1,11 @@
-package com.example.demo.Serviços.EnvioDeEmail;
+package com.example.demo.Controles;
 
 import com.example.demo.ConsultasBD.UsuarioRepository;
 import com.example.demo.Entidades.Token;
 import com.example.demo.Entidades.Usuario;
 import com.example.demo.Serviços.CookieService;
-import com.example.demo.Serviços.EnvioDeEmail.EmailService2;
 import com.example.demo.ConsultasBD.TokenRepository;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.demo.Serviços.EnvioDeEmail.EmailService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +21,7 @@ import java.util.UUID;
 public class RecuperarSenhaController {
 
     @Autowired
-    private EmailService2 emailService2;
+    private EmailService emailService2;
 
     @Autowired
     private UsuarioRepository ur;
@@ -53,13 +52,13 @@ public class RecuperarSenhaController {
             Token token = new Token();
             token.setToken(tokenString);
             token.setEmail(usuario.getEmail());
-            token.setExpiraEm(LocalDateTime.now().plusMinutes(30)); // 🔥 expira em 10 minutos
+            token.setExpiraEm(LocalDateTime.now().plusMinutes(10)); // 🔥 expira em 10 minutos
             token.setUsado(false);
 
             tokenRepository.save(token);
 
             // Enviar email com token
-            emailService2.enviarEmail(usuario.getEmail(), usuario.getNome(), tokenString);
+            emailService2.enviarEmailRecuperacaoSenha(usuario.getEmail(), usuario.getNome(), tokenString);
 
             model.addAttribute("mensagem", "Email enviado com sucesso!");
 

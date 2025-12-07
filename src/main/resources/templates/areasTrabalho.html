@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/areasTrabalho.css" />
     <link rel="stylesheet" href="/css/menu.css" />
     <link rel="stylesheet" href="/css/acessibilidade.css" />
+
 </head>
 <body>
 <div class="app-container">
@@ -91,7 +92,7 @@
                 <h3>Compartilhar via:</h3>
 
                 <div class="metodos-compartilhamento">
-                    <button class="btn-metodo-compartilhar" id="btnGoogle" onclick="compartilharVia('google')" disabled>
+                    <button class="btn-metodo-compartilhar" id="btnGoogle" onclick="abrirModalEmail()" disabled>
                         <i data-lucide="mail"></i>
                         Google
                     </button>
@@ -116,6 +117,23 @@
                     <button type="button" class="btn-cancelar-modal" onclick="fecharModalCompartilhar()">Fechar</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <div id="ModalCompartilhamentoOverlay" style="display: none">
+        <div class="login-container">
+            <h4>Insira o email do usuário...</h4>
+
+            <p id="msgFeedback" style="text-align:center; display:none;"></p>
+
+            <form id="emailForm" onsubmit="return false;">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="exemplo@gmail.com" required>
+
+                <button type="button" class="btn" onclick="enviarViaAjax()">CONFIRMAR</button>
+                <button type="button" class="btn secundario" onclick="fecharModalEmail()">VOLTAR</button>
+            </form>
         </div>
     </div>
 
@@ -271,6 +289,12 @@
 
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="/js/areasTrabalho.js"></script>
-
+<script>
+    // Verifica se a variável existe para evitar erros
+    if (typeof areaSelecionadaCompartilhar !== 'undefined') {
+        // Encontra o input pelo ID e joga o valor da variável dentro dele
+        document.getElementById('inputAreaId').value = areaSelecionadaCompartilhar;
+    }
+</script>
 </body>
 </html>
