@@ -70,7 +70,7 @@ public class AreaTrabalhoController {
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("isMenu", true);
-        model.addAttribute("participacoes", participacaoAreas);
+        model.addAttribute("areas", participacaoAreas);
 
         return "areasTrabalho";
     }
