@@ -25,14 +25,14 @@
         <div class="areas-grid" id="areasGrid">
 
             <div class="area-card"
-                 th:each="area : ${areas}"
-                 th:data-id="${area.id}"
-                 th:data-nome="${area.nome}"
-                 th:data-permissao="${permissao}"
+                 th:each="participacao : ${participacoes}"
+                 th:data-id="${participacao.area.id}"
+                 th:data-nome="${participacao.area.nome}"
+                 th:data-permissao="${participacao.permissao}"
                  onclick="abrirArea(this)"
                  oncontextmenu="abrirMenuContexto(event, this)">
 
-                <h3 th:text="${area.nome}"></h3>
+                <h3 th:text="${participacao.area.nome}"></h3>
             </div>
 
             <div class="area-card area-add" onclick="abrirModalNovaArea()">
