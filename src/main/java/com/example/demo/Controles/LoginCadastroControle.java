@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Year;
+
 @Controller
 public class LoginCadastroControle {
 
@@ -47,9 +49,11 @@ public class LoginCadastroControle {
             model.addAttribute("mensagem", "A senha deve ter pelo menos 8 caracteres!");
             return "cadastro";
         }
-        if (!usuario.getDataNascimento().matches("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$")) {
-            model.addAttribute("mensagem", "Data de nascimento inválida! Use DD/MM/AAAA.");
+
+        if (Long.parseLong(usuario.getDataNascimento().substring(0, 4)) > Year.now().getValue()) {
+            model.addAttribute("mensagem", "Ano inserido inválido");
             return "cadastro";
+
         }
 
 

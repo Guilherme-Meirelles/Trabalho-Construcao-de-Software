@@ -30,7 +30,10 @@ public class MenuController {
         if (nome == null || email == null) {
             return "redirect:/login";
         }
-
+        String ano = dataNascimento.substring(0, 4);
+        String mes = dataNascimento.substring(5, 7);
+        String dia = dataNascimento.substring(8, 10);
+        dataNascimento = dia + "/" + mes + "/" + ano;
         model.addAttribute("nome", nome);
         model.addAttribute("email", email);
         model.addAttribute("dataNascimento", dataNascimento);

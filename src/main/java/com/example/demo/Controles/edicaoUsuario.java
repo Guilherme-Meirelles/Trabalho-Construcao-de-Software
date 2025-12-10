@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.Year;
+
 @Controller
 public class edicaoUsuario {
 
@@ -42,10 +44,13 @@ public class edicaoUsuario {
         if (result.hasErrors()) {
             model.addAttribute("mensagem", "Erro na edição de usuário!");
             return "edicaoUsuario";
-        } else if (!usuarioEditado.getDataNascimento().matches("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$")) {
-            model.addAttribute("mensagem", "Data de nascimento inválida! Use DD/MM/AAAA.");
-            return "edicaoUsuario";
-        } else if (usuarioEditado.getSenha().length() < 8) {
+
+        } else if (Long.parseLong(usuarioEditado.getDataNascimento().substring(0, 4)) > Year.now().getValue()) {
+            model.addAttribute("mensagem", "Ano inserido inválido");
+            return "cadastro";
+        }
+
+        else if (usuarioEditado.getSenha().length() < 8) {
             model.addAttribute("mensagem", "A senha deve ter pelo menos 8 caracteres!");
             return "edicaoUsuario";
         } else {
