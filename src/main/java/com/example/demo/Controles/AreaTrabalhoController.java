@@ -67,10 +67,13 @@ public class AreaTrabalhoController {
         model.addAttribute("dataNascimento", usuario.getDataNascimento());
 
         List<ParticipacaoArea> participacaoAreas = participacaoAreaRepository.findByUsuario(usuario);
-
+        List<AreaTrabalho> areas = new ArrayList<AreaTrabalho>();
+        for (ParticipacaoArea participacaoArea : participacaoAreas) {
+            areas.add(participacaoArea.getArea());
+        }
         model.addAttribute("usuario", usuario);
         model.addAttribute("isMenu", true);
-        model.addAttribute("areas", participacaoAreas);
+        model.addAttribute("areas", areas);
 
         return "areasTrabalho";
     }

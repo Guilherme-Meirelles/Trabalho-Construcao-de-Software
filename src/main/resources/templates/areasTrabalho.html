@@ -25,25 +25,20 @@
         <div class="areas-grid" id="areasGrid">
 
             <div class="area-card"
-                 th:each="participacao : ${participacoes}"
-                 th:data-id="${participacao.area.id}"
-                 th:data-nome="${participacao.area.nome}"
-                 th:data-permissao="${participacao.permissao}"
+                 th:each="area : ${areas}"
+                 th:data-id="${area.id}"
+                 th:data-nome="${area.nome}"
+                 th:data-permissao="${permissao}"
                  onclick="abrirArea(this)"
                  oncontextmenu="abrirMenuContexto(event, this)">
 
-                <h3 th:text="${participacao.area.nome}"></h3>
+                <h3 th:text="${area.nome}"></h3>
             </div>
 
-        </div>
-
-            <!-- Card de adicionar área -->
             <div class="area-card area-add" onclick="abrirModalNovaArea()">
                 <i data-lucide="plus-circle" data-size="52"></i>
             </div>
-
         </div>
-
         <!-- Botões de ação flutuantes -->
         <div class="acoes-flutuantes">
             <button class="btn-acao" title="Compartilhar" onclick="abrirModalCompartilhar()">

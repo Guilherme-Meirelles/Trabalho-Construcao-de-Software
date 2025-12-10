@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="963ae2cd-f82b-476a-b1c0-108ba5d5c374" name="Changes" comment="1">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/AreaTrabalhoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Controles/AreaTrabalhoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/areasTrabalho.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/areasTrabalho.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitattributes" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../demo/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
@@ -199,7 +199,7 @@
       <workItem from="1764934903763" duration="6067000" />
       <workItem from="1765062343056" duration="1437000" />
       <workItem from="1765064346075" duration="3423000" />
-      <workItem from="1765324297856" duration="4806000" />
+      <workItem from="1765324297856" duration="5394000" />
     </task>
     <task id="LOCAL-00001" summary="1">
       <option name="closed" value="true" />
