@@ -22,9 +22,9 @@ public class LoginInterceptorConfig implements WebMvcConfigurer {
                         "/img/**",
                         "/favicon.ico",
                         "/recuperarSenhaEmail",
-                        "/recuperar-senha"
-
-
+                        "/recuperar-senha",
+                        "/redefinicaoSenha",
+                        "/redefinirSenha"
                 );
 
     }

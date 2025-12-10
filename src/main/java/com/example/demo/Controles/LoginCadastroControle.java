@@ -3,6 +3,8 @@ package com.example.demo.Controles;
 import com.example.demo.Entidades.Usuario;
 import com.example.demo.ConsultasBD.UsuarioRepository;
 import com.example.demo.Serviços.CookieService;
+
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Year;
 
 @Controller
 public class LoginCadastroControle {
@@ -45,9 +49,11 @@ public class LoginCadastroControle {
             model.addAttribute("mensagem", "A senha deve ter pelo menos 8 caracteres!");
             return "cadastro";
         }
-        if (!usuario.getDataNascimento().matches("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$")) {
-            model.addAttribute("mensagem", "Data de nascimento inválida! Use DD/MM/AAAA.");
+
+        if (Long.parseLong(usuario.getDataNascimento().substring(0, 4)) > Year.now().getValue()) {
+            model.addAttribute("mensagem", "Ano inserido inválido");
             return "cadastro";
+
         }
 
 
@@ -65,12 +71,34 @@ public class LoginCadastroControle {
             CookieService.setCookie(response, "nomeUsuario", usuarioLogado.getNome(), 10000);
             CookieService.setCookie(response, "emailUsuario", usuarioLogado.getEmail(), 10000);
             CookieService.setCookie(response, "dataNascimento", usuarioLogado.getDataNascimento(), 10000);
-            return "redirect:/areasTrabalho"; // ✅ Agora redireciona corretamente
+            return "redirect:/menu"; // ✅ Agora redireciona corretamente
         }
 
         model.addAttribute("erro", "Usuário Inválido");
         return "login";
 
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+
+        // Lista de todos os cookies que você usa
+        String[] cookies = {
+            "usuarioId",
+            "nomeUsuario",
+            "emailUsuario",
+            "dataNascimento"
+        };
+
+        // Apaga cada cookie
+        for (String nome : cookies) {
+            Cookie cookie = new Cookie(nome, "");
+            cookie.setMaxAge(0); // apaga
+            cookie.setPath("/"); // importante!!
+            response.addCookie(cookie);
+        }
+
+        return "redirect:/login"; // volta para a página de login
     }
 }
 

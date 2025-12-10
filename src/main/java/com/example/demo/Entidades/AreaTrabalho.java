@@ -1,7 +1,10 @@
 package com.example.demo.Entidades;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,8 +29,8 @@ public class AreaTrabalho {
 
     // areaTrabalho(1)-(n)Lista
     // Area de trabalho é dona da relação
-    @OneToMany(mappedBy = "areaMae")
-    private Set<Lista> listas = new HashSet<>();
+    @OneToMany(mappedBy = "area", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Lista> listas = new ArrayList<>();
 
     // GETTERS E SETTERS
 
@@ -37,6 +40,5 @@ public class AreaTrabalho {
     public Usuario getDono() { return dono; }
     public void setDono(Usuario dono) { this.dono = dono; }
     public Set<ParticipacaoArea> getParticipacoes() { return participacoes; }
-
-    public Set<Lista> getListas() { return listas; }
+    public List<Lista> getListas() { return listas; }
 }

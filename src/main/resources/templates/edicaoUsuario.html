@@ -26,7 +26,7 @@
         <input type="email" id="email" name="email" th:value="*{email}" required />
 
         <label for="dataNasc">Data de Nascimento*:</label>
-        <input type="text" id="dataNasc" name="dataNascimento" th:value="*{dataNascimento}" placeholder="DD/MM/AAAA" required />
+        <input type="date" id="dataNasc" name="dataNascimento" required />
 
         <label for="senha">Senha*:</label>
         <input type="password" id="senha" name="senha" th:value="*{senha}" minlength="8" required />
@@ -37,7 +37,7 @@
         <p class="info">(*) São campos obrigatórios</p>
 
         <div class="botoes">
-            <button  type="button" class="btn" onclick="window.location.href='/menuPrincipal'">Cancelar</button>
+            <button  type="button" class="btn" onclick="window.location.href='/menu'">Cancelar</button>
             <button type="submit" class="btn">Confirmar</button>
         </div>
     </form>
@@ -57,11 +57,7 @@
         erro.textContent = "";
 
         // Validação de data no formato dd/mm/aaaa
-        const regexData = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
-        if (!regexData.test(dataNasc)) {
-            erro.textContent = "A data de nascimento deve estar no formato DD/MM/AAAA.";
-            return false;
-        }
+
 
         // Validação de senha mínima
         if (senha.length < 8) {

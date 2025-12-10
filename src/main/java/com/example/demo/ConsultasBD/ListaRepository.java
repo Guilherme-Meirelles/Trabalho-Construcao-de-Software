@@ -7,7 +7,5 @@ import com.example.demo.Entidades.Lista;
 import com.example.demo.Entidades.AreaTrabalho;
 
 public interface ListaRepository extends JpaRepository<Lista, Long> {
-    
-    Lista findListaById(Long id);
-    List<Lista> findListasByAreaMae(AreaTrabalho areaMae);
+    List<Lista> findByAreaId(Long areaId);
 }

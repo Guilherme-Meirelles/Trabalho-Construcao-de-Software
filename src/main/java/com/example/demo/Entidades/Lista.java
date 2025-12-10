@@ -9,7 +9,7 @@ public class Lista {
 
     /*
      * id : Long
-     * titulo : String
+     * nome : String
      * descricao : String
      * REL: areaMae : AreaTrabalho
      * REL: tarefas : Set<Tarefa>
@@ -20,36 +20,38 @@ public class Lista {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String titulo;
+    private String nome;
     private String descricao;
 
     // RELACIONAMENTOS DE LISTA
 
     // lista(n)-(1)areaTrabalho
     // area de trabalho é dona da relação
-    @ManyToOne
-    @JoinColumn(name = "areaMae")
-    private AreaTrabalho areaMae;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "area_id", nullable = false)
+    private AreaTrabalho area;
 
     // lista(1)-(n)tarefa
     // lista é dona da relação
-    @OneToMany(mappedBy="listaOrigem")
+    @OneToMany(mappedBy="listaOrigem", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Tarefa> tarefas = new HashSet<>();
     
     // GETTERS E SETTERS
     // id
     public Long getId() { return id; }
-    // titulo
-    public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
+
+    // Nome
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
     // descricao
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
+
     // areaMae
-    public AreaTrabalho getAreaMae() { return areaMae; }
-    public void setAreaMae(AreaTrabalho area) { this.areaMae = area; }
+    public AreaTrabalho getArea() { return area; }
+    public void setArea(AreaTrabalho a) { area = a; }
+
     // tarefas
     public Set<Tarefa> getTarefas() { return tarefas; }
-    public void setTarefas(Set<Tarefa> tarefas) { this.tarefas = tarefas;}
 }

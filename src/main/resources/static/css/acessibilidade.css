@@ -29,6 +29,10 @@
     position: relative;
 }
 
+.btn-acessibilidade * {
+    pointer-events: none;
+}
+
 .btn-acessibilidade:hover {
     background-color: #3a3a3a;
 }
@@ -41,15 +45,11 @@
     width: 24px;
     height: 24px;
     transition: transform 0.3s ease;
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    pointer-events: none;
 }
 
 .btn-acessibilidade.ativo i {
-    transform: translate(-50%, -50%) rotate(45deg);
+    transform: rotate(45deg);
 }
 
 /* ===== Opções de Acessibilidade ===== */

@@ -5,22 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToDaily</title>
     <link rel="stylesheet" href="/css/sidebar.css" />
-    <link rel="stylesheet" href="/css/menuPrincipal.css" />
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/css/menu.css" />
 </head>
 <body>
 
 <!-- ========== FRAGMENT: SIDEBAR ========== -->
 <aside class="sidebar" th:fragment="sidebar">
     <div class="header-sidebar">
-        <h1 class="app-title">ToDaily</h1>
+        <h1 class="app-title" onclick="navegarPara(this, '/menu')" style="cursor: pointer;" title="Menu Principal">ToDaily</h1>
         <button class="btn-config" onclick="abrirModalConfig()" title="Configurações">
             <i data-lucide="settings"></i>
         </button>
     </div>
 
     <!-- Perfil -->
-    <div class="perfil" onclick="abrirModalPerfil('modalPerfil')" style="cursor: pointer;">
+    <div class="perfil" onclick="abrirModalPerfil('modalPerfil')" style="cursor: pointer;" title="Ver perfil">
         <div class="avatar">
             <i data-lucide="user"></i>
         </div>
@@ -31,14 +30,14 @@
     </div>
 
     <!-- Menu de Navegação -->
-    <nav th:if="${areaSelecionada}" class="menu">
-        <button class="menu-item active" onclick="navegarPara(this, '#')">
+    <nav class="menu">
+        <button class="menu-item active">
             <i data-lucide="sun"></i> Para Hoje
         </button>
-        <button class="menu-item" onclick="alert('Página em desenvolvimento')">
+        <button class="menu-item">
             <i data-lucide="calendar"></i> Agendadas
         </button>
-        <button class="menu-item" onclick="alert('Página em desenvolvimento')">
+        <button class="menu-item">
             <i data-lucide="list-checks"></i> Todas as Tarefas
         </button>
         <button class="menu-item" onclick="navegarPara(this, '/areasTrabalho')">
@@ -46,39 +45,24 @@
         </button>
     </nav>
 
-    <!-- Campo de Busca -->
-    <div th:if="${areaSelecionada}" class="busca">
+    <div class="busca" th:if="${not (isMenu ?: false)}">
         <input type="text" placeholder="Buscar" />
     </div>
 
     <!-- Listas do Usuário -->
-    <div th:if="${areaSelecionada}" class="listas">
-        <button class="lista" 
-            th:each="lista : ${listas}"
-            th:data-id="${lista.id}"
-            th:data-titulo="${lista.titulo}"
-            onClick="mudarTituloPrincipal(this)"
-            oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)">
+    <div class="listas" th:if="${not (isMenu ?: false)}" id="listasContainer">
+        <button class="lista"
+                th:each="lista : ${listas}"
+                th:data-id="${lista.id}"
+                th:data-desc="${lista.descricao}"
+                oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)">
             <i data-lucide="list"></i>
-            <span th:text="${lista.titulo}"></span>
-    </div>
-
-    <!--
-    <div class="listas">
-        <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
-            <i data-lucide="list"></i> Faculdade
-        </button>
-        <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
-            <i data-lucide="list"></i> Casa
-        </button>
-        <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
-            <i data-lucide="list"></i> Renomeada
+            <span th:text="${lista.nome}"></span>
         </button>
     </div>
-    -->
 
     <!-- Botão Nova Lista -->
-    <button th:if="${areaSelecionada}" class="nova-lista" onclick="abrirModalPerfil('modalAddLista')">
+    <button class="nova-lista" onclick="abrirModalPerfil('modalAddLista')" th:if="${not (isMenu ?: false)}">
         <i data-lucide="plus"></i> Nova Lista
     </button>
 </aside>
@@ -158,10 +142,10 @@
                 </div>
                 <div class="campo-lista">
                     <label for="descricao-lista">Descrição:</label>
-                    <textarea id="descricao-lista" rows="4"></textarea>
+                    <textarea id="descricao-lista" rows="4" placeholder="Adicione uma descrição (opcional)"></textarea>
                 </div>
                 <div class="botoes-acao-lista">
-                    <button type="button" class="btn-ok" onclick="criarNovaLista()">OK</button>
+                    <button type="button" class="btn-ok" onclick="confirmarCriacaoLista()">OK</button>
                     <button type="button" class="btn-cancelar-lista" onclick="fecharModalPerfil('modalAddLista')">Cancelar</button>
                 </div>
             </form>
@@ -179,10 +163,10 @@
                 </div>
                 <div class="campo-lista">
                     <label for="descricao-lista-edit">Descrição:</label>
-                    <textarea id="descricao-lista-edit" rows="4"></textarea>
+                    <textarea id="descricao-lista-edit" rows="4" placeholder="Adicione uma descrição (opcional)"></textarea>
                 </div>
                 <div class="botoes-acao-lista">
-                    <button type="button" class="btn-ok" onclick="fecharModalPerfil('modalEditLista')">OK</button>
+                    <button type="button" class="btn-ok" onclick="confirmarEdicaoLista()">OK</button>
                     <button type="button" class="btn-cancelar-lista" onclick="fecharModalPerfil('modalEditLista')">Cancelar</button>
                 </div>
             </form>
@@ -194,22 +178,32 @@
         <div class="modal-remover" onclick="event.stopPropagation()">
             <h3 class="modal-remover-mensagem">Deseja realmente remover esta lista?</h3>
             <div class="modal-remover-botoes">
-                <button class="btn-remover-sim" onclick="executarRemocaoLista()">Sim</button>
                 <button class="btn-remover-nao" onclick="fecharModalPerfil('modalRemoveLista')">Não</button>
+                <button class="btn-remover-sim" onclick="confirmarRemocaoLista()">Sim</button>
             </div>
         </div>
     </div>
 
     <!-- Menu de Contexto (Clique direito nas listas) -->
     <div id="menuContextoLista" class="context-menu" style="display: none;">
-        <button class="context-menu-item" onclick="abrirModalPerfil('modalEditLista')">Editar Lista</button>
-        <button class="context-menu-item" onclick="abrirModalPerfil('modalRemoveLista')">Remover Lista</button>
+        <button class="context-menu-item" onclick="abrirModalEditarLista()">Editar Lista</button>
+        <button class="context-menu-item" onclick="abrirModalRemoverLista()">Remover Lista</button>
+    </div>
+
+    <!-- Modal: Confirmação de Logout -->
+    <div id="modalConfirmarLogout" class="confirma-acao" style="display: none;" onclick="fecharModalPerfil('modalConfirmarLogout')">
+        <div class="modal-remover" onclick="event.stopPropagation()">
+            <h3 class="modal-remover-mensagem">Deseja realmente sair da sua conta?</h3>
+            <div class="modal-remover-botoes">
+                <button class="btn-remover-nao" onclick="fecharModalPerfil('modalConfirmarLogout')">Não</button>
+                <button class="btn-remover-sim" onclick="confirmarLogout()">Sim</button>
+            </div>
+        </div>
     </div>
 
     <!-- Modal: Configurações -->
     <div id="modalConfig" class="overlay-config" style="display: none;" onclick="fecharModalConfig()">
         <div class="modal-config" onclick="event.stopPropagation()">
-
             <!-- Header -->
             <div class="modal-config-header">
                 <h2>Configurações</h2>
@@ -236,7 +230,7 @@
                         <i data-lucide="user-cog"></i>
                         <span>Gerenciar Contas</span>
                     </button>
-                    <button class="btn-config-acao red" onclick="alert('Sair da conta')">
+                    <button class="btn-config-acao red" onclick="abrirModalLogout()">
                         <i data-lucide="log-out"></i>
                         <span>Sair</span>
                     </button>
@@ -281,339 +275,19 @@
         </div>
     </div>
 
+    <div id="daata"
+        th:data-listas="${listas}">
+    </div>
+
 </div>
 
 
 <!-- ========== FRAGMENT: SCRIPTS ========== -->
 <div th:fragment="scripts">
-    <script>
-        // Inicializa ícones Lucide
-        lucide.createIcons();
-
-        // Variável para guardar qual lista será removida
-        let listaParaRemover = null;
-
-        /**
-         * Método para criar/salva uma NOVA lista
-         * Verifica se o campo título está preenchido
-         * Envia os dados para o controller
-        */
-       function criarNovaLista() {
-            const urlAtual = window.location.pathname;
-            const tituloLista = document.getElementById('nome-lista').value.trim();
-            const descricaoLista = document.getElementById('descricao-lista').value.trim();
-
-            if (!tituloLista) {
-                alert("Insira um nome para sua lista");
-                return;
-            }
-
-            const novaLista = {
-                titulo : tituloLista,
-                descricao : descricaoLista
-            }
-
-            // Faz a requisição para o controller
-            fetch(`${urlAtual}/novaLista`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(novaLista)
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert("Lista criada com sucesso!");
-                    // Atualiza a página ou recarrega as listas
-                    window.location.reload();
-                } else {
-                    alert("Erro ao criar lista.");
-                }
-            })
-            .catch(error => {
-                console.error("Erro na requisição:", error);
-                alert("Erro inesperado ao criar lista.");
-            });
-
-
-       }
-
-        /**
-         * Abre um modal pelo ID
-         */
-        function abrirModalPerfil(nomeModal) {
-            document.getElementById(nomeModal).style.display = 'flex';
-            setTimeout(() => {
-                const modal = document.getElementById(nomeModal);
-                if (modal.querySelectorAll('[data-lucide]').length > 0) {
-                    lucide.createIcons();
-                }
-            }, 10);
-        }
-
-        /**
-         * Fecha um modal pelo ID
-         */
-        function fecharModalPerfil(nomeModal) {
-            const modal = document.getElementById(nomeModal);
-            modal.style.display = 'none';
-
-            // Remove mensagem de erro ao fechar o modal
-            const erroMsg = modal.querySelector('.mensagem-erro');
-            if (erroMsg) {
-                erroMsg.textContent = '';
-            }
-
-            // Limpa o campo de senha, se existir
-            const inputSenha = modal.querySelector('input[type="password"]');
-            if (inputSenha) {
-                inputSenha.value = '';
-            }
-        }
-
-        /**
-         * Abre o modal de configurações
-         */
-        function abrirModalConfig() {
-            document.getElementById('modalConfig').style.display = 'flex';
-            setTimeout(() => {
-                lucide.createIcons();
-            }, 10);
-        }
-
-        /**
-         * Fecha o modal de configurações
-         */
-        function fecharModalConfig() {
-            document.getElementById('modalConfig').style.display = 'none';
-        }
-
-        /**
-         * Mostra o menu de contexto (clique direito)
-         */
-        function mostrarMenuContexto(event, menuId, elemento) {
-            event.preventDefault();
-
-            // Guarda o botão da lista clicada
-            listaParaRemover = elemento;
-
-            // Esconde todos os menus de contexto
-            document.querySelectorAll('.context-menu').forEach(menu => menu.style.display = 'none');
-
-            // Mostra o menu específico na posição do mouse
-            const menu = document.getElementById(menuId);
-            menu.style.display = 'block';
-            menu.style.left = (event.pageX + 5) + 'px';
-            menu.style.top = (event.pageY + 5) + 'px';
-        }
-
-        /**
-         * Fecha menus de contexto ao clicar fora
-         */
-        window.addEventListener('click', (e) => {
-            if (!e.target.closest('.context-menu-item')) {
-                document.querySelectorAll('.context-menu').forEach(menu => {
-                    menu.style.display = 'none';
-                });
-            }
-        });
-
-        /**
-         * Fecha menus de contexto ao rolar a página
-         */
-        window.addEventListener('scroll', () => {
-            document.querySelectorAll('.context-menu').forEach(menu => {
-                menu.style.display = 'none';
-            });
-        }, true);
-
-        /**
-         * Fecha modais com ESC
-         */
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                fecharModalConfig();
-                fecharModalPerfil('modalPerfil');
-                fecharModalPerfil('modalVerificacao');
-                fecharModalPerfil('modalAddLista');
-                fecharModalPerfil('modalEditLista');
-                fecharModalPerfil('modalRemoveLista');
-            }
-        });
-
-        /**
-         * Navega para qualquer página e marca como ativo
-         */
-        function navegarPara(elementoClicado, url) {
-            const currentPath = window.location.pathname;
-
-            // Se já estiver na página, apenas atualiza o visual
-            if (currentPath === url || url === "#") {
-                // Remove classe 'active' de todos os itens
-                document.querySelectorAll('.menu-item, .lista').forEach(btn => {
-                    btn.classList.remove('active');
-                    atualizarTituloMenuPrincipal(elementoClicado);
-                });
-
-                // Marca o item clicado como ativo
-                elementoClicado.classList.add('active');
-
-                // Se estiver no menu principal, atualiza o título
-                if (url === '/menuPrincipal') {
-                    atualizarTituloMenuPrincipal(elementoClicado);
-                }
-                return;
-            }
-
-            // Remove classe 'active' de todos os itens
-            document.querySelectorAll('.menu-item, .lista').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // Marca o item clicado como ativo
-            elementoClicado.classList.add('active');
-
-            // Redireciona
-            window.location.href = url;
-        }
-
-        /**
-         * Atualiza o título da página principal quando já está nela
-         */
-        function atualizarTituloMenuPrincipal(elementoClicado) {
-            const novoTitulo = elementoClicado.innerText.trim();
-            const tituloH2 = document.getElementById('titulo-principal');
-            const subtituloSpan = document.getElementById('subtitulo-principal');
-
-            // Atualiza o título
-            if (tituloH2) {
-                tituloH2.innerText = novoTitulo;
-            }
-
-            // Atualiza o subtítulo (só mostra data para "Para Hoje")
-            if (subtituloSpan) {
-                if (novoTitulo === "Para Hoje") {
-                    subtituloSpan.innerText = "- 21/11/24";
-                } else {
-                    subtituloSpan.innerText = "";
-                }
-            }
-        }
-
-        /**
-         * Muda o título da página principal (para listas)
-         */
-        function mudarTituloPrincipal(elementoClicado) {
-            const tituloLista = elementoClicado.getAttribute("data-titulo").tim();
-            const tituloPrincipal = document.getElementById("titulo-principal");
-            const subTitulo = document.getElementById("subtitulo-principal");
-
-            tituloPrincipal.textContent = tituloLista;
-            subTitulo.textContent = "";
-
-            /*
-            if (window.location.pathname !== "/menuPrincipal") {
-                window.location.href = "/menuPrincipal";
-                return;
-            }
-
-            const novoTitulo = elementoClicado.innerText.trim();
-            const tituloH2 = document.getElementById('titulo-principal');
-            const subtituloSpan = document.getElementById('subtitulo-principal');
-
-            // Atualiza o título
-            if (tituloH2) {
-                tituloH2.innerText = novoTitulo;
-            }
-
-            // Atualiza o subtítulo (só mostra data para "Para Hoje")
-            if (subtituloSpan) {
-                if (novoTitulo === "Para Hoje") {
-                    subtituloSpan.innerText = "- 21/11/24";
-                } else {
-                    subtituloSpan.innerText = "";
-                }
-            }
-            */
-
-            // Remove classe 'active' de todos os itens e adiciona no clicado
-            document.querySelectorAll('.menu-item, .lista').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            elementoClicado.classList.add('active');
-        }
-
-        /**
-         * Marca o item correto da sidebar como ativo ao carregar a página
-         */
-        function marcarItemAtivoSidebar() {
-            const path = window.location.pathname;
-
-            // Remove active de todos os itens
-            document.querySelectorAll('.menu-item, .lista').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // Marca o item correto baseado na URL
-            if (path === '/menuPrincipal' || path === '/') {
-                const btnParaHoje = document.querySelector('.menu-item');
-                if (btnParaHoje) btnParaHoje.classList.add('active');
-            } else if (path === '/agendadas') {
-                const btnAgendadas = document.querySelectorAll('.menu-item')[1];
-                if (btnAgendadas) btnAgendadas.classList.add('active');
-            } else if (path === '/todasTarefas') {
-                const btnTodasTarefas = document.querySelectorAll('.menu-item')[2];
-                if (btnTodasTarefas) btnTodasTarefas.classList.add('active');
-            } else if (path.startsWith('/areasTrabalho')) {
-                const btnAreasTrabalho = document.querySelectorAll('.menu-item')[3];
-                if (btnAreasTrabalho) btnAreasTrabalho.classList.add('active');
-            }
-        }
-
-        // Executa ao carregar a página
-        marcarItemAtivoSidebar();
-
-        /**
-         * Executa a remoção da lista
-         */
-        function executarRemocaoLista() {
-            // Remove o item da lista (se ele estiver guardado)
-            if (listaParaRemover) {
-                listaParaRemover.remove();
-                listaParaRemover = null;
-            }
-
-            // Fecha o modal de confirmação
-            fecharModalPerfil('modalRemoveLista');
-
-            // Simula um clique em "Para Hoje" para resetar a tela
-            const btnParaHoje = document.querySelector('.menu-item');
-            if (btnParaHoje) {
-                btnParaHoje.click();
-            }
-        }
-
-        /**
-         * Abre o modal de confirmação e define qual ação o backend vai executar
-         * @param {string} tipo - 'editar' ou 'remover'
-         */
-        function abrirModalAcao(tipo) {
-            const modal = document.getElementById('modalVerificacao');
-            const mensagem = document.getElementById('mensagemVerificacao');
-            const form = document.getElementById('formConfirmacao');
-
-            if (tipo === 'editar') {
-                mensagem.textContent = 'Deseja realmente editar sua conta?';
-                form.action = '/editarConta';
-            } else if (tipo === 'remover') {
-                mensagem.textContent = 'Deseja realmente remover sua conta?';
-                form.action = '/removerConta';
-            }
-
-            // Limpa o campo de senha e mostra o modal
-            document.getElementById('senhaConfirmacao').value = '';
-            modal.style.display = 'flex';
-        }
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="/js/sidebar.js"></script>
+    <script th:inline="javascript">
+        window.areaAtualId = /*[[${areaId}]]*/ 0;
     </script>
 </div>
 
