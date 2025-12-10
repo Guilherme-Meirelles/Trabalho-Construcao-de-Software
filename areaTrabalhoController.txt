@@ -1,38 +1,30 @@
 package com.example.demo.Controles;
 
 import com.example.demo.ConsultasBD.AreaTrabalhoRepository;
-import com.example.demo.ConsultasBD.ListaRepository;
 import com.example.demo.ConsultasBD.UsuarioRepository;
 import com.example.demo.Entidades.AreaTrabalho;
-import com.example.demo.Entidades.Lista;
 import com.example.demo.Entidades.Usuario;
 import com.example.demo.Serviços.CookieService;
 import jakarta.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import com.example.demo.Entidades.ParticipacaoArea;
 import com.example.demo.Entidades.PermissaoArea;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
 public class AreaTrabalhoController {
-
-    private static final Logger logger = LoggerFactory.getLogger(AreaTrabalhoController.class);
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -40,18 +32,8 @@ public class AreaTrabalhoController {
     @Autowired
     private AreaTrabalhoRepository areaTrabalhoRepository;
 
-    @Autowired
-    private ListaRepository listasRepository;
-
-    /*
-    Chamado quando o usuário acessa a página de áreas de trabalho.
-    Verifica se o usuário existe e o recupera do banco de dados caso exista
-    Adiciona as informações do usuário ao objeto "model"
-    Por fim, renderiza "areasTrabalho.html"
-     */
     @GetMapping("/areasTrabalho")
     public String areasTrabalho(Model model, HttpServletRequest request) {
-        logger.debug("Teste de Debug");
 
         String usuarioId = CookieService.getCookie(request, "usuarioId");
 
@@ -74,19 +56,11 @@ public class AreaTrabalhoController {
         model.addAttribute("usuario", usuario);
         model.addAttribute("areas", areas);
 
-        List<Lista> listas = new ArrayList<>();
-
-        model.addAttribute("listas", listas);
-
         return "areasTrabalho";
     }
-    
-    /**
-     * Chamada por "abrirArea" em areasTrabalho.html
-     */
-    @GetMapping("/areasTrabalho/{name}/{id}")
-    public String areasTrabalhoId(@PathVariable Long id,
-                                  @PathVariable String name, Model model, HttpServletRequest request) {
+
+    @GetMapping("/areasTrabalho/{name}")
+    public String areasTrabalhoId(Model model, HttpServletRequest request) {
 
         String usuarioId = CookieService.getCookie(request, "usuarioId");
 
@@ -102,15 +76,6 @@ public class AreaTrabalhoController {
 
         model.addAttribute("nome", usuario.getNome());
         model.addAttribute("email", usuario.getEmail());
-        
-        AreaTrabalho areaMae = areaTrabalhoRepository.findAreaById(id);
-        List<Lista> listas = listasRepository.findListasByAreaMae(areaMae);
-        logger.info("Listas carregadas: {}", listas.size());
-
-        model.addAttribute("listas", listas);
-
-        // Agora tem botão de nova lista
-        model.addAttribute("areaSelecionada", true);
 
         return "menuPrincipal";
     }

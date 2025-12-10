@@ -31,8 +31,8 @@
     </div>
 
     <!-- Menu de Navegação -->
-    <nav class="menu">
-        <button class="menu-item active" onclick="navegarPara(this, '/menuPrincipal')">
+    <nav th:if="${areaSelecionada}" class="menu">
+        <button class="menu-item active" onclick="navegarPara(this, '#')">
             <i data-lucide="sun"></i> Para Hoje
         </button>
         <button class="menu-item" onclick="alert('Página em desenvolvimento')">
@@ -47,11 +47,23 @@
     </nav>
 
     <!-- Campo de Busca -->
-    <div class="busca">
+    <div th:if="${areaSelecionada}" class="busca">
         <input type="text" placeholder="Buscar" />
     </div>
 
     <!-- Listas do Usuário -->
+    <div th:if="${areaSelecionada}" class="listas">
+        <button class="lista" 
+            th:each="lista : ${listas}"
+            th:data-id="${lista.id}"
+            th:data-titulo="${lista.titulo}"
+            onClick="mudarTituloPrincipal(this)"
+            oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)">
+            <i data-lucide="list"></i>
+            <span th:text="${lista.titulo}"></span>
+    </div>
+
+    <!--
     <div class="listas">
         <button class="lista" oncontextmenu="mostrarMenuContexto(event, 'menuContextoLista', this)" onclick="mudarTituloPrincipal(this)">
             <i data-lucide="list"></i> Faculdade
@@ -63,9 +75,10 @@
             <i data-lucide="list"></i> Renomeada
         </button>
     </div>
+    -->
 
     <!-- Botão Nova Lista -->
-    <button class="nova-lista" onclick="abrirModalPerfil('modalAddLista')">
+    <button th:if="${areaSelecionada}" class="nova-lista" onclick="abrirModalPerfil('modalAddLista')">
         <i data-lucide="plus"></i> Nova Lista
     </button>
 </aside>
@@ -148,7 +161,7 @@
                     <textarea id="descricao-lista" rows="4"></textarea>
                 </div>
                 <div class="botoes-acao-lista">
-                    <button type="button" class="btn-ok" onclick="fecharModalPerfil('modalAddLista')">OK</button>
+                    <button type="button" class="btn-ok" onclick="criarNovaLista()">OK</button>
                     <button type="button" class="btn-cancelar-lista" onclick="fecharModalPerfil('modalAddLista')">Cancelar</button>
                 </div>
             </form>
@@ -281,6 +294,51 @@
         let listaParaRemover = null;
 
         /**
+         * Método para criar/salva uma NOVA lista
+         * Verifica se o campo título está preenchido
+         * Envia os dados para o controller
+        */
+       function criarNovaLista() {
+            const urlAtual = window.location.pathname;
+            const tituloLista = document.getElementById('nome-lista').value.trim();
+            const descricaoLista = document.getElementById('descricao-lista').value.trim();
+
+            if (!tituloLista) {
+                alert("Insira um nome para sua lista");
+                return;
+            }
+
+            const novaLista = {
+                titulo : tituloLista,
+                descricao : descricaoLista
+            }
+
+            // Faz a requisição para o controller
+            fetch(`${urlAtual}/novaLista`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(novaLista)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Lista criada com sucesso!");
+                    // Atualiza a página ou recarrega as listas
+                    window.location.reload();
+                } else {
+                    alert("Erro ao criar lista.");
+                }
+            })
+            .catch(error => {
+                console.error("Erro na requisição:", error);
+                alert("Erro inesperado ao criar lista.");
+            });
+
+
+       }
+
+        /**
          * Abre um modal pelo ID
          */
         function abrirModalPerfil(nomeModal) {
@@ -390,10 +448,11 @@
             const currentPath = window.location.pathname;
 
             // Se já estiver na página, apenas atualiza o visual
-            if (currentPath === url) {
+            if (currentPath === url || url === "#") {
                 // Remove classe 'active' de todos os itens
                 document.querySelectorAll('.menu-item, .lista').forEach(btn => {
                     btn.classList.remove('active');
+                    atualizarTituloMenuPrincipal(elementoClicado);
                 });
 
                 // Marca o item clicado como ativo
@@ -445,6 +504,14 @@
          * Muda o título da página principal (para listas)
          */
         function mudarTituloPrincipal(elementoClicado) {
+            const tituloLista = elementoClicado.getAttribute("data-titulo").tim();
+            const tituloPrincipal = document.getElementById("titulo-principal");
+            const subTitulo = document.getElementById("subtitulo-principal");
+
+            tituloPrincipal.textContent = tituloLista;
+            subTitulo.textContent = "";
+
+            /*
             if (window.location.pathname !== "/menuPrincipal") {
                 window.location.href = "/menuPrincipal";
                 return;
@@ -467,6 +534,7 @@
                     subtituloSpan.innerText = "";
                 }
             }
+            */
 
             // Remove classe 'active' de todos os itens e adiciona no clicado
             document.querySelectorAll('.menu-item, .lista').forEach(btn => {

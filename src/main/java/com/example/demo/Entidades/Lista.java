@@ -29,7 +29,7 @@ public class Lista {
     // lista(n)-(1)areaTrabalho
     // area de trabalho é dona da relação
     @ManyToOne
-    @JoinColumn(name = "listas")
+    @JoinColumn(name = "areaMae")
     private AreaTrabalho areaMae;
 
     // lista(1)-(n)tarefa
@@ -48,6 +48,8 @@ public class Lista {
     public void setDescricao(String descricao) { this.descricao = descricao; }
     // areaMae
     public AreaTrabalho getAreaMae() { return areaMae; }
+    public void setAreaMae(AreaTrabalho area) { this.areaMae = area; }
     // tarefas
     public Set<Tarefa> getTarefas() { return tarefas; }
+    public void setTarefas(Set<Tarefa> tarefas) { this.tarefas = tarefas;}
 }

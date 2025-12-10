@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Controller
@@ -26,6 +28,11 @@ public class MenuPrincipalControle {
         String email = CookieService.getCookie(request, "emailUsuario");
         String dataNascimento = CookieService.getCookie(request, "dataNascimento");
 
+        LocalDate hoje = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dataFormatada = hoje.format(formatter);
+
+
         // Segurança: se não houver cookies, redireciona
         if (nome == null || email == null) {
             return "redirect:/login";
@@ -34,6 +41,9 @@ public class MenuPrincipalControle {
         model.addAttribute("nome", nome);
         model.addAttribute("email", email);
         model.addAttribute("dataNascimento", dataNascimento);
+        model.addAttribute("dataHoje", dataFormatada);
+        // Menu principal inicial não tem botão de nova lista
+        model.addAttribute("areaSelecionada", false);
 
         return "menuPrincipal"; // Retorna a view, não redirect
     }

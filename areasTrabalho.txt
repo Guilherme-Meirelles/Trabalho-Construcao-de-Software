@@ -383,11 +383,6 @@
         });
     }
 
-
-    /**
-     * Chama "areasTrabalhoId" em AreaTrabalhoController.java
-     * O controller redirecionará para o menu principal da area de trabalho selecionada
-    */
     function abrirArea(elemento) {
         const id = elemento.dataset.id;
         const name = elemento.dataset.nome
